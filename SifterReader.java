@@ -96,8 +96,20 @@ public class SifterReader {
 		// project field names
 		String[] fieldNames = JSONObject.getNames(p[0]);
 		int numKeys = p[0].length();
+		SifterProj[] proj = new SifterProj[arrayLength];
 		
 		for (int j=0;j<arrayLength;j++) {
+			proj[j] = new SifterProj(p[j].get("api_url").toString(),
+						p[j].get("archived").toString(),
+						p[j].get("api_issues_url").toString(),
+						p[j].get("milestones_url").toString(),
+						p[j].get("api_milestones_url").toString(),
+						p[j].get("api_categories_url").toString(),
+						p[j].get("issues_url").toString(),
+						p[j].get("name").toString(),
+						p[j].get("url").toString(),
+						p[j].get("api_people_url").toString(),
+						p[j].get("primary_company_name").toString());
 			System.out.println("************ project: " + (j+1) + " ************");
 			for (int i=0;i<numKeys;i++) {
 				System.out.print(fieldNames[i]);
