@@ -1,7 +1,7 @@
 //package com.SifterReader;
 
 /*
- *      SifterReaderJSONorg.java
+ *      SifterReader.java
  *      
  *      Copyright 2012 Mark Mikofski <marko@linuxBox>
  *      
@@ -29,7 +29,7 @@ import org.json.*;
 
 /** SifterAPI Reader using org.json library **/
 
-public class SifterReaderJSONorg {
+public class SifterReader {
 
     public static void main (String[] args) throws Exception {
         
