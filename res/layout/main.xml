@@ -1,12 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:layout_height="fill_parent" >
 
     <TextView
+        android:id="@+id/domainLabel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hello" />
+        android:text="@string/domain" />
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/domainEntry"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/domainLabel"
+        android:background="@android:drawable/editbox_background"
+        android:hint="@string/domainHint" />
+
+    <TextView
+        android:id="@+id/accessKeyLabel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/domainEntry"
+        android:text="@string/accessKey" />
+
+    <EditText
+        android:id="@+id/accessKeyEntry"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accessKeyLabel"
+        android:background="@android:drawable/editbox_background"
+        android:hint="@string/accessKeyHint"
+        android:text="779ab91fa637368648921c811e00ba53"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/projectsButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accessKeyEntry"
+        android:text="@string/projects" />
+
+    <TextView
+        android:id="@+id/issues"
+        android:layout_below="@id/projectsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:textSize="8sp" />
+
+</RelativeLayout>

@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, SifterReader!</string>
+    <string name="domain">Domain Name:</string>
     <string name="app_name">SifterReader</string>
+    <string name="accessKey">Access Key:</string>
+    <string name="domainHint">your-company</string>
+    <string name="accessKeyHint">32-digit-hexadecimal</string>
+    <string name="projects">Projects</string>
+    <string name="milestones">Milestones</string>
+    <string name="issues">Issues</string>
 
 </resources>
