@@ -26,43 +26,59 @@ package com.SifterReader.android;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class SifterReader extends Activity {
+	
+	public static final int LOGIN_ID = Menu.FIRST; // int id for login menu option
+	public static final int ACTIVITY_LOGIN = 0; // int id for intent result
 
 	/** Called when the activity is first created. */
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 	}
+	
+	/** Menu option to enter login Domain and Access Key. */
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	boolean result = super.onCreateOptionsMenu(menu);
+        menu.add(0, LOGIN_ID, 0, R.string.menu_insert);
+        return result;
+    }
+	
+	/** Callback for selected login menu option. */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+        case LOGIN_ID:
+        	loginKeys(); // method that gets login
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    
+    /** Method to get login Domain and Access Keys */
+    private void loginKeys() {
+    	Intent intent = new Intent(this, LoginActivity.class);
+    	startActivityForResult(intent, ACTIVITY_LOGIN);
+    }
+    
+//	public void onClickProjects(View v) {
+//		
+//		String[] keys = new String[2];
+//		keys = getKeys();
+//
+//		// Create an Intent to launch Projects Activity
+//		Intent intent = new Intent(this, ProjectsActivity.class);
+//		intent.putExtra("domain", keys[0]);
+//		intent.putExtra("accessKey", keys[1]);
+//
+//		startActivity(intent);
+//	}
 
-	public void onClickProjects(View v) {
-		
-		String[] keys = new String[2];
-		keys = getKeys();
-
-		// Create an Intent to launch Projects Activity
-		Intent intent = new Intent(this, ProjectsActivity.class);
-		intent.putExtra("domain", keys[0]);
-		intent.putExtra("accessKey", keys[1]);
-
-		startActivity(intent);
-	}
-
-	public String[] getKeys() {
-		
-		String[] keys = new String[2];
-		
-		// capture our View elements
-		EditText domainEntry = (EditText) findViewById(R.id.domainEntry);
-		EditText accessKeyEntry = (EditText) findViewById(R.id.accessKeyEntry);
-		
-		keys[0] = domainEntry.getText().toString();
-		keys[1] = accessKeyEntry.getText().toString();
-		return keys;
-	}
+	
 	
 }

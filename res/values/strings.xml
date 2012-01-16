@@ -10,5 +10,8 @@
     <string name="milestones">Milestones</string>
     <string name="issues">Issues</string>
     <string name="people">People</string>
+    <string name="menu_insert">Enter Key</string>
+    <string name="saveKey">Save</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

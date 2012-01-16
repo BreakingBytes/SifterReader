@@ -25,7 +25,7 @@ public class ProjectsActivity extends Activity {
 		setContentView(R.layout.projects);
 
 		// capture our View elements
-		TextView issues = (TextView) findViewById(R.id.issues);
+		TextView issues = (TextView) findViewById(R.id.projects);
 
 		String domain = getIntent().getStringExtra("domain");
 		String accessKey = getIntent().getStringExtra("accessKey");
