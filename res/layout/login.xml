@@ -45,7 +45,7 @@
             android:text="@string/saveKey" />
 
         <Button
-            android:id="@+id/cancelKey"
+            android:id="@+id/cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onClickCancel"

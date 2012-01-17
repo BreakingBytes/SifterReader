@@ -21,10 +21,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ProjectsActivity"
-            android:label="Projects" >
-        </activity>
-        <activity
             android:name="LoginActivity"
             android:label="Login" >
         </activity>
