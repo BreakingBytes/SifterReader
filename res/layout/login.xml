@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
@@ -14,6 +14,7 @@
         android:id="@+id/domainEntry"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/domainLabel"
         android:background="@android:drawable/editbox_background"
         android:hint="@string/domainHint" />
 
@@ -21,35 +22,25 @@
         android:id="@+id/accessKeyLabel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/domainEntry"
         android:text="@string/accessKey" />
 
     <EditText
         android:id="@+id/accessKeyEntry"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/accessKeyLabel"
         android:background="@android:drawable/editbox_background"
         android:hint="@string/accessKeyHint"
         android:text="779ab91fa637368648921c811e00ba53"
         android:textSize="15sp" />
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="horizontal" >
+    <Button
+        android:id="@+id/saveKey"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accessKeyEntry"
+        android:layout_alignRight="@id/accessKeyEntry"
+        android:text="@string/saveKey" />
 
-        <Button
-            android:id="@+id/saveKey"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClickSave"
-            android:text="@string/saveKey" />
-
-        <Button
-            android:id="@+id/cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClickCancel"
-            android:text="@string/cancel" />
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

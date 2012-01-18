@@ -17,10 +17,9 @@ public final class R {
     public static final class id {
         public static final int accessKeyEntry=0x7f050003;
         public static final int accessKeyLabel=0x7f050002;
-        public static final int cancel=0x7f050005;
         public static final int domainEntry=0x7f050001;
         public static final int domainLabel=0x7f050000;
-        public static final int projects=0x7f050006;
+        public static final int projects=0x7f050005;
         public static final int saveKey=0x7f050004;
     }
     public static final class layout {

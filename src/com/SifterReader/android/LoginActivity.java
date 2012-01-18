@@ -9,9 +9,11 @@ import android.widget.EditText;
 
 public class LoginActivity extends Activity {
 	
-	private EditText mDomainName;
-    private EditText mAccessKey;
-
+	// Members
+	private EditText mDomainName; // sifter domain name
+    private EditText mAccessKey; // sifter access key
+    
+    /** Called when the activity is first created. */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -21,7 +23,6 @@ public class LoginActivity extends Activity {
 		mDomainName = (EditText) findViewById(R.id.domainEntry);
 		mAccessKey = (EditText) findViewById(R.id.accessKeyEntry);
 		Button saveButton = (Button) findViewById(R.id.saveKey);
-		Button cancelButton = (Button) findViewById(R.id.cancel);
 
 		Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -48,17 +49,6 @@ public class LoginActivity extends Activity {
         		Intent mIntent = new Intent();
         		mIntent.putExtras(bundle);
         		setResult(RESULT_OK, mIntent);
-        		finish();
-        	}
-
-        });
-        
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-        	
-        	// anonymous inner class
-        	public void onClick(View view) {
-        		Intent mIntent = new Intent();
-        		setResult(RESULT_CANCELED, mIntent);
         		finish();
         	}
 
