@@ -12,6 +12,6 @@
     <string name="people">People</string>
     <string name="menu_insert">Enter Key</string>
     <string name="saveKey">Save</string>
-    <string name="cancel">Cancel</string>
+    <string name="noAccessKey">Hit menu to enter access key.</string>
 
 </resources>
