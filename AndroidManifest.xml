@@ -24,6 +24,26 @@
             android:name="LoginActivity"
             android:label="Login" >
         </activity>
+        <activity
+            android:name="ProjectDetail"
+            android:label="Project Details" >
+        </activity>
+        <activity
+            android:name="MilestoneActivity"
+            android:label="Milestones" >
+        </activity>
+        <activity
+            android:name="CategoriesActivity"
+            android:label="Categories" >
+        </activity>
+        <activity
+            android:name="PeopleActivity"
+            android:label="People" >
+        </activity>
+        <activity
+            android:name="IssuesActivity"
+            android:label="Issues" >
+        </activity>
     </application>
 
 </manifest>

@@ -8,10 +8,18 @@
     <string name="accessKeyHint">32-digit-hexadecimal</string>
     <string name="projects">Projects</string>
     <string name="milestones">Milestones</string>
-    <string name="issues">Issues</string>
+    <string name="categories">Categories</string>
     <string name="people">People</string>
-    <string name="menu_insert">Enter Key</string>
+    <string name="issues">Issues</string>
+    <string name="page">Page</string>
+    <string name="statuses">Statuses</string>
+    <string name="priorities">Priorities</string>
+    <string name="menuLogin">Enter Key</string>
     <string name="saveKey">Save</string>
     <string name="noAccessKey">Hit menu to enter access key.</string>
-
+    <string name="projectName">Project Name:</string>
+    <string name="company">Company</string>
+    <string name="projectArchived">Archived?</string>
+    <string name="projectURL">Project Link:</string>
+    
 </resources>
