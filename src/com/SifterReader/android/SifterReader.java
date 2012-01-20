@@ -46,12 +46,17 @@ public class SifterReader extends ListActivity {
 	// Constants
 	public static final int LOGIN_ID = Menu.FIRST; // id for login menu option
 	public static final int ACTIVITY_LOGIN = 0; // id for intent result
-	public static final String DOMAIN = "domain"; // key to unbundle domain from
-	// intent extras
-	public static final String ACCESS_KEY = "accessKey"; // key to unbundle
-
-	// access key from
-	// intent extras
+	// intent extras bundle key
+	public static final String DOMAIN = "domain";
+	public static final String ACCESS_KEY = "accessKey";
+	// header requests
+	public static final String X_SIFTER_TOKEN = "X-Sifter-Token";
+	public static final String APPLICATION_JSON = "application/json";
+	public static final String HEADER_REQUEST_ACCEPT = "Accept";
+	public static final String HTTPS_PREFIX = "https://";
+	public static final String SIFTERAPI_URL = ".sifterapp.com/api/";
+	public static final String PROJECTS = "projects";
+	public static final String PROJECT_NAME = "name";
 
 	/** Called when the activity is first created. */
 	@Override
@@ -60,15 +65,18 @@ public class SifterReader extends ListActivity {
 		setContentView(R.layout.main);
 	}
 
-	private void fillData(SifterProj[] proj) {
-		int pNum = proj.length;
+	private void fillData(JSONObject[] allProjects) {
+		int pNum = allProjects.length;
 		String[] p = new String[pNum];
-		for (int j = 0; j < pNum; j++) {
-			p[j] = proj[j].name;
+		try {
+			for (int j = 0; j < pNum; j++) {
+				p[j] = allProjects[j].getString(SifterReader.PROJECT_NAME);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		setListAdapter(
-				new ArrayAdapter<String>(
-						this, android.R.layout.simple_list_item_1, p));
+		setListAdapter(new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, p));
 	}
 
 	/** Menu option to enter login Domain and Access Key. */
@@ -109,38 +117,45 @@ public class SifterReader extends ListActivity {
 		case ACTIVITY_LOGIN:
 			String domain = extras.getString(SifterReader.DOMAIN);
 			String accessKey = extras.getString(SifterReader.ACCESS_KEY);
-			SifterProj[] proj = loadProjects(domain, accessKey);
-			fillData(proj);
+			URLConnection sifterConnection = getSifterConnection(domain,
+					SifterReader.PROJECTS);
+			if (sifterConnection == null)
+				break;
+			JSONObject[] allProjects = loadProjects(sifterConnection, accessKey);
+			fillData(allProjects);
 			break;
 		}
 	}
 
-	private SifterProj[] loadProjects(String domain, String accessKey) {
-		// capture our View elements
-		// TextView issues = (TextView) findViewById(R.id.projects);
-
+	private URLConnection getSifterConnection(String domain,
+			String resourceEndpoint) {
 		URL sifter;
+		URLConnection sifterConnection = null;
 		try {
 			// create URL object to SifterAPI
-			sifter = new URL("https://" + domain
-					+ ".sifterapp.com/api/projects");
-			URLConnection sifterConnection = null;
-			try {
-				// open connection to SifterAPI
-				sifterConnection = sifter.openConnection();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				// issues.append(e.toString());
-				return null;
-			}
-			// add Access Key to header request
-			sifterConnection.setRequestProperty("X-Sifter-Token", accessKey);
+			sifter = new URL(SifterReader.HTTPS_PREFIX + domain
+					+ SifterReader.SIFTERAPI_URL + resourceEndpoint);
+			// open connection to SifterAPI
+			sifterConnection = sifter.openConnection();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return sifterConnection;
+	}
 
-			// add Accept: application/json to header - also not necessary
-			sifterConnection.addRequestProperty("Accept", "application/json");
+	private JSONObject[] loadProjects(URLConnection sifterConnection,
+			String accessKey) {
+		// send header requests
+		sifterConnection.setRequestProperty(SifterReader.X_SIFTER_TOKEN,
+				accessKey);
+		sifterConnection.addRequestProperty(SifterReader.HEADER_REQUEST_ACCEPT,
+				SifterReader.APPLICATION_JSON);
 
-			// create buffer and open input stream
+		JSONObject projects = null;
+		JSONObject[] allProjects = null;
+		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					sifterConnection.getInputStream()));
 			String inputLine;
@@ -152,59 +167,28 @@ public class SifterReader extends ListActivity {
 			in.close();
 
 			// initialize "projects" JSONObject from string
-			JSONObject projects = new JSONObject(x.toString());
+			projects = new JSONObject(x.toString());
 
 			// array of projects
-			JSONArray projectArray = projects.getJSONArray("projects");
+			JSONArray projectArray = projects
+					.getJSONArray(SifterReader.PROJECTS);
 			int numberProjects = projectArray.length();
-			JSONObject[] p = new JSONObject[numberProjects];
+			allProjects = new JSONObject[numberProjects];
 
 			// projects
 			for (int i = 0; i < numberProjects; i++) {
-				p[i] = projectArray.getJSONObject(i);
+				allProjects[i] = projectArray.getJSONObject(i);
 			}
 
 			// project field names
 			// JSONArray fieldNames = p[0].names();
 			// int numKeys = p[0].length();
-			SifterProj[] proj = new SifterProj[numberProjects];
-			for (int j = 0; j < numberProjects; j++) {
-				proj[j] = new SifterProj(p[j].getString("api_url"),
-						p[j].getString("archived"),
-						p[j].getString("api_issues_url"),
-						p[j].getString("milestones_url"),
-						p[j].getString("api_milestones_url"),
-						p[j].getString("api_categories_url"),
-						p[j].getString("issues_url"), p[j].getString("name"),
-						p[j].getString("url"),
-						p[j].getString("api_people_url"),
-						p[j].getString("primary_company_name"));
-				// issues.append("************ project: " + (j + 1) +
-				// " ************\n");
-				// for (int i = 0; i < numKeys; i++) {
-				// issues.append(fieldNames.getString(i) + " : "
-				// + p[j].getString(fieldNames.getString(i)) + "\n");
-				// }
-				// issues.append(proj[j].name + "\n");
-			}
-			return proj;
-			// issues.append(y);
 
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			// issues.append(e.toString());
-			return null;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			// //issues.append(e.toString());
-			return null;
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			// issues.append(e.toString());
-			return null;
 		}
+		return allProjects;
 	}
 }
