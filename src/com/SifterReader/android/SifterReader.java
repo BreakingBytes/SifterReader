@@ -1,7 +1,6 @@
 package com.SifterReader.android;
 
-/*
- *      SifterReader.java
+/*      SifterReader.java
  *      
  *      Copyright 2012 Mark Mikofski <bwanamarko@yahoo.com>
  *      
@@ -18,10 +17,7 @@ package com.SifterReader.android;
  *      You should have received a copy of the GNU General Public License
  *      along with this program; if not, write to the Free Software
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- *      MA 02110-1301, USA.
- *      
- *      
- */
+ *      MA 02110-1301, USA. */
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -63,10 +59,16 @@ public class SifterReader extends ListActivity {
 	public static final String HTTPS_PREFIX = "https://";
 	public static final String PROJECTS_URL = ".sifterapp.com/api/projects";
 	public static final String PROJECTS = "projects";
-	public static final String PROJECT_NAME = "name";
 	public static final String PROJECT_ID = "projectID";
+	public static final String NAME = "name";
 	public static final String MILESTONES_URL = "api_milestones_url";
 	public static final String MILESTONES = "milestones";
+	public static final String CATEGORIES_URL = "api_categories_url";
+	public static final String CATEGORIES = "categories";
+	public static final String PEOPLE_URL = "api_people_url";
+	public static final String PEOPLE = "people";
+	public static final String ISSUES_URL = "api_issues_url";
+	public static final String ISSUES = "issues";
 	
 	// Members
 	private JSONObject[] mAllProjects;
@@ -81,12 +83,13 @@ public class SifterReader extends ListActivity {
 		registerForContextMenu(getListView());
 	}
 
+	/** Method to pass project names to list adapter. */
 	private void fillData() {
 		int pNum = mAllProjects.length;
 		String[] p = new String[pNum];
 		try {
 			for (int j = 0; j < pNum; j++) {
-				p[j] = mAllProjects[j].getString(PROJECT_NAME);
+				p[j] = mAllProjects[j].getString(NAME);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -95,7 +98,7 @@ public class SifterReader extends ListActivity {
 				android.R.layout.simple_list_item_1, p));
 	}
 
-	/** Menu option to enter login Domain and Access Key. */
+	/** Menu button options. */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
@@ -103,7 +106,8 @@ public class SifterReader extends ListActivity {
 		return result;
 	}
 
-	/** Callback for selected login menu option. */
+	/** Methods for selected menu option.
+	 *  LOGIN_ID option calls loginKeys method. */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -114,7 +118,7 @@ public class SifterReader extends ListActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	/** Method to get login Domain and Access Keys */
+	/** Intent for LoginActivity to get domain and access key. */
 	private void loginKeys() {
 		Intent intent = new Intent(this, LoginActivity.class);
 		intent.putExtra(DOMAIN, mDomain);
@@ -122,14 +126,17 @@ public class SifterReader extends ListActivity {
 		startActivityForResult(intent, ACTIVITY_LOGIN);
 	}
 
+	/** Intent for ProjectDetail activity for clicked project in list. */
 	@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         Intent intent = new Intent(this, ProjectDetail.class);
         intent.putExtra(PROJECTS, mAllProjects[(int)id].toString());
+        // TODO use safe long typecast to int
         startActivity(intent);
     }
 	
+	/** List context menu options. */
 	@Override
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
@@ -140,7 +147,8 @@ public class SifterReader extends ListActivity {
         menu.add(0, ISSUES_ID, 0, R.string.issues);
     }
 
-    @Override
+    /** Methods for selected list context menu option. */
+	@Override
     public boolean onContextItemSelected(MenuItem item) {
     	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()) {
@@ -160,26 +168,47 @@ public class SifterReader extends ListActivity {
         return super.onContextItemSelected(item);
     }
     
+	/** Intent for MilestonesActivity. */
     private void milestones(long id) {
     	String milestonesURL = null;
+    	// get milestones url from project
     	try {
     		milestonesURL = mAllProjects[(int)id].getString(MILESTONES_URL);
+    		// TODO use safe long typecast to int
     	} catch (JSONException e) {
     		e.printStackTrace();
     	}
+    	// get url connection
     	URLConnection sifterConnection = getSifterConnection(milestonesURL);
 		if (sifterConnection == null)
 			return;
-		JSONArray details = loadDetails(sifterConnection, MILESTONES);
+		// get milestones
+		JSONArray milestones = loadProjectDetails(sifterConnection, MILESTONES);
+		// intent for MilestonesActivity
     	Intent intent = new Intent(this, MilestonesActivity.class);
-		intent.putExtra(MILESTONES, details.toString());
+		intent.putExtra(MILESTONES, milestones.toString());
 		startActivity(intent);
 	}
 	
-	private void categories(long id) {
-		Intent intent = new Intent(this, CategoriesActivity.class);
-		intent.putExtra(PROJECT_ID, id);
-        intent.putExtra(PROJECTS, mAllProjects);
+    /** Intent for CategoriesActivity. */
+    private void categories(long id) {
+		String categoriesURL = null;
+    	// get categories url from project
+    	try {
+    		categoriesURL = mAllProjects[(int)id].getString(CATEGORIES_URL);
+    		// TODO use safe long typecast to int
+    	} catch (JSONException e) {
+    		e.printStackTrace();
+    	}
+    	// get url connection
+    	URLConnection sifterConnection = getSifterConnection(categoriesURL);
+		if (sifterConnection == null)
+			return;
+		// get categories
+		JSONArray categories = loadProjectDetails(sifterConnection, CATEGORIES);
+		// intent for CategoriesActivity
+    	Intent intent = new Intent(this, CategoriesActivity.class);
+		intent.putExtra(CATEGORIES, categories.toString());
 		startActivity(intent);
 	}
 	
@@ -274,12 +303,12 @@ public class SifterReader extends ListActivity {
 		}
 	}
 	
-	private JSONArray loadDetails(URLConnection sifterConnection, String detail) {
+	private JSONArray loadProjectDetails(URLConnection sifterConnection, String projectDetail) {
 		// send header requests
 		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
 		sifterConnection.addRequestProperty(HEADER_REQUEST_ACCEPT, APPLICATION_JSON);
 
-		JSONArray detailArray = null;
+		JSONArray projectDetailArray = null;
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					sifterConnection.getInputStream()));
@@ -291,19 +320,19 @@ public class SifterReader extends ListActivity {
 			}
 			in.close();
 
-			// initialize "details" JSONObject from string
-			JSONObject details = new JSONObject(x.toString());
+			// initialize "projectDetails" JSONObject from string
+			JSONObject projectDetails = new JSONObject(x.toString());
 			// TODO check for incorrect header
 			// JSON says did you enter access key
 			
-			// array of details
-			detailArray = details.getJSONArray(detail);
+			// array of projectDetails
+			projectDetailArray = projectDetails.getJSONArray(projectDetail);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return detailArray;
+		return projectDetailArray;
 	}
 }

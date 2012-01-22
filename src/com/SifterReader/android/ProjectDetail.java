@@ -30,7 +30,7 @@ public class ProjectDetail extends Activity {
 			try {
 				JSONObject project = new JSONObject(extras.getString(SifterReader.PROJECTS));
 				if (project != null) {
-					projectName.setText(project.getString(SifterReader.PROJECT_NAME));
+					projectName.setText(project.getString(SifterReader.NAME));
 					company.setText(project.getString(PROJECT_COMPANY));
 					projectArchived.setText(project.getString(PROJECT_ARCHIVED));
 					projectURL.setText(project.getString(PROJECT_URL));

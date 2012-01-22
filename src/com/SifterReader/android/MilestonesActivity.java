@@ -26,26 +26,29 @@ public class MilestonesActivity extends ListActivity {
 				JSONArray milestones = new JSONArray(extras.getString(SifterReader.MILESTONES));
 				if (milestones != null) {
 					mMilestoneArray = milestones; 
+					getMilestones();
+					fillData();
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
-		
+	}
+	
+	private void getMilestones() {
 		int numberMilestones = mMilestoneArray.length();
 		JSONObject[] allMilestones = new JSONObject[numberMilestones];
 
-		// projects
-		for (int i = 0; i < numberMilestones; i++) {
-			try {
-				allMilestones[i] = mMilestoneArray.getJSONObject(i);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		// milestones
+		try {
+			for (int i = 0; i < numberMilestones; i++) {
+				allMilestones[i] = mMilestoneArray.getJSONObject(i);	
 			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		mAllMilestones = allMilestones;
-		fillData();
 	}
 
 	private void fillData() {
@@ -53,7 +56,7 @@ public class MilestonesActivity extends ListActivity {
 		String[] m = new String[pNum];
 		try {
 			for (int j = 0; j < pNum; j++) {
-				m[j] = mAllMilestones[j].getString(SifterReader.PROJECT_NAME);
+				m[j] = mAllMilestones[j].getString(SifterReader.NAME);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -61,7 +64,4 @@ public class MilestonesActivity extends ListActivity {
 		setListAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, m));
 	}
-
-
-
 }
