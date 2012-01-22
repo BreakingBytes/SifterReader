@@ -16,10 +16,10 @@
     <string name="priorities">Priorities</string>
     <string name="menuLogin">Enter Key</string>
     <string name="saveKey">Save</string>
-    <string name="noAccessKey">Hit menu to enter access key.</string>
+    <string name="noAccessKey">Use menu button to enter access key.</string>
     <string name="projectName">Project Name:</string>
-    <string name="company">Company</string>
-    <string name="projectArchived">Archived?</string>
+    <string name="company">Company:</string>
+    <string name="projectArchived">Archived:</string>
     <string name="projectURL">Project Link:</string>
     
 </resources>

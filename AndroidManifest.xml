@@ -29,7 +29,7 @@
             android:label="Project Details" >
         </activity>
         <activity
-            android:name="MilestoneActivity"
+            android:name="MilestonesActivity"
             android:label="Milestones" >
         </activity>
         <activity

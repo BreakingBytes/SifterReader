@@ -70,6 +70,7 @@ public class SifterReader extends ListActivity {
 	
 	// Members
 	private JSONObject[] mAllProjects;
+	private String mDomain;
 	private String mAccessKey;
 	
 	/** Called when the activity is first created. */
@@ -113,6 +114,14 @@ public class SifterReader extends ListActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	/** Method to get login Domain and Access Keys */
+	private void loginKeys() {
+		Intent intent = new Intent(this, LoginActivity.class);
+		intent.putExtra(DOMAIN, mDomain);
+		intent.putExtra(ACCESS_KEY, mAccessKey);
+		startActivityForResult(intent, ACTIVITY_LOGIN);
+	}
+
 	@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
@@ -161,9 +170,9 @@ public class SifterReader extends ListActivity {
     	URLConnection sifterConnection = getSifterConnection(milestonesURL);
 		if (sifterConnection == null)
 			return;
-		JSONObject[] details = loadDetails(sifterConnection, MILESTONES);
+		JSONArray details = loadDetails(sifterConnection, MILESTONES);
     	Intent intent = new Intent(this, MilestonesActivity.class);
-		intent.putExtra(MILESTONES, details);
+		intent.putExtra(MILESTONES, details.toString());
 		startActivity(intent);
 	}
 	
@@ -188,32 +197,25 @@ public class SifterReader extends ListActivity {
 		startActivity(intent);
 	}
 	
-	/** Method to get login Domain and Access Keys */
-	private void loginKeys() {
-		Intent intent = new Intent(this, LoginActivity.class);
-		startActivityForResult(intent, ACTIVITY_LOGIN);
-	}
-
-	/**
-	 * Determine activity by result code ACTIVITY_LOGIN unbundle domain & access
-	 * key
-	 */
+	/** Determine activity by result code. */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		Bundle extras = intent.getExtras();
-		switch (requestCode) {
-		case ACTIVITY_LOGIN:
-			String domain = extras.getString(DOMAIN);
-			mAccessKey = extras.getString(ACCESS_KEY);
-			String projectsURL = HTTPS_PREFIX + domain + PROJECTS_URL;
-			URLConnection sifterConnection = getSifterConnection(projectsURL);
-			if (sifterConnection == null)
+		if (extras != null) {
+			switch (requestCode) {
+			case ACTIVITY_LOGIN:
+				mDomain = extras.getString(DOMAIN);
+				mAccessKey = extras.getString(ACCESS_KEY);
+				String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
+				URLConnection sifterConnection = getSifterConnection(projectsURL);
+				if (sifterConnection == null)
+					break;
+				loadProjects(sifterConnection);
+				fillData();
 				break;
-			loadProjects(sifterConnection);
-			fillData();
-			break;
+			}
 		}
 	}
 
@@ -264,10 +266,6 @@ public class SifterReader extends ListActivity {
 				allProjects[i] = projectArray.getJSONObject(i);
 			}
 			mAllProjects = allProjects;
-			
-			// project field names
-			// JSONArray fieldNames = p[0].names();
-			// int numKeys = p[0].length();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -276,12 +274,12 @@ public class SifterReader extends ListActivity {
 		}
 	}
 	
-	private JSONObject[] loadDetails(URLConnection sifterConnection, String detail) {
+	private JSONArray loadDetails(URLConnection sifterConnection, String detail) {
 		// send header requests
 		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
 		sifterConnection.addRequestProperty(HEADER_REQUEST_ACCEPT, APPLICATION_JSON);
 
-		JSONObject[] allDetails = null;
+		JSONArray detailArray = null;
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					sifterConnection.getInputStream()));
@@ -299,24 +297,13 @@ public class SifterReader extends ListActivity {
 			// JSON says did you enter access key
 			
 			// array of details
-			JSONArray detailArray = details.getJSONArray(detail);
-			int numberDetails = detailArray.length();
-			allDetails = new JSONObject[numberDetails];
-
-			// details
-			for (int i = 0; i < numberDetails; i++) {
-				allDetails[i] = detailArray.getJSONObject(i);
-			}
-			
-			// detail field names
-			// JSONArray fieldNames = p[0].names();
-			// int numKeys = p[0].length();
+			detailArray = details.getJSONArray(detail);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return allDetails;
+		return detailArray;
 	}
 }

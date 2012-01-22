@@ -7,48 +7,46 @@
     <TextView android:id="@+id/projectLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:text="@string/projectName" />
 
     <TextView
         android:id="@+id/projectName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true" 
-        android:layout_below="@id/projectLabel" />
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/projectLabel" />
 
     <TextView android:id="@+id/companyLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/projectName"
+        android:layout_below="@id/projectLabel"
         android:text="@string/company" />
-
+    
     <TextView
         android:id="@+id/company"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/projectName"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/companyLabel" />
+        android:layout_alignBottom="@id/companyLabel" />
 
     <TextView android:id="@+id/archivedLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/company"
+        android:layout_below="@id/companyLabel"
         android:text="@string/projectArchived" />
 
     <TextView
         android:id="@+id/projectArchived"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/company"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/archivedLabel" />
+        android:layout_alignBottom="@id/archivedLabel" />
 
     <TextView android:id="@+id/URL_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@id/projectArchived"
         android:text="@string/projectURL" />
 

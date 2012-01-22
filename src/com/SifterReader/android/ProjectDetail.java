@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.widget.TextView;
 
 public class ProjectDetail extends Activity {
@@ -33,10 +34,15 @@ public class ProjectDetail extends Activity {
 					company.setText(project.getString(PROJECT_COMPANY));
 					projectArchived.setText(project.getString(PROJECT_ARCHIVED));
 					projectURL.setText(project.getString(PROJECT_URL));
+					Linkify.addLinks(projectURL, Linkify.WEB_URLS);
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
 	}
+
+	// detail field names
+	// JSONArray fieldNames = p[0].names();
+	// int numKeys = p[0].length();
 }
