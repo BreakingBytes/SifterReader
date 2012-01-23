@@ -15,18 +15,26 @@ public final class R {
         public static final int logo=0x7f020001;
     }
     public static final class id {
-        public static final int URL_label=0x7f05000c;
+        public static final int URL_label=0x7f050012;
         public static final int accessKeyEntry=0x7f050004;
         public static final int accessKeyLabel=0x7f050003;
-        public static final int archivedLabel=0x7f05000a;
-        public static final int company=0x7f050009;
-        public static final int companyLabel=0x7f050008;
+        public static final int archivedLabel=0x7f050010;
+        public static final int company=0x7f05000f;
+        public static final int companyLabel=0x7f05000e;
         public static final int domainEntry=0x7f050002;
         public static final int domainLabel=0x7f050001;
-        public static final int projectArchived=0x7f05000b;
-        public static final int projectLabel=0x7f050006;
-        public static final int projectName=0x7f050007;
-        public static final int projectURL=0x7f05000d;
+        public static final int dueDate=0x7f050009;
+        public static final int dueDateLabel=0x7f050008;
+        public static final int issuesURL=0x7f05000b;
+        public static final int issuesURL_label=0x7f05000a;
+        public static final int milestoneLabel=0x7f050006;
+        public static final int milestoneName=0x7f050007;
+        public static final int milestonesURL=0x7f050015;
+        public static final int milestonesURL_label=0x7f050014;
+        public static final int projectArchived=0x7f050011;
+        public static final int projectLabel=0x7f05000c;
+        public static final int projectName=0x7f05000d;
+        public static final int projectURL=0x7f050013;
         public static final int saveKey=0x7f050005;
         public static final int text1=0x7f050000;
     }
@@ -38,25 +46,38 @@ public final class R {
         public static final int project=0x7f030004;
     }
     public static final class string {
-        public static final int accessKey=0x7f040002;
-        public static final int accessKeyHint=0x7f040004;
-        public static final int app_name=0x7f040001;
-        public static final int categories=0x7f040007;
+        public static final int accessKey=0x7f04000c;
+        public static final int accessKeyHint=0x7f04000e;
+        public static final int app_name=0x7f040000;
+        public static final int categories=0x7f040004;
         public static final int company=0x7f040011;
-        public static final int domain=0x7f040000;
-        public static final int domainHint=0x7f040003;
-        public static final int issues=0x7f040009;
-        public static final int menuLogin=0x7f04000d;
-        public static final int milestones=0x7f040006;
-        public static final int noAccessKey=0x7f04000f;
-        public static final int page=0x7f04000a;
-        public static final int people=0x7f040008;
-        public static final int priorities=0x7f04000c;
+        public static final int domain=0x7f04000b;
+        public static final int domainHint=0x7f04000d;
+        public static final int issues=0x7f040006;
+        public static final int issuesURL=0x7f040014;
+        /**  Login Keys 
+         */
+        public static final int menuLogin=0x7f04000a;
+        public static final int milestoneDueDate=0x7f040017;
+        public static final int milestoneIssuesURL=0x7f040018;
+        /**  Milestone Detail 
+         */
+        public static final int milestoneName=0x7f040016;
+        /**  Context Menu Options 
+         */
+        public static final int milestones=0x7f040003;
+        public static final int milestonesURL=0x7f040015;
+        public static final int noAccessKey=0x7f040001;
+        public static final int page=0x7f040007;
+        public static final int people=0x7f040005;
+        public static final int priorities=0x7f040009;
         public static final int projectArchived=0x7f040012;
+        /**  Project Detail 
+         */
         public static final int projectName=0x7f040010;
         public static final int projectURL=0x7f040013;
-        public static final int projects=0x7f040005;
-        public static final int saveKey=0x7f04000e;
-        public static final int statuses=0x7f04000b;
+        public static final int projects=0x7f040002;
+        public static final int saveKey=0x7f04000f;
+        public static final int statuses=0x7f040008;
     }
 }

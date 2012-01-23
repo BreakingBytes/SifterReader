@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="domain">Domain Name:</string>
     <string name="app_name">SifterReader</string>
-    <string name="accessKey">Access Key:</string>
-    <string name="domainHint">your-company</string>
-    <string name="accessKeyHint">32-digit-hexadecimal</string>
+    <string name="noAccessKey">Use menu button to enter access key.</string>
     <string name="projects">Projects</string>
+    <!-- Context Menu Options -->
     <string name="milestones">Milestones</string>
     <string name="categories">Categories</string>
     <string name="people">People</string>
@@ -14,12 +12,28 @@
     <string name="page">Page</string>
     <string name="statuses">Statuses</string>
     <string name="priorities">Priorities</string>
+    <!-- Login Keys -->
     <string name="menuLogin">Enter Key</string>
+    <string name="domain">Domain Name:</string>
+    <string name="accessKey">Access Key:</string>
+    <string name="domainHint">your-company</string>
+    <string name="accessKeyHint">32-digit-hexadecimal</string>
     <string name="saveKey">Save</string>
-    <string name="noAccessKey">Use menu button to enter access key.</string>
+    <!-- Project Detail -->
     <string name="projectName">Project Name:</string>
     <string name="company">Company:</string>
     <string name="projectArchived">Archived:</string>
-    <string name="projectURL">Project Link:</string>
+    <string name="projectURL">Project LinkLink:</string>
+    <string name="issuesURL">Issues URL:</string>
+    <string name="milestonesURL">Milestones Link:</string>
+    <!-- Milestone Detail -->
+    <string name="milestoneName">Milestone Name:</string>
+    <string name="milestoneDueDate">Due Date:</string>
+    <string name="milestoneIssuesURL">Issues Link:</string>
+    <!-- Category Detail -->
+    
+    <!-- People Detail -->
+    
+    <!-- Issues Detail -->
     
 </resources>

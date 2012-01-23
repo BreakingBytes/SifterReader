@@ -1,8 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
     
+    <TextView android:id="@+id/milestoneLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/milestoneName" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/milestoneName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/milestoneLabel" />
+
+    <TextView android:id="@+id/dueDateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/milestoneName"
+        android:text="@string/milestoneDueDate" />
+    
+    <TextView
+        android:id="@+id/dueDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/milestoneName"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/dueDateLabel" />
+
+    <TextView android:id="@+id/issuesURL_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dueDateLabel"
+        android:text="@string/milestoneIssuesURL" />
+
+    <TextView
+        android:id="@+id/issuesURL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/issuesURL_label"
+        android:textSize="10sp" />
+    
+</RelativeLayout>

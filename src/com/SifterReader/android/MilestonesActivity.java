@@ -5,12 +5,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 public class MilestonesActivity extends ListActivity {
 	
 	public static final String MILESTONE_NAME = "name";
+	public static final String MILESTONE = "milestone";
 	
 	// Members
 	private JSONArray mMilestoneArray;
@@ -66,4 +70,14 @@ public class MilestonesActivity extends ListActivity {
 		setListAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, m));
 	}
+	
+	/** Intent for ProjectDetail activity for clicked project in list. */
+	@Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        Intent intent = new Intent(this, MilestoneDetail.class);
+        intent.putExtra(MILESTONE, mAllMilestones[(int)id].toString());
+        // TODO use safe long typecast to int
+        startActivity(intent);
+    }
 }

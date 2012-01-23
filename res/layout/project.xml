@@ -47,7 +47,7 @@
     <TextView android:id="@+id/URL_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/projectArchived"
+        android:layout_below="@id/archivedLabel"
         android:text="@string/projectURL" />
 
     <TextView
@@ -55,6 +55,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/URL_label" />
+        android:layout_below="@id/URL_label"
+        android:textSize="10sp" />
+
+    <TextView android:id="@+id/issuesURL_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/projectURL"
+        android:text="@string/issuesURL" />
+
+    <TextView
+        android:id="@+id/issuesURL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/issuesURL_label"
+        android:textSize="10sp" />
+
+    <TextView android:id="@+id/milestonesURL_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/issuesURL"
+        android:text="@string/milestonesURL" />
+
+    <TextView
+        android:id="@+id/milestonesURL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/milestonesURL_label"
+        android:textSize="10sp" />
 
 </RelativeLayout>
