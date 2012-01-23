@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 
 public class CategoriesActivity extends ListActivity {
 
+	public static final String CATEGORY_NAME = "name";
+	
 	// Members
 	private JSONArray mCategoryArray;
 	private JSONObject[] mAllCategories;
@@ -52,16 +54,16 @@ public class CategoriesActivity extends ListActivity {
 	}
 	
 	private void fillData() {
-		int pNum = mAllCategories.length;
-		String[] m = new String[pNum];
+		int cNum = mAllCategories.length;
+		String[] c = new String[cNum];
 		try {
-			for (int j = 0; j < pNum; j++) {
-				m[j] = mAllCategories[j].getString(SifterReader.NAME);
+			for (int j = 0; j < cNum; j++) {
+				c[j] = mAllCategories[j].getString(CATEGORY_NAME);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		setListAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, m));
+				android.R.layout.simple_list_item_1, c));
 	}
 }

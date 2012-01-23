@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 
 public class MilestonesActivity extends ListActivity {
 	
+	public static final String MILESTONE_NAME = "name";
+	
 	// Members
 	private JSONArray mMilestoneArray;
 	private JSONObject[] mAllMilestones;
@@ -52,11 +54,11 @@ public class MilestonesActivity extends ListActivity {
 	}
 
 	private void fillData() {
-		int pNum = mAllMilestones.length;
-		String[] m = new String[pNum];
+		int mNum = mAllMilestones.length;
+		String[] m = new String[mNum];
 		try {
-			for (int j = 0; j < pNum; j++) {
-				m[j] = mAllMilestones[j].getString(SifterReader.NAME);
+			for (int j = 0; j < mNum; j++) {
+				m[j] = mAllMilestones[j].getString(MILESTONE_NAME);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

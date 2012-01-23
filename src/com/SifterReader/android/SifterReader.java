@@ -60,7 +60,7 @@ public class SifterReader extends ListActivity {
 	public static final String PROJECTS_URL = ".sifterapp.com/api/projects";
 	public static final String PROJECTS = "projects";
 	public static final String PROJECT_ID = "projectID";
-	public static final String NAME = "name";
+	public static final String PROJECT_NAME = "name";
 	public static final String MILESTONES_URL = "api_milestones_url";
 	public static final String MILESTONES = "milestones";
 	public static final String CATEGORIES_URL = "api_categories_url";
@@ -89,7 +89,7 @@ public class SifterReader extends ListActivity {
 		String[] p = new String[pNum];
 		try {
 			for (int j = 0; j < pNum; j++) {
-				p[j] = mAllProjects[j].getString(NAME);
+				p[j] = mAllProjects[j].getString(PROJECT_NAME);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -167,7 +167,8 @@ public class SifterReader extends ListActivity {
         }
         return super.onContextItemSelected(item);
     }
-    
+    /* TODO combine methods for milestones, categories, people into single method
+	 * use switch in onContextItemSelected to select args to pass to method. */
 	/** Intent for MilestonesActivity. */
     private void milestones(long id) {
     	String milestonesURL = null;
@@ -212,17 +213,47 @@ public class SifterReader extends ListActivity {
 		startActivity(intent);
 	}
 	
-	private void people(long id) {
-		Intent intent = new Intent(this, PeopleActivity.class);
-		intent.putExtra(PROJECT_ID, id);
-        intent.putExtra(PROJECTS, mAllProjects);
+    /** Intent for PeopleActivity. */
+    private void people(long id) {
+		String peopleURL = null;
+    	// get people url from project
+    	try {
+    		peopleURL = mAllProjects[(int)id].getString(PEOPLE_URL);
+    		// TODO use safe long typecast to int
+    	} catch (JSONException e) {
+    		e.printStackTrace();
+    	}
+    	// get url connection
+    	URLConnection sifterConnection = getSifterConnection(peopleURL);
+		if (sifterConnection == null)
+			return;
+		// get people
+		JSONArray people = loadProjectDetails(sifterConnection, PEOPLE);
+		// intent for PeopleActivity
+    	Intent intent = new Intent(this, PeopleActivity.class);
+		intent.putExtra(PEOPLE, people.toString());
 		startActivity(intent);
 	}
 	
-	private void issues(long id) {
-		Intent intent = new Intent(this, IssuesActivity.class);
-		intent.putExtra(PROJECT_ID, id);
-        intent.putExtra(PROJECTS, mAllProjects);
+    /** Intent for IssuesActivity. */
+    private void issues(long id) {
+		String issueURL = null;
+    	// get issues url from project
+    	try {
+    		issueURL = mAllProjects[(int)id].getString(ISSUES_URL);
+    		// TODO use safe long typecast to int
+    	} catch (JSONException e) {
+    		e.printStackTrace();
+    	}
+    	// get url connection
+    	URLConnection sifterConnection = getSifterConnection(issueURL);
+		if (sifterConnection == null)
+			return;
+		// get issues
+		JSONObject issues = loadIssues(sifterConnection);
+		// intent for PeopleActivity
+    	Intent intent = new Intent(this, IssuesActivity.class);
+		intent.putExtra(ISSUES, issues.toString());
 		startActivity(intent);
 	}
 	
@@ -264,6 +295,10 @@ public class SifterReader extends ListActivity {
 		return sifterConnection;
 	}
 
+	/* TODO combine loadProjects, loadProjectDetails and loadIssues
+	 * into single set of methods for all project details,
+	 * (1) to get outer JSONObject, (2) inner JSONArray,
+	 * (3) array of inner JSONObject depending on detail. */
 	private void loadProjects(URLConnection sifterConnection) {
 		// send header requests
 		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
@@ -334,5 +369,35 @@ public class SifterReader extends ListActivity {
 			e.printStackTrace();
 		}
 		return projectDetailArray;
+	}
+	
+	private JSONObject loadIssues(URLConnection sifterConnection) {
+		// send header requests
+		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
+		sifterConnection.addRequestProperty(HEADER_REQUEST_ACCEPT, APPLICATION_JSON);
+
+		JSONObject issues = null;
+		try {
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					sifterConnection.getInputStream()));
+			String inputLine;
+			StringBuilder x = new StringBuilder();
+
+			while ((inputLine = in.readLine()) != null) {
+				x.append(inputLine);
+			}
+			in.close();
+
+			// initialize "projectDetails" JSONObject from string
+			issues = new JSONObject(x.toString());
+			// TODO check for incorrect header
+			// JSON says did you enter access key
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return issues;
 	}
 }
