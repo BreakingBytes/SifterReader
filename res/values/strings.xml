@@ -24,7 +24,7 @@
     <string name="company">Company:</string>
     <string name="projectArchived">Archived:</string>
     <string name="projectURL">Project LinkLink:</string>
-    <string name="issuesURL">Issues URL:</string>
+    <string name="issuesURL">Issues Link:</string>
     <string name="milestonesURL">Milestones Link:</string>
     <!-- Milestone Detail -->
     <string name="milestoneName">Milestone Name:</string>
