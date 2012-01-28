@@ -20,6 +20,9 @@ package com.SifterReader.android;
  *      MA 02110-1301, USA. */
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -51,6 +54,7 @@ public class SifterReader extends ListActivity {
 	public static final int PEOPLE_ID = Menu.FIRST + 3;
 	public static final int ISSUES_ID = Menu.FIRST + 4;
 	public static final int ACTIVITY_LOGIN = 0; // id for intent result
+	public static final String KEY_FILE = "key_file";
 	public static final String DOMAIN = "domain";
 	public static final String ACCESS_KEY = "accessKey";
 	public static final String X_SIFTER_TOKEN = "X-Sifter-Token";
@@ -59,7 +63,6 @@ public class SifterReader extends ListActivity {
 	public static final String HTTPS_PREFIX = "https://";
 	public static final String PROJECTS_URL = ".sifterapp.com/api/projects";
 	public static final String PROJECTS = "projects";
-	public static final String PROJECT_ID = "projectID";
 	public static final String PROJECT_NAME = "name";
 	public static final String MILESTONES_URL = "api_milestones_url";
 	public static final String MILESTONES = "milestones";
@@ -79,8 +82,47 @@ public class SifterReader extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		registerForContextMenu(getListView());
+
+		File keyFile = getFileStreamPath(KEY_FILE);
+		if (!keyFile.exists()) {
+			loginKeys();
+		} else {
+			boolean success = true;
+			try {
+				BufferedReader in = new BufferedReader(new FileReader(keyFile));
+				String inputLine;
+				StringBuilder x = new StringBuilder();
+				while ((inputLine = in.readLine()) != null) {
+					x.append(inputLine);
+				}
+				in.close();
+				JSONObject loginKeys = new JSONObject(x.toString());
+				mDomain = loginKeys.getString(DOMAIN);
+				mAccessKey = loginKeys.getString(ACCESS_KEY);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				success = false;
+			} catch (IOException e) {
+				e.printStackTrace();
+				success = false;
+			} catch (JSONException e) {
+				e.printStackTrace();
+				success = false;
+			}
+			if (success) { 
+				String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
+				URLConnection sifterConnection = getSifterConnection(projectsURL);
+				if (sifterConnection == null)
+					loginKeys(); // TODO is this needed? should check in getSifterConnection
+				loadProjects(sifterConnection);
+				setContentView(R.layout.main);
+				setTitle(R.string.projects);
+				fillData();
+				registerForContextMenu(getListView());
+			} else {
+				loginKeys();
+			}
+		}
 	}
 
 	/** Method to pass project names to list adapter. */
@@ -289,8 +331,11 @@ public class SifterReader extends ListActivity {
 			sifterConnection = sifter.openConnection();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
+			// TODO let user re-enter url or quit
 		} catch (IOException e) {
 			e.printStackTrace();
+			// TODO inform user cannot connect to URL
+			// display URL to check & let user re-enter or quit
 		}
 		return sifterConnection;
 	}
