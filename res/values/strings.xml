@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">SifterReader</string>
-    <string name="noAccessKey">Use menu button to enter access key.</string>
+    <string name="no_projects">You have no Sifter projects.</string>
     <string name="projects">Projects</string>
     <!-- Context Menu Options -->
     <string name="milestones">Milestones</string>
@@ -13,23 +13,26 @@
     <string name="statuses">Statuses</string>
     <string name="priorities">Priorities</string>
     <!-- Login Keys -->
-    <string name="menuLogin">Enter Key</string>
+    <string name="menu_login">Enter Key</string>
     <string name="domain">Domain Name:</string>
-    <string name="accessKey">Access Key:</string>
-    <string name="domainHint">your-company</string>
-    <string name="accessKeyHint">32-digit-hexadecimal</string>
-    <string name="saveKey">Save</string>
+    <string name="access_key">Access Key:</string>
+    <string name="domain_hint">your-company</string>
+    <string name="access_key_hint">32-digit-hexadecimal</string>
+    <string name="save_key">Save</string>
+    <string name="login_error">Login Status:</string>
+    <string name="token_accepted">Token accepted</string>
+    <string name="token_accepted_msg">Login keys will be saved.</string>
     <!-- Project Detail -->
-    <string name="projectName">Project Name:</string>
+    <string name="project_name">Project Name:</string>
     <string name="company">Company:</string>
-    <string name="projectArchived">Archived:</string>
-    <string name="projectURL">Project LinkLink:</string>
-    <string name="issuesURL">Issues Link:</string>
-    <string name="milestonesURL">Milestones Link:</string>
+    <string name="project_archived">Archived:</string>
+    <string name="project_url">Project LinkLink:</string>
+    <string name="issues_url">Issues Link:</string>
+    <string name="milestones_url">Milestones Link:</string>
     <!-- Milestone Detail -->
-    <string name="milestoneName">Milestone Name:</string>
-    <string name="milestoneDueDate">Due Date:</string>
-    <string name="milestoneIssuesURL">Issues Link:</string>
+    <string name="milestone_name">Milestone Name:</string>
+    <string name="milestone_due_date">Due Date:</string>
+    <string name="milestone_issues_url">Issues Link:</string>
     <!-- Category Detail -->
     
     <!-- People Detail -->

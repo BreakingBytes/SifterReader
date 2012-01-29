@@ -5,42 +5,64 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/domainLabel"
+        android:id="@+id/domain_label"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/domain" />
 
     <EditText
-        android:id="@+id/domainEntry"
+        android:id="@+id/domain_entry"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/domainLabel"
+        android:layout_below="@id/domain_label"
         android:background="@android:drawable/editbox_background"
-        android:hint="@string/domainHint" />
+        android:hint="@string/domain_hint" />
 
     <TextView
-        android:id="@+id/accessKeyLabel"
+        android:id="@+id/access_key_label"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/domainEntry"
-        android:text="@string/accessKey" />
+        android:layout_below="@id/domain_entry"
+        android:text="@string/access_key" />
 
     <EditText
-        android:id="@+id/accessKeyEntry"
+        android:id="@+id/access_key_entry"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/accessKeyLabel"
+        android:layout_below="@id/access_key_label"
         android:background="@android:drawable/editbox_background"
-        android:hint="@string/accessKeyHint"
+        android:hint="@string/access_key_hint"
         android:text="779ab91fa637368648921c811e00ba53"
         android:textSize="15sp" />
 
     <Button
-        android:id="@+id/saveKey"
+        android:id="@+id/save_key"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/accessKeyEntry"
-        android:layout_alignRight="@id/accessKeyEntry"
-        android:text="@string/saveKey" />
+        android:layout_below="@id/access_key_entry"
+        android:layout_alignRight="@id/access_key_entry"
+        android:text="@string/save_key" />
+    
+    <TextView
+        android:id="@+id/login_error_label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/access_key_entry"
+        android:layout_toLeftOf="@id/save_key"
+        android:text="@string/login_error" />
+        
+    <TextView
+        android:id="@+id/login_error"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_error_label"
+        android:layout_alignBottom="@id/save_key"
+        android:layout_toLeftOf="@id/save_key" />
+    
+    <TextView
+        android:id="@+id/login_error_msg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_error" />
 
 </RelativeLayout>

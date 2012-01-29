@@ -4,86 +4,83 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView android:id="@+id/projectLabel"
+    <TextView android:id="@+id/project_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/projectName" />
+        android:text="@string/project_name" />
 
     <TextView
-        android:id="@+id/projectName"
+        android:id="@+id/project_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/projectLabel" />
+        android:layout_alignBottom="@id/project_label" />
 
-    <TextView android:id="@+id/companyLabel"
+    <TextView android:id="@+id/company_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/projectLabel"
+        android:layout_below="@id/project_label"
         android:text="@string/company" />
     
     <TextView
         android:id="@+id/company"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/projectName"
+        android:layout_below="@id/project_name"
         android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/companyLabel" />
+        android:layout_alignBottom="@id/company_label" />
 
-    <TextView android:id="@+id/archivedLabel"
+    <TextView android:id="@+id/archived_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/companyLabel"
-        android:text="@string/projectArchived" />
+        android:layout_below="@id/company_label"
+        android:text="@string/project_archived" />
 
     <TextView
-        android:id="@+id/projectArchived"
+        android:id="@+id/project_archived"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/company"
         android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/archivedLabel" />
+        android:layout_alignBottom="@id/archived_label" />
 
-    <TextView android:id="@+id/URL_label"
+    <TextView android:id="@+id/url_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/archivedLabel"
-        android:text="@string/projectURL" />
+        android:layout_below="@id/archived_label"
+        android:text="@string/project_url" />
 
     <TextView
-        android:id="@+id/projectURL"
+        android:id="@+id/project_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/URL_label"
-        android:textSize="10sp" />
+        android:layout_below="@id/url_label" />
 
-    <TextView android:id="@+id/issuesURL_label"
+    <TextView android:id="@+id/issues_url_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/projectURL"
-        android:text="@string/issuesURL" />
+        android:layout_below="@id/project_url"
+        android:text="@string/issues_url" />
 
     <TextView
-        android:id="@+id/issuesURL"
+        android:id="@+id/issues_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/issuesURL_label"
-        android:textSize="10sp" />
+        android:layout_below="@id/issues_url_label" />
 
-    <TextView android:id="@+id/milestonesURL_label"
+    <TextView android:id="@+id/milestones_url_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/issuesURL"
-        android:text="@string/milestonesURL" />
+        android:layout_below="@id/issues_url"
+        android:text="@string/milestones_url" />
 
     <TextView
-        android:id="@+id/milestonesURL"
+        android:id="@+id/milestones_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/milestonesURL_label"
-        android:textSize="10sp" />
+        android:layout_below="@id/milestones_url_label" />
 
 </RelativeLayout>

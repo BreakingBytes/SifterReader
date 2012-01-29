@@ -24,7 +24,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -54,6 +56,8 @@ public class SifterReader extends ListActivity {
 	public static final int PEOPLE_ID = Menu.FIRST + 3;
 	public static final int ISSUES_ID = Menu.FIRST + 4;
 	public static final int ACTIVITY_LOGIN = 0; // id for intent result
+	public static final String LOGIN_ERROR = "error"; // url error key
+	public static final String LOGIN_DETAIL = "detail";
 	public static final String KEY_FILE = "key_file";
 	public static final String DOMAIN = "domain";
 	public static final String ACCESS_KEY = "accessKey";
@@ -77,17 +81,21 @@ public class SifterReader extends ListActivity {
 	private JSONObject[] mAllProjects;
 	private String mDomain;
 	private String mAccessKey;
+	private JSONObject mLoginError = new JSONObject();
 	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+		setTitle(R.string.projects);
+		registerForContextMenu(getListView());
 
 		File keyFile = getFileStreamPath(KEY_FILE);
 		if (!keyFile.exists()) {
 			loginKeys();
 		} else {
-			boolean success = true;
+			boolean fileReadError = false;
 			try {
 				BufferedReader in = new BufferedReader(new FileReader(keyFile));
 				String inputLine;
@@ -101,24 +109,28 @@ public class SifterReader extends ListActivity {
 				mAccessKey = loginKeys.getString(ACCESS_KEY);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-				success = false;
+				fileReadError = true;
 			} catch (IOException e) {
 				e.printStackTrace();
-				success = false;
+				fileReadError = true;
 			} catch (JSONException e) {
 				e.printStackTrace();
-				success = false;
+				fileReadError = true;
 			}
-			if (success) { 
+			if (!fileReadError) { 
 				String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
 				URLConnection sifterConnection = getSifterConnection(projectsURL);
-				if (sifterConnection == null)
+				if (sifterConnection != null) {
+					JSONObject sifterJSONObject = getSifterJSONObject(sifterConnection);
+					if (!getSifterError(sifterJSONObject)) {
+						loadProjects(sifterJSONObject);
+						fillData();
+					} else {
+						loginKeys();
+					}
+				} else {
 					loginKeys(); // TODO is this needed? should check in getSifterConnection
-				loadProjects(sifterConnection);
-				setContentView(R.layout.main);
-				setTitle(R.string.projects);
-				fillData();
-				registerForContextMenu(getListView());
+				}
 			} else {
 				loginKeys();
 			}
@@ -144,7 +156,7 @@ public class SifterReader extends ListActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
-		menu.add(0, LOGIN_ID, 0, R.string.menuLogin);
+		menu.add(0, LOGIN_ID, 0, R.string.menu_login);
 		return result;
 	}
 
@@ -165,6 +177,7 @@ public class SifterReader extends ListActivity {
 		Intent intent = new Intent(this, LoginActivity.class);
 		intent.putExtra(DOMAIN, mDomain);
 		intent.putExtra(ACCESS_KEY, mAccessKey);
+		intent.putExtra(LOGIN_ERROR, mLoginError.toString());
 		startActivityForResult(intent, ACTIVITY_LOGIN);
 	}
 
@@ -299,27 +312,34 @@ public class SifterReader extends ListActivity {
 		startActivity(intent);
 	}
 	
-	/** Determine activity by result code. */
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode,
-			Intent intent) {
-		super.onActivityResult(requestCode, resultCode, intent);
-		Bundle extras = intent.getExtras();
-		if (extras != null) {
-			switch (requestCode) {
-			case ACTIVITY_LOGIN:
-				mDomain = extras.getString(DOMAIN);
-				mAccessKey = extras.getString(ACCESS_KEY);
-				String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
-				URLConnection sifterConnection = getSifterConnection(projectsURL);
-				if (sifterConnection == null)
-					break;
-				loadProjects(sifterConnection);
-				fillData();
-				break;
-			}
-		}
-	}
+    /** Determine activity by result code. */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+    		Intent intent) {
+    	super.onActivityResult(requestCode, resultCode, intent);
+    	Bundle extras = intent.getExtras();
+    	if (extras != null) {
+    		switch (requestCode) {
+    		case ACTIVITY_LOGIN:
+    			mDomain = extras.getString(DOMAIN);
+    			mAccessKey = extras.getString(ACCESS_KEY);
+    			String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
+    			URLConnection sifterConnection = getSifterConnection(projectsURL);
+    			if (sifterConnection != null) {
+    				JSONObject sifterJSONObject = getSifterJSONObject(sifterConnection);
+    				if (!getSifterError(sifterJSONObject)) {
+    					loadProjects(sifterJSONObject);
+    					fillData();
+    					break;
+    				} else {
+    					loginKeys();
+    				}
+    			} else {
+    				loginKeys();
+    			}
+    		}
+    	}
+    }
 
 	private URLConnection getSifterConnection(String sifterURL) {
 		URL sifter;
@@ -340,18 +360,29 @@ public class SifterReader extends ListActivity {
 		return sifterConnection;
 	}
 
-	/* TODO combine loadProjects, loadProjectDetails and loadIssues
-	 * into single set of methods for all project details,
-	 * (1) to get outer JSONObject, (2) inner JSONArray,
-	 * (3) array of inner JSONObject depending on detail. */
-	private void loadProjects(URLConnection sifterConnection) {
+	private InputStream getSifterInputStream(URLConnection sifterConnection) {
 		// send header requests
 		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
 		sifterConnection.addRequestProperty(HEADER_REQUEST_ACCEPT, APPLICATION_JSON);
 
+		InputStream is = null;
+		try {
+			is = sifterConnection.getInputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+			// also catches FileNotFoundException: invalid domain
+			// IOException: invalid access key
+			HttpURLConnection httpSifterConnection = (HttpURLConnection)sifterConnection;
+			is = httpSifterConnection.getErrorStream();
+		}
+		return is;
+	}
+	
+	private JSONObject getSifterJSONObject(URLConnection sifterConnection) {
+		JSONObject sifterJSONObject = null;
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
-					sifterConnection.getInputStream()));
+					getSifterInputStream(sifterConnection)));
 			String inputLine;
 			StringBuilder x = new StringBuilder();
 
@@ -359,14 +390,44 @@ public class SifterReader extends ListActivity {
 				x.append(inputLine);
 			}
 			in.close();
-
-			// initialize "projects" JSONObject from string
-			JSONObject projects = new JSONObject(x.toString());
-			// TODO check for incorrect header
-			// JSON says did you enter access key
-			
+			sifterJSONObject = new JSONObject(x.toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return sifterJSONObject;
+	}
+	
+	private boolean getSifterError(JSONObject sifterJSONObject) {
+		try {
+			JSONArray sifterJSONObjFieldNames = sifterJSONObject.names();
+			int numKeys = sifterJSONObjFieldNames.length();
+			if (numKeys==2
+					&& LOGIN_ERROR.equals(sifterJSONObjFieldNames.getString(0))
+					&& LOGIN_DETAIL.equals(sifterJSONObjFieldNames.getString(1))) {
+				// check for incorrect header
+				// SifterAPI says:
+				// {"error":"Invalid Account","detail":"Please correct the account subdomain."}
+				// {"error":"Invalid Token","detail":"Please make sure that you are using the correct token."}
+				mLoginError = sifterJSONObject;
+				return true;
+			}
+			mLoginError.put(LOGIN_ERROR,getResources().getString(R.string.token_accepted));
+			mLoginError.put(LOGIN_DETAIL,getResources().getString(R.string.token_accepted_msg));
+			return false;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	private void loadProjects(JSONObject sifterJSONObject) {
+		try {
 			// array of projects
-			JSONArray projectArray = projects.getJSONArray(PROJECTS);
+			JSONArray projectArray = sifterJSONObject.getJSONArray(PROJECTS);
 			int numberProjects = projectArray.length();
 			JSONObject[] allProjects = new JSONObject[numberProjects];
 
@@ -375,14 +436,11 @@ public class SifterReader extends ListActivity {
 				allProjects[i] = projectArray.getJSONObject(i);
 			}
 			mAllProjects = allProjects;
-
-		} catch (IOException e) {
-			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
-		}
+		}		
 	}
-	
+
 	private JSONArray loadProjectDetails(URLConnection sifterConnection, String projectDetail) {
 		// send header requests
 		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
@@ -408,10 +466,12 @@ public class SifterReader extends ListActivity {
 			// array of projectDetails
 			projectDetailArray = projectDetails.getJSONArray(projectDetail);
 
+		} catch (FileNotFoundException e) {
+			e.printStackTrace(); // bad domain name
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // bad access key
 		} catch (JSONException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // JSON object or array issue
 		}
 		return projectDetailArray;
 	}
@@ -438,6 +498,8 @@ public class SifterReader extends ListActivity {
 			// TODO check for incorrect header
 			// JSON says did you enter access key
 
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {

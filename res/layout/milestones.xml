@@ -4,44 +4,43 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
     
-    <TextView android:id="@+id/milestoneLabel"
+    <TextView android:id="@+id/milestone_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/milestoneName" />
+        android:text="@string/milestone_name" />
 
     <TextView
-        android:id="@+id/milestoneName"
+        android:id="@+id/milestone_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/milestoneLabel" />
+        android:layout_below="@id/milestone_label" />
 
-    <TextView android:id="@+id/dueDateLabel"
+    <TextView android:id="@+id/milestone_due_date_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/milestoneName"
-        android:text="@string/milestoneDueDate" />
+        android:layout_below="@id/milestone_name"
+        android:text="@string/milestone_due_date" />
     
     <TextView
-        android:id="@+id/dueDate"
+        android:id="@+id/milestone_due_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/milestoneName"
+        android:layout_below="@id/milestone_name"
         android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/dueDateLabel" />
+        android:layout_alignBottom="@id/milestone_due_date_label" />
 
-    <TextView android:id="@+id/issuesURL_label"
+    <TextView android:id="@+id/milestone_issues_url_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dueDateLabel"
-        android:text="@string/milestoneIssuesURL" />
+        android:layout_below="@id/milestone_due_date_label"
+        android:text="@string/milestone_issues_url" />
 
     <TextView
-        android:id="@+id/issuesURL"
+        android:id="@+id/milestone_issues_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/issuesURL_label"
-        android:textSize="10sp" />
+        android:layout_below="@id/milestone_issues_url_label" />
     
 </RelativeLayout>

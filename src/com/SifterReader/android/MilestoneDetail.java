@@ -20,9 +20,9 @@ public class MilestoneDetail extends Activity {
 		setContentView(R.layout.milestones);
 
 		// capture our View elements
-		TextView milestoneName = (TextView) findViewById(R.id.milestoneName);
-		TextView dueDate = (TextView) findViewById(R.id.dueDate);
-		TextView issuesURL = (TextView) findViewById(R.id.issuesURL);
+		TextView milestoneName = (TextView) findViewById(R.id.milestone_name);
+		TextView dueDate = (TextView) findViewById(R.id.milestone_due_date);
+		TextView issuesURL = (TextView) findViewById(R.id.milestone_issues_url);
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {

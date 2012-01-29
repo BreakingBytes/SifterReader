@@ -23,12 +23,12 @@ public class ProjectDetail extends Activity {
 		setContentView(R.layout.project);
 
 		// capture our View elements
-		TextView projectName = (TextView) findViewById(R.id.projectName);
+		TextView projectName = (TextView) findViewById(R.id.project_name);
 		TextView company = (TextView) findViewById(R.id.company);
-		TextView projectArchived = (TextView) findViewById(R.id.projectArchived);
-		TextView projectURL = (TextView) findViewById(R.id.projectURL);
-		TextView issuesURL = (TextView) findViewById(R.id.issuesURL);
-		TextView milestonesURL = (TextView) findViewById(R.id.milestonesURL);
+		TextView projectArchived = (TextView) findViewById(R.id.project_archived);
+		TextView projectURL = (TextView) findViewById(R.id.project_url);
+		TextView issuesURL = (TextView) findViewById(R.id.issues_url);
+		TextView milestonesURL = (TextView) findViewById(R.id.milestones_url);
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
