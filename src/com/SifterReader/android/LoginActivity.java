@@ -91,4 +91,28 @@ public class LoginActivity extends Activity {
 			}
 		});
 	}
+	
+	/** called by Android if the Activity is being stopped
+	 *  and may be killed before it is resumed! */
+	@Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+//        saveState();
+//        outState.putSerializable(NotesDbAdapter.KEY_ROWID, mRowId);
+    }
+	
+	@Override
+    protected void onPause() {
+        super.onPause();
+//        saveState();
+    }
+	
+	@Override
+    protected void onResume() {
+        super.onResume();
+//        populateFields();
+    }
+	
+//	private void saveState() {
+//	}
 }

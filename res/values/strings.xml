@@ -14,6 +14,7 @@
     <string name="priorities">Priorities</string>
     <!-- Login Keys -->
     <string name="menu_login">Enter Key</string>
+    <string name="menu_delete">Delete Key</string>
     <string name="domain">Domain Name:</string>
     <string name="access_key">Access Key:</string>
     <string name="domain_hint">your-company</string>
@@ -21,7 +22,9 @@
     <string name="save_key">Save</string>
     <string name="login_error">Login Status:</string>
     <string name="token_accepted">Token accepted</string>
-    <string name="token_accepted_msg">Login keys will be saved.</string>
+    <string name="token_accepted_msg">Login keys saved.</string>
+    <string name="token_missing">Token missing</string>
+    <string name="token_missing_msg">Please enter domain name and access key.</string>
     <!-- Project Detail -->
     <string name="project_name">Project Name:</string>
     <string name="company">Company:</string>

@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -49,23 +50,31 @@ import android.widget.ListView;
 
 public class SifterReader extends ListActivity {
 
-	// Constants
-	public static final int LOGIN_ID = Menu.FIRST; // id for login menu option
-	public static final int MILESTONES_ID = Menu.FIRST + 1; // id for list menu option
+	// Menu options and activity request codes
+	public static final int LOGIN_ID = Menu.FIRST; // enter login keys
+	public static final int DELETE_ID = Menu.FIRST+1; // delete login keys
+	public static final int ACTIVITY_LOGIN = 0;
+	public static final int ACTIVITY_DELETE = 1;
+	// Context menu options
+	public static final int MILESTONES_ID = Menu.FIRST + 1;
 	public static final int CATEGORIES_ID = Menu.FIRST + 2;
 	public static final int PEOPLE_ID = Menu.FIRST + 3;
 	public static final int ISSUES_ID = Menu.FIRST + 4;
-	public static final int ACTIVITY_LOGIN = 0; // id for intent result
-	public static final String LOGIN_ERROR = "error"; // url error key
+	// SifterAPI URL token errors: JSON-object keys and intent-bundle keys
+	public static final String LOGIN_ERROR = "error";
 	public static final String LOGIN_DETAIL = "detail";
-	public static final String KEY_FILE = "key_file";
+	// Login keys: JSON-object keys and intent-bundle keys
+	public static final String KEY_FILE = "key_file"; // internal-memory filename
 	public static final String DOMAIN = "domain";
 	public static final String ACCESS_KEY = "accessKey";
+	// SifterAPI headers
 	public static final String X_SIFTER_TOKEN = "X-Sifter-Token";
-	public static final String APPLICATION_JSON = "application/json";
 	public static final String HEADER_REQUEST_ACCEPT = "Accept";
+	public static final String APPLICATION_JSON = "application/json";
+	// SifterAPI URL - use constants in case they change
 	public static final String HTTPS_PREFIX = "https://";
 	public static final String PROJECTS_URL = ".sifterapp.com/api/projects";
+	// SifterAPI JSON-object keys, resource end-points and intent-bundle keys
 	public static final String PROJECTS = "projects";
 	public static final String PROJECT_NAME = "name";
 	public static final String MILESTONES_URL = "api_milestones_url";
@@ -82,6 +91,8 @@ public class SifterReader extends ListActivity {
 	private String mDomain;
 	private String mAccessKey;
 	private JSONObject mLoginError = new JSONObject();
+	/* must initialize mLoginError as empty JSON object,
+	 * or mLoginError.toString() will fail. */
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -117,7 +128,7 @@ public class SifterReader extends ListActivity {
 				e.printStackTrace();
 				fileReadError = true;
 			}
-			if (!fileReadError) { 
+			if (!fileReadError && !mDomain.isEmpty() && !mAccessKey.isEmpty()) { 
 				String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
 				URLConnection sifterConnection = getSifterConnection(projectsURL);
 				if (sifterConnection != null) {
@@ -129,7 +140,7 @@ public class SifterReader extends ListActivity {
 						loginKeys();
 					}
 				} else {
-					loginKeys(); // TODO is this needed? should check in getSifterConnection
+					loginKeys();
 				}
 			} else {
 				loginKeys();
@@ -157,16 +168,19 @@ public class SifterReader extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
 		menu.add(0, LOGIN_ID, 0, R.string.menu_login);
+		menu.add(0, DELETE_ID, 0, R.string.menu_delete);
 		return result;
 	}
 
-	/** Methods for selected menu option.
-	 *  LOGIN_ID option calls loginKeys method. */
+	/** Methods for selected menu option. */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case LOGIN_ID:
-			loginKeys(); // method that gets login
+			loginKeys();
+			return true;
+		case DELETE_ID:
+			deleteKeys();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -179,6 +193,19 @@ public class SifterReader extends ListActivity {
 		intent.putExtra(ACCESS_KEY, mAccessKey);
 		intent.putExtra(LOGIN_ERROR, mLoginError.toString());
 		startActivityForResult(intent, ACTIVITY_LOGIN);
+	}
+	
+	private void deleteKeys() {
+		File keyFile = getFileStreamPath(KEY_FILE);
+		if (keyFile.exists()) {
+			keyFile.delete();
+			mDomain = null;
+			mAccessKey = null;
+			mLoginError = new JSONObject();
+			mAllProjects = null;
+			setListAdapter(null);
+			onContentChanged();
+		}
 	}
 
 	/** Intent for ProjectDetail activity for clicked project in list. */
@@ -317,28 +344,44 @@ public class SifterReader extends ListActivity {
     protected void onActivityResult(int requestCode, int resultCode,
     		Intent intent) {
     	super.onActivityResult(requestCode, resultCode, intent);
-    	Bundle extras = intent.getExtras();
-    	if (extras != null) {
-    		switch (requestCode) {
-    		case ACTIVITY_LOGIN:
-    			mDomain = extras.getString(DOMAIN);
-    			mAccessKey = extras.getString(ACCESS_KEY);
-    			String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
-    			URLConnection sifterConnection = getSifterConnection(projectsURL);
-    			if (sifterConnection != null) {
-    				JSONObject sifterJSONObject = getSifterJSONObject(sifterConnection);
-    				if (!getSifterError(sifterJSONObject)) {
-    					loadProjects(sifterJSONObject);
-    					fillData();
-    					break;
+    	if (intent != null) {
+    		Bundle extras = intent.getExtras();
+    		if (extras != null) {
+    			switch (requestCode) {
+    			case ACTIVITY_LOGIN:
+    				mDomain = extras.getString(DOMAIN);
+    				mAccessKey = extras.getString(ACCESS_KEY);
+    				if (!mDomain.isEmpty() && !mAccessKey.isEmpty()) {
+	    				String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
+	    				URLConnection sifterConnection = getSifterConnection(projectsURL);
+	    				if (sifterConnection != null) {
+	    					JSONObject sifterJSONObject = getSifterJSONObject(sifterConnection);
+	    					if (!getSifterError(sifterJSONObject)) {
+	    						loadProjects(sifterJSONObject);
+	    						fillData();
+	    						break;
+	    					} else {
+	    						loginKeys();
+	    					}
+	    				} else {
+	    					loginKeys();
+	    				}
     				} else {
+    					try {
+							mLoginError.put(LOGIN_ERROR,getResources().getString(R.string.token_missing));
+	    					mLoginError.put(LOGIN_DETAIL,getResources().getString(R.string.token_missing_msg));
+						} catch (NotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
     					loginKeys();
-    				}
-    			} else {
-    				loginKeys();
+    				} // if keys are empty return to LoginActivity
     			}
-    		}
-    	}
+    		} // do nothing if bundle==null
+    	} // do nothing if intent==null, i.e. back from LoginActivity w/o save
     }
 
 	private URLConnection getSifterConnection(String sifterURL) {
@@ -418,6 +461,8 @@ public class SifterReader extends ListActivity {
 			mLoginError.put(LOGIN_ERROR,getResources().getString(R.string.token_accepted));
 			mLoginError.put(LOGIN_DETAIL,getResources().getString(R.string.token_accepted_msg));
 			return false;
+		} catch (NotFoundException e) {
+			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

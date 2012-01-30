@@ -40,7 +40,6 @@
         android:id="@+id/milestone_issues_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_below="@id/milestone_issues_url_label" />
     
 </RelativeLayout>
