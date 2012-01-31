@@ -85,6 +85,7 @@ public class SifterReader extends ListActivity {
 	public static final String PEOPLE = "people";
 	public static final String ISSUES_URL = "api_issues_url";
 	public static final String ISSUES = "issues";
+	public static final String OOPS = "oops";
 	
 	// Members
 	private JSONObject[] mAllProjects;
@@ -104,50 +105,86 @@ public class SifterReader extends ListActivity {
 
 		File keyFile = getFileStreamPath(KEY_FILE);
 		if (!keyFile.exists()) {
-			loginKeys();
-		} else {
-			boolean fileReadError = false;
-			try {
-				BufferedReader in = new BufferedReader(new FileReader(keyFile));
-				String inputLine;
-				StringBuilder x = new StringBuilder();
-				while ((inputLine = in.readLine()) != null) {
-					x.append(inputLine);
-				}
-				in.close();
-				JSONObject loginKeys = new JSONObject(x.toString());
-				mDomain = loginKeys.getString(DOMAIN);
-				mAccessKey = loginKeys.getString(ACCESS_KEY);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				fileReadError = true;
-			} catch (IOException e) {
-				e.printStackTrace();
-				fileReadError = true;
-			} catch (JSONException e) {
-				e.printStackTrace();
-				fileReadError = true;
-			}
-			if (!fileReadError && !mDomain.isEmpty() && !mAccessKey.isEmpty()) { 
-				String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
-				URLConnection sifterConnection = getSifterConnection(projectsURL);
-				if (sifterConnection != null) {
-					JSONObject sifterJSONObject = getSifterJSONObject(sifterConnection);
-					if (!getSifterError(sifterJSONObject)) {
-						loadProjects(sifterJSONObject);
-						fillData();
-					} else {
-						loginKeys();
-					}
-				} else {
-					loginKeys();
-				}
-			} else {
+			if (onMissingToken())
 				loginKeys();
-			}
+			return;
 		}
-	}
+		
+		boolean fileReadError = false;
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(keyFile));
+			String inputLine;
+			StringBuilder x = new StringBuilder();
+			while ((inputLine = in.readLine()) != null) {
+				x.append(inputLine);
+			}
+			in.close();
+			JSONObject loginKeys = new JSONObject(x.toString());
+			mDomain = loginKeys.getString(DOMAIN);
+			mAccessKey = loginKeys.getString(ACCESS_KEY);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			fileReadError = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			fileReadError = true;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			fileReadError = true;
+		}
+		if (fileReadError || mDomain.isEmpty() || mAccessKey.isEmpty()) {
+			if (onMissingToken())
+				loginKeys();
+			return;
+		}
+		
+		String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
+		URLConnection sifterConnection = getSifterConnection(projectsURL);
+		if (sifterConnection == null) {
+			loginKeys();
+			return;
+		}
+		
+		JSONObject sifterJSONObject = getSifterJSONObject(sifterConnection);
+		if (getSifterError(sifterJSONObject)) {
+			loginKeys();
+			return;
+		}
 
+		try {
+		loadProjects(sifterJSONObject);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			onException(e.toString());
+			return;
+		}
+		
+		fillData();
+	}
+	
+	private boolean onMissingToken(){
+		try {
+			mLoginError.put(LOGIN_ERROR,getResources().getString(R.string.token_missing));
+			mLoginError.put(LOGIN_DETAIL,getResources().getString(R.string.token_missing_msg));
+		} catch (NotFoundException e) {
+			e.printStackTrace();
+			onException(e.toString());
+			return false;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			onException(e.toString());
+			return false;
+		}
+		return true;
+	}
+	
+	/** Intent for LoginActivity to get domain and access key. */
+	private void onException(String eString) {
+		Intent intent = new Intent(this, OopsActivity.class);
+		intent.putExtra(OOPS, eString);
+		startActivity(intent);
+	}
+	
 	/** Method to pass project names to list adapter. */
 	private void fillData() {
 		int pNum = mAllProjects.length;
@@ -199,10 +236,10 @@ public class SifterReader extends ListActivity {
 		File keyFile = getFileStreamPath(KEY_FILE);
 		if (keyFile.exists()) {
 			keyFile.delete();
+			mAllProjects = null;
 			mDomain = null;
 			mAccessKey = null;
-			mLoginError = new JSONObject();
-			mAllProjects = null;
+			onMissingToken();
 			setListAdapter(null);
 			onContentChanged();
 		}
@@ -344,44 +381,43 @@ public class SifterReader extends ListActivity {
     protected void onActivityResult(int requestCode, int resultCode,
     		Intent intent) {
     	super.onActivityResult(requestCode, resultCode, intent);
-    	if (intent != null) {
-    		Bundle extras = intent.getExtras();
-    		if (extras != null) {
-    			switch (requestCode) {
-    			case ACTIVITY_LOGIN:
-    				mDomain = extras.getString(DOMAIN);
-    				mAccessKey = extras.getString(ACCESS_KEY);
-    				if (!mDomain.isEmpty() && !mAccessKey.isEmpty()) {
-	    				String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
-	    				URLConnection sifterConnection = getSifterConnection(projectsURL);
-	    				if (sifterConnection != null) {
-	    					JSONObject sifterJSONObject = getSifterJSONObject(sifterConnection);
-	    					if (!getSifterError(sifterJSONObject)) {
-	    						loadProjects(sifterJSONObject);
-	    						fillData();
-	    						break;
-	    					} else {
-	    						loginKeys();
-	    					}
-	    				} else {
-	    					loginKeys();
-	    				}
-    				} else {
-    					try {
-							mLoginError.put(LOGIN_ERROR,getResources().getString(R.string.token_missing));
-	    					mLoginError.put(LOGIN_DETAIL,getResources().getString(R.string.token_missing_msg));
-						} catch (NotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-    					loginKeys();
-    				} // if keys are empty return to LoginActivity
-    			}
-    		} // do nothing if bundle==null
-    	} // do nothing if intent==null, i.e. back from LoginActivity w/o save
+    	if (intent == null)
+    		return;
+
+    	Bundle extras = intent.getExtras();
+    	if (extras == null)
+    		return;
+
+    	switch (requestCode) {
+    	case ACTIVITY_LOGIN:
+    		mDomain = extras.getString(DOMAIN);
+    		mAccessKey = extras.getString(ACCESS_KEY);
+    		if (mDomain.isEmpty() || mAccessKey.isEmpty()) {
+    			if (onMissingToken())
+    				loginKeys();
+    			break;
+    		} // if keys are empty return to LoginActivity
+    		String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
+    		URLConnection sifterConnection = getSifterConnection(projectsURL);
+    		if (sifterConnection == null) {
+    			loginKeys();
+    			break;
+    		} // if URL misformatted return to LoginActivity
+    		JSONObject sifterJSONObject = getSifterJSONObject(sifterConnection);
+    		if (getSifterError(sifterJSONObject)) {
+    			loginKeys();
+    			break;
+    		} // if SifterAPI reports error return LoginActivity
+    		try {
+    		loadProjects(sifterJSONObject);
+    		} catch (JSONException e) {
+    			e.printStackTrace();
+    			onException(e.toString());
+    			break;
+    		}
+    		fillData();
+    		break;
+    	}
     }
 
 	private URLConnection getSifterConnection(String sifterURL) {
@@ -394,11 +430,8 @@ public class SifterReader extends ListActivity {
 			sifterConnection = sifter.openConnection();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			// TODO let user re-enter url or quit
 		} catch (IOException e) {
 			e.printStackTrace();
-			// TODO inform user cannot connect to URL
-			// display URL to check & let user re-enter or quit
 		}
 		return sifterConnection;
 	}
@@ -422,26 +455,46 @@ public class SifterReader extends ListActivity {
 	}
 	
 	private JSONObject getSifterJSONObject(URLConnection sifterConnection) {
-		JSONObject sifterJSONObject = null;
+		JSONObject sifterJSONObject = new JSONObject();
 		try {
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					getSifterInputStream(sifterConnection)));
+			InputStream sifterInputStream = getSifterInputStream(sifterConnection);
+			if (sifterInputStream == null) {
+				if (onConnectionError())
+					return mLoginError;
+			}
+			BufferedReader in = new BufferedReader(new InputStreamReader(sifterInputStream));
 			String inputLine;
 			StringBuilder x = new StringBuilder();
 
 			while ((inputLine = in.readLine()) != null) {
 				x.append(inputLine);
 			}
-			in.close();
+			in.close(); sifterInputStream.close();
 			sifterJSONObject = new JSONObject(x.toString());
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			onException(e.toString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			onException(e.toString());
 		}
 		return sifterJSONObject;
+	}
+	
+	private boolean onConnectionError(){
+		try {
+			mLoginError.put(LOGIN_ERROR,getResources().getString(R.string.connection_error));
+			mLoginError.put(LOGIN_DETAIL,getResources().getString(R.string.connection_error_msg));
+		} catch (NotFoundException e) {
+			e.printStackTrace();
+			onException(e.toString());
+			return false;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			onException(e.toString());
+			return false;
+		}
+		return true;
 	}
 	
 	private boolean getSifterError(JSONObject sifterJSONObject) {
@@ -469,21 +522,17 @@ public class SifterReader extends ListActivity {
 		return true;
 	}
 	
-	private void loadProjects(JSONObject sifterJSONObject) {
-		try {
-			// array of projects
-			JSONArray projectArray = sifterJSONObject.getJSONArray(PROJECTS);
-			int numberProjects = projectArray.length();
-			JSONObject[] allProjects = new JSONObject[numberProjects];
+	private void loadProjects(JSONObject sifterJSONObject) throws JSONException{
+		// array of projects
+		JSONArray projectArray = sifterJSONObject.getJSONArray(PROJECTS);
+		int numberProjects = projectArray.length();
+		JSONObject[] allProjects = new JSONObject[numberProjects];
 
-			// projects
-			for (int i = 0; i < numberProjects; i++) {
-				allProjects[i] = projectArray.getJSONObject(i);
-			}
-			mAllProjects = allProjects;
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}		
+		// projects
+		for (int i = 0; i < numberProjects; i++) {
+			allProjects[i] = projectArray.getJSONObject(i);
+		}
+		mAllProjects = allProjects;
 	}
 
 	private JSONArray loadProjectDetails(URLConnection sifterConnection, String projectDetail) {
@@ -491,7 +540,7 @@ public class SifterReader extends ListActivity {
 		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
 		sifterConnection.addRequestProperty(HEADER_REQUEST_ACCEPT, APPLICATION_JSON);
 
-		JSONArray projectDetailArray = null;
+		JSONArray projectDetailArray = new JSONArray();
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					sifterConnection.getInputStream()));
@@ -526,7 +575,7 @@ public class SifterReader extends ListActivity {
 		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
 		sifterConnection.addRequestProperty(HEADER_REQUEST_ACCEPT, APPLICATION_JSON);
 
-		JSONObject issues = null;
+		JSONObject issues = new JSONObject();
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					sifterConnection.getInputStream()));
