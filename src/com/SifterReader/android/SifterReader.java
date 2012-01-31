@@ -179,9 +179,9 @@ public class SifterReader extends ListActivity {
 	}
 	
 	/** Intent for LoginActivity to get domain and access key. */
-	private void onException(String e) {
+	private void onException(String eString) {
 		Intent intent = new Intent(this, OopsActivity.class);
-		intent.putExtra(OOPS, e);
+		intent.putExtra(OOPS, eString);
 		startActivity(intent);
 	}
 	
@@ -236,10 +236,10 @@ public class SifterReader extends ListActivity {
 		File keyFile = getFileStreamPath(KEY_FILE);
 		if (keyFile.exists()) {
 			keyFile.delete();
+			mAllProjects = null;
 			mDomain = null;
 			mAccessKey = null;
-			mLoginError = new JSONObject();
-			mAllProjects = null;
+			onMissingToken();
 			setListAdapter(null);
 			onContentChanged();
 		}
