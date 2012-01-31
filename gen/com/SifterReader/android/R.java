@@ -17,13 +17,13 @@ public final class R {
     public static final class id {
         public static final int access_key_entry=0x7f050004;
         public static final int access_key_label=0x7f050003;
-        public static final int archived_label=0x7f050013;
-        public static final int company=0x7f050012;
-        public static final int company_label=0x7f050011;
+        public static final int archived_label=0x7f050014;
+        public static final int company=0x7f050013;
+        public static final int company_label=0x7f050012;
         public static final int domain_entry=0x7f050002;
         public static final int domain_label=0x7f050001;
-        public static final int issues_url=0x7f050018;
-        public static final int issues_url_label=0x7f050017;
+        public static final int issues_url=0x7f050019;
+        public static final int issues_url_label=0x7f050018;
         public static final int login_error=0x7f050007;
         public static final int login_error_label=0x7f050006;
         public static final int login_error_msg=0x7f050008;
@@ -33,56 +33,66 @@ public final class R {
         public static final int milestone_issues_url_label=0x7f05000d;
         public static final int milestone_label=0x7f050009;
         public static final int milestone_name=0x7f05000a;
-        public static final int milestones_url=0x7f05001a;
-        public static final int milestones_url_label=0x7f050019;
-        public static final int project_archived=0x7f050014;
-        public static final int project_label=0x7f05000f;
-        public static final int project_name=0x7f050010;
-        public static final int project_url=0x7f050016;
+        public static final int milestones_url=0x7f05001b;
+        public static final int milestones_url_label=0x7f05001a;
+        public static final int project_archived=0x7f050015;
+        public static final int project_label=0x7f050010;
+        public static final int project_name=0x7f050011;
+        public static final int project_url=0x7f050017;
         public static final int save_key=0x7f050005;
+        public static final int stack_trace=0x7f05000f;
         public static final int text1=0x7f050000;
-        public static final int url_label=0x7f050015;
+        public static final int url_label=0x7f050016;
     }
     public static final class layout {
         public static final int issue_row=0x7f030000;
         public static final int login=0x7f030001;
         public static final int main=0x7f030002;
         public static final int milestones=0x7f030003;
-        public static final int project=0x7f030004;
+        public static final int oops=0x7f030004;
+        public static final int project=0x7f030005;
     }
     public static final class string {
         public static final int access_key=0x7f04000d;
         public static final int access_key_hint=0x7f04000f;
         public static final int app_name=0x7f040000;
         public static final int categories=0x7f040004;
-        public static final int company=0x7f040017;
+        public static final int company=0x7f040019;
+        public static final int connection_error=0x7f040016;
+        public static final int connection_error_msg=0x7f040017;
         public static final int domain=0x7f04000c;
         public static final int domain_hint=0x7f04000e;
         public static final int issues=0x7f040006;
-        public static final int issues_url=0x7f04001a;
+        public static final int issues_url=0x7f04001c;
         public static final int login_error=0x7f040011;
         public static final int menu_delete=0x7f04000b;
         /**  Login Keys 
          */
         public static final int menu_login=0x7f04000a;
-        public static final int milestone_due_date=0x7f04001d;
-        public static final int milestone_issues_url=0x7f04001e;
+        public static final int milestone_due_date=0x7f04001f;
+        public static final int milestone_issues_url=0x7f040020;
         /**  Milestone Detail 
          */
-        public static final int milestone_name=0x7f04001c;
+        public static final int milestone_name=0x7f04001e;
         /**  Context Menu Options 
          */
         public static final int milestones=0x7f040003;
-        public static final int milestones_url=0x7f04001b;
+        public static final int milestones_url=0x7f04001d;
         public static final int no_projects=0x7f040001;
+        /**  Category Detail 
+ People Detail 
+ Issues Detail 
+ Oops Message 
+         */
+        public static final int oops_msg=0x7f040021;
         public static final int page=0x7f040007;
         public static final int people=0x7f040005;
         public static final int priorities=0x7f040009;
-        public static final int project_archived=0x7f040018;
+        public static final int project_archived=0x7f04001a;
         /**  Project Detail 
          */
-        public static final int project_name=0x7f040016;
-        public static final int project_url=0x7f040019;
+        public static final int project_name=0x7f040018;
+        public static final int project_url=0x7f04001b;
         public static final int projects=0x7f040002;
         public static final int save_key=0x7f040010;
         public static final int statuses=0x7f040008;

@@ -25,6 +25,8 @@
     <string name="token_accepted_msg">Login keys saved.</string>
     <string name="token_missing">Token missing</string>
     <string name="token_missing_msg">Please enter domain name and access key.</string>
+    <string name="connection_error">Invalid URL</string>
+    <string name="connection_error_msg">Please enter a valid URL.</string>
     <!-- Project Detail -->
     <string name="project_name">Project Name:</string>
     <string name="company">Company:</string>
@@ -41,5 +43,8 @@
     <!-- People Detail -->
     
     <!-- Issues Detail -->
+    
+    <!-- Oops Message -->
+    <string name="oops_msg">Oops, sorry. Something unexpected happened.\nHere is the stack trace.</string>
     
 </resources>
