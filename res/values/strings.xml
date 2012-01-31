@@ -37,9 +37,14 @@
     <string name="milestone_due_date">Due Date:</string>
     <string name="milestone_issues_url">Issues Link:</string>
     <!-- Category Detail -->
-    
+    <string name="category_name">Category Name:</string>
+    <string name="category_issues_url">Issues Link:</string>
     <!-- People Detail -->
-    
+    <string name="username">username:</string>
+    <string name="first_name">First name:</string>
+    <string name="last_name">Last name:</string>
+    <string name="email">email:</string>
+    <string name="people_issues_url">Issues Link:</string>
     <!-- Issues Detail -->
     
 </resources>

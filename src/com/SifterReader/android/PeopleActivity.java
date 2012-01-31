@@ -5,13 +5,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 public class PeopleActivity extends ListActivity {
 
 	public static final String FIRST_NAME = "first_name";
 	public static final String LAST_NAME = "last_name";
+	public static final String PEOPLE = "people";
 	
 	// Members
 	private JSONArray mPeopleArray;
@@ -68,4 +72,14 @@ public class PeopleActivity extends ListActivity {
 		setListAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, p));
 	}
+
+	/** Intent for PeopleDetail activity for clicked project in list. */
+	@Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        Intent intent = new Intent(this, PeopleDetail.class);
+        intent.putExtra(PEOPLE, mAllPeople[(int)id].toString());
+        // TODO use safe long typecast to int
+        startActivity(intent);
+    }
 }

@@ -71,7 +71,7 @@ public class MilestonesActivity extends ListActivity {
 				android.R.layout.simple_list_item_1, m));
 	}
 	
-	/** Intent for ProjectDetail activity for clicked project in list. */
+	/** Intent for MilestoneDetail activity for clicked project in list. */
 	@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);

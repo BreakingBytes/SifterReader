@@ -41,8 +41,16 @@
             android:label="Categories" >
         </activity>
         <activity
+            android:name="CategoryDetail"
+            android:label="Category Details" >
+        </activity>
+        <activity
             android:name="PeopleActivity"
             android:label="People" >
+        </activity>
+        <activity
+            android:name="PeopleDetail"
+            android:label="User Details" >
         </activity>
         <activity
             android:name="IssuesActivity"
