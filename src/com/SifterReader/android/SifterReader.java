@@ -264,6 +264,7 @@ public class SifterReader extends ListActivity {
         menu.add(0, CATEGORIES_ID, 0, R.string.categories);
         menu.add(0, PEOPLE_ID, 0, R.string.people);
         menu.add(0, ISSUES_ID, 0, R.string.issues);
+        menu.setHeaderTitle(R.string.menu_header);
     }
 
     /** Methods for selected list context menu option. */
@@ -421,11 +422,10 @@ public class SifterReader extends ListActivity {
     }
 
 	private URLConnection getSifterConnection(String sifterURL) {
-		URL sifter;
 		URLConnection sifterConnection = null;
 		try {
 			// create URL object to SifterAPI
-			sifter = new URL(sifterURL);
+			URL sifter = new URL(sifterURL);
 			// open connection to SifterAPI
 			sifterConnection = sifter.openConnection();
 		} catch (MalformedURLException e) {

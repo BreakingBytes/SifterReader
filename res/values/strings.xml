@@ -5,11 +5,11 @@
     <string name="no_projects">You have no Sifter projects.</string>
     <string name="projects">Projects</string>
     <!-- Context Menu Options -->
+    <string name="menu_header">Select Details:</string>
     <string name="milestones">Milestones</string>
     <string name="categories">Categories</string>
     <string name="people">People</string>
     <string name="issues">Issues</string>
-    <string name="page">Page</string>
     <string name="statuses">Statuses</string>
     <string name="priorities">Priorities</string>
     <!-- Login Keys -->
@@ -48,7 +48,10 @@
     <string name="email">email:</string>
     <string name="people_issues_url">Issues Link:</string>
     <!-- Issues Detail -->
-    
+    <string name="no_issues">You have no Sifter issues.</string>
+    <string name="page">Page</string>
+    <string name="previous_page">prev</string>
+    <string name="next_page">next</string>
     <!-- Oops Message -->
     <string name="oops_msg">Oops, sorry. Something unexpected happened.\nHere is the stack trace.</string>
     

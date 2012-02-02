@@ -66,7 +66,8 @@
         android:id="@+id/people_issues_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ellipsize="marquee"
+        android:ellipsize="middle"
+        android:singleLine="true"
         android:layout_below="@id/people_issues_url_label" />
     
 </RelativeLayout>

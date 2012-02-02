@@ -13,6 +13,7 @@ import android.app.ListActivity;
 import android.os.Bundle;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 public class IssuesActivity extends ListActivity {
 
@@ -20,6 +21,10 @@ public class IssuesActivity extends ListActivity {
 	public static final String STATUS = "status";
 	public static final String PRIORITY = "priority";
 	public static final String SUBJECT = "subject";
+	public static final String PAGE = "page";
+	public static final String TOTAL_PAGES = "total_pages";
+	public static final String NEXT_PAGE_URL = "next_page_url";
+	public static final String PREVIOUS_PAGE_URL = "previous_page_url";
 	
 	// Members
 	private JSONObject mIssues;
@@ -28,8 +33,12 @@ public class IssuesActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.issues_footer);
 		registerForContextMenu(getListView());
+		
+		TextView pages = (TextView)findViewById(R.id.page);
+//		Button prevPageButton = (Button)findViewById(R.id.previous_page);
+//		Button nextPageButton = (Button)findViewById(R.id.next_page);
 		
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
@@ -38,6 +47,35 @@ public class IssuesActivity extends ListActivity {
 				if (issues != null) {
 					mIssues = issues; 
 					getIssues();
+					pages.setText(getResources().getString(R.string.page) +
+							" " + String.valueOf(mIssues.getInt(PAGE))+ " / " +
+							String.valueOf(mIssues.getInt(TOTAL_PAGES)));
+					
+//					prevPageButton.setOnClickListener(new View.OnClickListener() {
+//
+//						// anonymous inner class
+//						public void onClick(View view) {
+//							String issueURL = null;
+//					    	// get issues url from project
+//					    	try {
+//					    		issueURL = mIssues.getString(PREVIOUS_PAGE_URL);
+//					    	} catch (JSONException e) {
+//					    		e.printStackTrace();
+//					    	}
+//					    	// get url connection
+//					    	URLConnection sifterConnection = SifterReader.getSifterConnection(issueURL);
+//							if (sifterConnection == null)
+//								return;
+//							// get issues
+//							JSONObject issues = loadIssues(sifterConnection);
+//							// intent for PeopleActivity
+//					    	Intent intent = new Intent(this, IssuesActivity.class);
+//							intent.putExtra(ISSUES, issues.toString());
+//							startActivity(intent);
+//						}
+//					});
+					
+					
 					fillData();
 				}
 			} catch (JSONException e) {

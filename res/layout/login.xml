@@ -34,29 +34,29 @@
         android:hint="@string/access_key_hint"
         android:textSize="15sp" />
 
+    <TextView
+        android:id="@+id/login_error_label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/access_key_entry"
+        android:text="@string/login_error" />
+        
+    <TextView
+        android:id="@+id/login_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_error_label"
+        android:background="@android:drawable/editbox_background"
+        android:textColor="#000" />
+    
     <Button
         android:id="@+id/save_key"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/access_key_entry"
         android:layout_alignRight="@id/access_key_entry"
+        android:layout_alignBottom="@id/login_error"
         android:text="@string/save_key" />
-    
-    <TextView
-        android:id="@+id/login_error_label"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/access_key_entry"
-        android:layout_toLeftOf="@id/save_key"
-        android:text="@string/login_error" />
-        
-    <TextView
-        android:id="@+id/login_error"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/login_error_label"
-        android:layout_alignBottom="@id/save_key"
-        android:layout_toLeftOf="@id/save_key" />
     
     <TextView
         android:id="@+id/login_error_msg"
