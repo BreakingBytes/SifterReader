@@ -144,7 +144,14 @@ public class SifterReader extends ListActivity {
 			return;
 		}
 		
-		JSONObject sifterJSONObject = getSifterJSONObject(sifterConnection);
+		JSONObject sifterJSONObject = new JSONObject();
+		try {
+			sifterJSONObject = getSifterJSONObject(sifterConnection);
+		} catch (Exception e) {
+			e.printStackTrace();
+			onException(e.toString());
+			return;
+		}
 		if (getSifterError(sifterJSONObject)) {
 			loginKeys();
 			return;
@@ -177,7 +184,7 @@ public class SifterReader extends ListActivity {
 		return true;
 	}
 	
-	/** Intent for LoginActivity to get domain and access key. */
+	/** Intent for OopsActivity to display exceptions. */
 	private void onException(String eString) {
 		Intent intent = new Intent(this, OopsActivity.class);
 		intent.putExtra(OOPS, eString);
@@ -403,7 +410,14 @@ public class SifterReader extends ListActivity {
     			loginKeys();
     			break;
     		} // if URL misformatted return to LoginActivity
-    		JSONObject sifterJSONObject = getSifterJSONObject(sifterConnection);
+    		JSONObject sifterJSONObject = new JSONObject();
+    		try {
+    			sifterJSONObject = getSifterJSONObject(sifterConnection);
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    			onException(e.toString());
+    			return;
+    		}
     		if (getSifterError(sifterJSONObject)) {
     			loginKeys();
     			break;
@@ -420,47 +434,28 @@ public class SifterReader extends ListActivity {
     	}
     }
 	
-	private JSONObject getSifterJSONObject(URLConnection sifterConnection) {
+	private JSONObject getSifterJSONObject(URLConnection sifterConnection) throws JSONException,NotFoundException,IOException {
 		JSONObject sifterJSONObject = new JSONObject();
+		
+		InputStream sifterInputStream = mSifterHelper.getSifterInputStream(sifterConnection);
+		if (sifterInputStream == null) { // null means MalformedURLException or IOException
+			return mSifterHelper.onConnectionError(); // throws JSONException, NotFoundException
+		}
+		
+		BufferedReader in = new BufferedReader(new InputStreamReader(sifterInputStream));
+		String inputLine;
+		StringBuilder x = new StringBuilder();
 		try {
-			InputStream sifterInputStream = mSifterHelper.getSifterInputStream(sifterConnection);
-			if (sifterInputStream == null) {
-				if (onConnectionError())
-					return mLoginError;
-			}
-			BufferedReader in = new BufferedReader(new InputStreamReader(sifterInputStream));
-			String inputLine;
-			StringBuilder x = new StringBuilder();
-
-			while ((inputLine = in.readLine()) != null) {
+			while ((inputLine = in.readLine()) != null)
 				x.append(inputLine);
-			}
-			in.close(); sifterInputStream.close();
-			sifterJSONObject = new JSONObject(x.toString());
-		} catch (JSONException e) {
-			e.printStackTrace();
-			onException(e.toString());
 		} catch (IOException e) {
-			e.printStackTrace();
-			onException(e.toString());
-		}
+			in.close();sifterInputStream.close();
+			throw e;
+		} // catch error and close buffered reader
+		in.close();sifterInputStream.close();
+		// sifterInputStream must stay open for buffered reader 
+		sifterJSONObject = new JSONObject(x.toString()); // throws JSONException
 		return sifterJSONObject;
-	}
-	
-	private boolean onConnectionError(){
-		try {
-			mLoginError.put(LOGIN_ERROR,getResources().getString(R.string.connection_error));
-			mLoginError.put(LOGIN_DETAIL,getResources().getString(R.string.connection_error_msg));
-		} catch (NotFoundException e) {
-			e.printStackTrace();
-			onException(e.toString());
-			return false;
-		} catch (JSONException e) {
-			e.printStackTrace();
-			onException(e.toString());
-			return false;
-		}
-		return true;
 	}
 	
 	private boolean getSifterError(JSONObject sifterJSONObject) {

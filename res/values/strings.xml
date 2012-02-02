@@ -54,6 +54,6 @@
     <string name="previous_page">prev</string>
     <string name="next_page">next</string>
     <!-- Oops Message -->
-    <string name="oops_msg">Oops, sorry. Something unexpected happened.\nHere is the stack trace.</string>
+    <string name="oops_msg">Oops, something unexpected happened.\nHere is the stack trace.</string>
     
 </resources>
