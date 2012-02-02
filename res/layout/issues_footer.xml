@@ -32,6 +32,20 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/page_number"
             android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/next_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/next_page" />
+        
+        <Button
+            android:id="@+id/previous_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/next_page"
+            android:text="@string/previous_page" />
         
     </RelativeLayout>
 
@@ -52,26 +66,5 @@
             android:layout_height="wrap_content"
             android:text="@string/no_issues" />
     </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="5"
-        android:orientation="vertical" >
-
-        <Button
-            android:id="@+id/previous_page"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="@string/previous_page" />
-
-        <Button
-            android:id="@+id/next_page"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="@string/next_page" />
-    </RelativeLayout>
 
 </LinearLayout>
