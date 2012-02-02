@@ -26,6 +26,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URLConnection;
 
 import org.json.JSONArray;
@@ -279,13 +280,13 @@ public class SifterReader extends ListActivity {
     	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()) {
             case MILESTONES_ID:
-                milestones(info.id);
+            	getProjDetail(info.id, MILESTONES_URL, MILESTONES, MilestonesActivity.class);
                 return true;
             case CATEGORIES_ID:
-                categories(info.id);
+            	getProjDetail(info.id,CATEGORIES_URL,CATEGORIES,CategoriesActivity.class);
                 return true;
             case PEOPLE_ID:
-                people(info.id);
+            	getProjDetail(info.id,PEOPLE_URL,PEOPLE,PeopleActivity.class);
                 return true;
             case ISSUES_ID:
                 issues(info.id);
@@ -293,71 +294,48 @@ public class SifterReader extends ListActivity {
         }
         return super.onContextItemSelected(item);
     }
-    /* TODO combine methods for milestones, categories, people into single method
-	 * use switch in onContextItemSelected to select args to pass to method. */
-	/** Intent for MilestonesActivity. */
-    private void milestones(long id) {
+    
+	/** Intent for Project Details Activities. */
+    private void getProjDetail(long id, String PROJ_DETAIL_URL, String PROJ_DETAIL, Class<?> cls) {
     	String milestonesURL = null;
     	// get milestones url from project
     	try {
-    		milestonesURL = mAllProjects[(int)id].getString(MILESTONES_URL);
+    		milestonesURL = mAllProjects[(int)id].getString(PROJ_DETAIL_URL);
     		// TODO use safe long typecast to int
     	} catch (JSONException e) {
     		e.printStackTrace();
+			onException(e.toString());
+			return;
     	}
     	// get url connection
     	URLConnection sifterConnection = mSifterHelper.getSifterConnection(milestonesURL);
 		if (sifterConnection == null)
 			return;
+		// get JSON object
+		JSONObject sifterJSONObject = new JSONObject();
+		try {
+			sifterJSONObject = getSifterJSONObject(sifterConnection);
+		} catch (Exception e) {
+			e.printStackTrace();
+			onException(e.toString());
+			return;
+		}
+		if (getSifterError(sifterJSONObject)) {
+			loginKeys();
+			return;
+		}		
 		// get milestones
-		JSONArray milestones = loadProjectDetails(sifterConnection, MILESTONES);
+		JSONArray milestones = new JSONArray();
+		try {
+			milestones = loadProjectDetails(sifterJSONObject, PROJ_DETAIL);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			onException(e.toString());
+			return;
+		}		
 		// intent for MilestonesActivity
-    	Intent intent = new Intent(this, MilestonesActivity.class);
-		intent.putExtra(MILESTONES, milestones.toString());
-		startActivity(intent);
-	}
-	
-    /** Intent for CategoriesActivity. */
-    private void categories(long id) {
-		String categoriesURL = null;
-    	// get categories url from project
-    	try {
-    		categoriesURL = mAllProjects[(int)id].getString(CATEGORIES_URL);
-    		// TODO use safe long typecast to int
-    	} catch (JSONException e) {
-    		e.printStackTrace();
-    	}
-    	// get url connection
-    	URLConnection sifterConnection = mSifterHelper.getSifterConnection(categoriesURL);
-		if (sifterConnection == null)
-			return;
-		// get categories
-		JSONArray categories = loadProjectDetails(sifterConnection, CATEGORIES);
-		// intent for CategoriesActivity
-    	Intent intent = new Intent(this, CategoriesActivity.class);
-		intent.putExtra(CATEGORIES, categories.toString());
-		startActivity(intent);
-	}
-	
-    /** Intent for PeopleActivity. */
-    private void people(long id) {
-		String peopleURL = null;
-    	// get people url from project
-    	try {
-    		peopleURL = mAllProjects[(int)id].getString(PEOPLE_URL);
-    		// TODO use safe long typecast to int
-    	} catch (JSONException e) {
-    		e.printStackTrace();
-    	}
-    	// get url connection
-    	URLConnection sifterConnection = mSifterHelper.getSifterConnection(peopleURL);
-		if (sifterConnection == null)
-			return;
-		// get people
-		JSONArray people = loadProjectDetails(sifterConnection, PEOPLE);
-		// intent for PeopleActivity
-    	Intent intent = new Intent(this, PeopleActivity.class);
-		intent.putExtra(PEOPLE, people.toString());
+    	Intent intent = new Intent(this, cls);
+		intent.putExtra(PROJ_DETAIL, milestones.toString());
 		startActivity(intent);
 	}
 	
@@ -497,38 +475,9 @@ public class SifterReader extends ListActivity {
 		mAllProjects = allProjects;
 	}
 
-	private JSONArray loadProjectDetails(URLConnection sifterConnection, String projectDetail) {
-		// send header requests
-		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
-		sifterConnection.addRequestProperty(HEADER_REQUEST_ACCEPT, APPLICATION_JSON);
-
-		JSONArray projectDetailArray = new JSONArray();
-		try {
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					sifterConnection.getInputStream()));
-			String inputLine;
-			StringBuilder x = new StringBuilder();
-
-			while ((inputLine = in.readLine()) != null) {
-				x.append(inputLine);
-			}
-			in.close();
-
-			// initialize "projectDetails" JSONObject from string
-			JSONObject projectDetails = new JSONObject(x.toString());
-			// TODO check for incorrect header
-			// JSON says did you enter access key
-			
-			// array of projectDetails
-			projectDetailArray = projectDetails.getJSONArray(projectDetail);
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace(); // bad domain name
-		} catch (IOException e) {
-			e.printStackTrace(); // bad access key
-		} catch (JSONException e) {
-			e.printStackTrace(); // JSON object or array issue
-		}
+	private JSONArray loadProjectDetails(JSONObject projectDetails, String projectDetail) throws JSONException {
+		// array of projectDetails
+		JSONArray projectDetailArray = projectDetails.getJSONArray(projectDetail);
 		return projectDetailArray;
 	}
 	
