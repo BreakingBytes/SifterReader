@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -33,10 +34,11 @@ public class IssuesActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.issues_header);
+		setContentView(R.layout.issues_footer);
 		registerForContextMenu(getListView());
 		
-		TextView pages = (TextView)findViewById(R.id.page);
+		TextView pageTotal = (TextView)findViewById(R.id.page_total);
+		EditText pageNumber = (EditText)findViewById(R.id.page_number);
 //		Button prevPageButton = (Button)findViewById(R.id.previous_page);
 //		Button nextPageButton = (Button)findViewById(R.id.next_page);
 		
@@ -47,10 +49,9 @@ public class IssuesActivity extends ListActivity {
 				if (issues != null) {
 					mIssues = issues; 
 					getIssues();
-					pages.setText(getResources().getString(R.string.page) +
-							" " + String.valueOf(mIssues.getInt(PAGE))+ " / " +
-							String.valueOf(mIssues.getInt(TOTAL_PAGES)));
-					
+					pageNumber.setText(String.valueOf(mIssues.getInt(PAGE)));
+					pageTotal.setText(" / " + String.valueOf(mIssues.getInt(TOTAL_PAGES)));
+
 //					prevPageButton.setOnClickListener(new View.OnClickListener() {
 //
 //						// anonymous inner class

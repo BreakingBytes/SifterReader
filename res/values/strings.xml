@@ -49,7 +49,7 @@
     <string name="people_issues_url">Issues Link:</string>
     <!-- Issues Detail -->
     <string name="no_issues">You have no Sifter issues.</string>
-    <string name="page">Page</string>
+    <string name="page">Page:</string>
     <string name="previous_page">prev</string>
     <string name="next_page">next</string>
     <!-- Oops Message -->
