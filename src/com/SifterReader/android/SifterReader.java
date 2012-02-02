@@ -399,6 +399,7 @@ public class SifterReader extends ListActivity {
     	case ACTIVITY_LOGIN:
     		mDomain = extras.getString(DOMAIN);
     		mAccessKey = extras.getString(ACCESS_KEY);
+    		mSifterHelper.resetKey(mAccessKey);
     		if (mDomain.isEmpty() || mAccessKey.isEmpty()) {
     			if (onMissingToken())
     				loginKeys();

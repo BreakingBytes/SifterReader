@@ -15,7 +15,7 @@ import android.content.res.Resources.NotFoundException;
 
 public class SifterHelper {
 	private final Context mContext;
-	private final String mAccessKey;
+	private String mAccessKey;
 
 	public SifterHelper(Context context, String accessKey) {
 		mContext = context;
@@ -62,6 +62,10 @@ public class SifterHelper {
 			connectionError.put(SifterReader.LOGIN_DETAIL,
 					mContext.getResources().getString(R.string.connection_error_msg));
 		return connectionError;
+	}
+	
+	public void resetKey(String accessKey) {
+		mAccessKey = accessKey; // TODO SifterHelper should get keys from key_file
 	}
 
 }
