@@ -32,7 +32,6 @@
         android:layout_below="@id/access_key_label"
         android:background="@android:drawable/editbox_background"
         android:hint="@string/access_key_hint"
-        android:text="779ab91fa637368648921c811e00ba53"
         android:textSize="15sp" />
 
     <Button

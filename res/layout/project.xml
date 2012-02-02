@@ -54,6 +54,7 @@
         android:id="@+id/project_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="marquee"
         android:layout_below="@id/url_label" />
 
     <TextView android:id="@+id/issues_url_label"
@@ -66,6 +67,7 @@
         android:id="@+id/issues_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="marquee"
         android:layout_below="@id/issues_url_label" />
 
     <TextView android:id="@+id/milestones_url_label"
@@ -78,6 +80,7 @@
         android:id="@+id/milestones_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="marquee"
         android:layout_below="@id/milestones_url_label" />
 
 </RelativeLayout>

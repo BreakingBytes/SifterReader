@@ -17,6 +17,8 @@ import android.widget.SimpleAdapter;
 public class IssuesActivity extends ListActivity {
 
 	public static final String NUMBER = "number";
+	public static final String STATUS = "status";
+	public static final String PRIORITY = "priority";
 	public static final String SUBJECT = "subject";
 	
 	// Members
@@ -70,6 +72,8 @@ public class IssuesActivity extends ListActivity {
 			for (int j = 0; j < iNum; j++) {
 				Map<String,String> map = new HashMap<String,String>();
 				map.put(NUMBER,mAllIssues[j].getString(NUMBER));
+				map.put(STATUS,mAllIssues[j].getString(STATUS));
+				map.put(PRIORITY,mAllIssues[j].getString(PRIORITY));
 				map.put(SUBJECT,mAllIssues[j].getString(SUBJECT));
 				issuesList.add(map);
 			}
@@ -77,9 +81,9 @@ public class IssuesActivity extends ListActivity {
 			e.printStackTrace();
 		}
         ListAdapter adapter = new SimpleAdapter(this, issuesList,
-        		android.R.layout.two_line_list_item,
-                new String[] {NUMBER, SUBJECT},
-                new int[] {android.R.id.text1, android.R.id.text2});
+        		R.layout.issue_row,
+                new String[] {NUMBER, STATUS, PRIORITY, SUBJECT},
+                new int[] {R.id.issue_number, R.id.issue_status, R.id.issue_priority, R.id.issue_subject});
         setListAdapter(adapter);
 	}
 }
