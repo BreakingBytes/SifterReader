@@ -26,9 +26,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLConnection;
 
 import org.json.JSONArray;
@@ -88,6 +85,7 @@ public class SifterReader extends ListActivity {
 	public static final String OOPS = "oops";
 	
 	// Members
+	private SifterHelper mSifterHelper;
 	private JSONObject[] mAllProjects;
 	private String mDomain;
 	private String mAccessKey;
@@ -102,7 +100,7 @@ public class SifterReader extends ListActivity {
 		setContentView(R.layout.main);
 		setTitle(R.string.projects);
 		registerForContextMenu(getListView());
-
+		
 		File keyFile = getFileStreamPath(KEY_FILE);
 		if (!keyFile.exists()) {
 			if (onMissingToken())
@@ -137,9 +135,10 @@ public class SifterReader extends ListActivity {
 				loginKeys();
 			return;
 		}
+		mSifterHelper = new SifterHelper(this,mAccessKey);
 		
 		String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
-		URLConnection sifterConnection = getSifterConnection(projectsURL);
+		URLConnection sifterConnection = mSifterHelper.getSifterConnection(projectsURL);
 		if (sifterConnection == null) {
 			loginKeys();
 			return;
@@ -300,7 +299,7 @@ public class SifterReader extends ListActivity {
     		e.printStackTrace();
     	}
     	// get url connection
-    	URLConnection sifterConnection = getSifterConnection(milestonesURL);
+    	URLConnection sifterConnection = mSifterHelper.getSifterConnection(milestonesURL);
 		if (sifterConnection == null)
 			return;
 		// get milestones
@@ -322,7 +321,7 @@ public class SifterReader extends ListActivity {
     		e.printStackTrace();
     	}
     	// get url connection
-    	URLConnection sifterConnection = getSifterConnection(categoriesURL);
+    	URLConnection sifterConnection = mSifterHelper.getSifterConnection(categoriesURL);
 		if (sifterConnection == null)
 			return;
 		// get categories
@@ -344,7 +343,7 @@ public class SifterReader extends ListActivity {
     		e.printStackTrace();
     	}
     	// get url connection
-    	URLConnection sifterConnection = getSifterConnection(peopleURL);
+    	URLConnection sifterConnection = mSifterHelper.getSifterConnection(peopleURL);
 		if (sifterConnection == null)
 			return;
 		// get people
@@ -366,7 +365,7 @@ public class SifterReader extends ListActivity {
     		e.printStackTrace();
     	}
     	// get url connection
-    	URLConnection sifterConnection = getSifterConnection(issueURL);
+    	URLConnection sifterConnection = mSifterHelper.getSifterConnection(issueURL);
 		if (sifterConnection == null)
 			return;
 		// get issues
@@ -399,7 +398,7 @@ public class SifterReader extends ListActivity {
     			break;
     		} // if keys are empty return to LoginActivity
     		String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
-    		URLConnection sifterConnection = getSifterConnection(projectsURL);
+    		URLConnection sifterConnection = mSifterHelper.getSifterConnection(projectsURL);
     		if (sifterConnection == null) {
     			loginKeys();
     			break;
@@ -420,44 +419,11 @@ public class SifterReader extends ListActivity {
     		break;
     	}
     }
-
-	private URLConnection getSifterConnection(String sifterURL) {
-		URLConnection sifterConnection = null;
-		try {
-			// create URL object to SifterAPI
-			URL sifter = new URL(sifterURL);
-			// open connection to SifterAPI
-			sifterConnection = sifter.openConnection();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return sifterConnection;
-	}
-
-	private InputStream getSifterInputStream(URLConnection sifterConnection) {
-		// send header requests
-		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
-		sifterConnection.addRequestProperty(HEADER_REQUEST_ACCEPT, APPLICATION_JSON);
-
-		InputStream is = null;
-		try {
-			is = sifterConnection.getInputStream();
-		} catch (IOException e) {
-			e.printStackTrace();
-			// also catches FileNotFoundException: invalid domain
-			// IOException: invalid access key
-			HttpURLConnection httpSifterConnection = (HttpURLConnection)sifterConnection;
-			is = httpSifterConnection.getErrorStream();
-		}
-		return is;
-	}
 	
 	private JSONObject getSifterJSONObject(URLConnection sifterConnection) {
 		JSONObject sifterJSONObject = new JSONObject();
 		try {
-			InputStream sifterInputStream = getSifterInputStream(sifterConnection);
+			InputStream sifterInputStream = mSifterHelper.getSifterInputStream(sifterConnection);
 			if (sifterInputStream == null) {
 				if (onConnectionError())
 					return mLoginError;
