@@ -33,7 +33,7 @@ public class IssuesActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.issues_footer);
+		setContentView(R.layout.issues_header);
 		registerForContextMenu(getListView());
 		
 		TextView pages = (TextView)findViewById(R.id.page);
