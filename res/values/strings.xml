@@ -50,6 +50,7 @@
     <!-- Issues Detail -->
     <string name="no_issues">You have no Sifter issues.</string>
     <string name="page">Page:</string>
+    <string name="goto_page">go</string>
     <string name="previous_page">prev</string>
     <string name="next_page">next</string>
     <!-- Oops Message -->
