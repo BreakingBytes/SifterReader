@@ -1,7 +1,9 @@
 package com.SifterReader.android;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -66,6 +68,30 @@ public class SifterHelper {
 	
 	public void resetKey(String accessKey) {
 		mAccessKey = accessKey; // TODO SifterHelper should get keys from key_file
+	}
+	
+	public JSONObject getSifterJSONObject(URLConnection sifterConnection) throws JSONException,NotFoundException,IOException {
+		JSONObject sifterJSONObject = new JSONObject();
+		
+		InputStream sifterInputStream = getSifterInputStream(sifterConnection);
+		if (sifterInputStream == null) { // null means MalformedURLException or IOException
+			return onConnectionError(); // throws JSONException, NotFoundException
+		}
+		
+		BufferedReader in = new BufferedReader(new InputStreamReader(sifterInputStream));
+		String inputLine;
+		StringBuilder x = new StringBuilder();
+		try {
+			while ((inputLine = in.readLine()) != null)
+				x.append(inputLine);
+		} catch (IOException e) {
+			in.close();sifterInputStream.close();
+			throw e;
+		} // catch error and close buffered reader
+		in.close();sifterInputStream.close();
+		// sifterInputStream must stay open for buffered reader 
+		sifterJSONObject = new JSONObject(x.toString()); // throws JSONException
+		return sifterJSONObject;
 	}
 
 }

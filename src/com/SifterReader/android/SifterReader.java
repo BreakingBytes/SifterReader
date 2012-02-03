@@ -24,9 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URLConnection;
 
 import org.json.JSONArray;
@@ -147,7 +145,7 @@ public class SifterReader extends ListActivity {
 		
 		JSONObject sifterJSONObject = new JSONObject();
 		try {
-			sifterJSONObject = getSifterJSONObject(sifterConnection);
+			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
 		} catch (Exception e) {
 			e.printStackTrace();
 			onException(e.toString());
@@ -297,10 +295,10 @@ public class SifterReader extends ListActivity {
     
 	/** Intent for Project Details Activities. */
     private void getProjDetail(long id, String PROJ_DETAIL_URL, String PROJ_DETAIL, Class<?> cls) {
-    	String milestonesURL = null;
-    	// get milestones url from project
+    	String projDetailURL = null;
+    	// get project detail url from project
     	try {
-    		milestonesURL = mAllProjects[(int)id].getString(PROJ_DETAIL_URL);
+    		projDetailURL = mAllProjects[(int)id].getString(PROJ_DETAIL_URL);
     		// TODO use safe long typecast to int
     	} catch (JSONException e) {
     		e.printStackTrace();
@@ -308,13 +306,13 @@ public class SifterReader extends ListActivity {
 			return;
     	}
     	// get url connection
-    	URLConnection sifterConnection = mSifterHelper.getSifterConnection(milestonesURL);
+    	URLConnection sifterConnection = mSifterHelper.getSifterConnection(projDetailURL);
 		if (sifterConnection == null)
 			return;
 		// get JSON object
 		JSONObject sifterJSONObject = new JSONObject();
 		try {
-			sifterJSONObject = getSifterJSONObject(sifterConnection);
+			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
 		} catch (Exception e) {
 			e.printStackTrace();
 			onException(e.toString());
@@ -324,10 +322,10 @@ public class SifterReader extends ListActivity {
 			loginKeys();
 			return;
 		}		
-		// get milestones
-		JSONArray milestones = new JSONArray();
+		// get project detail
+		JSONArray projDetail = new JSONArray();
 		try {
-			milestones = sifterJSONObject.getJSONArray(PROJ_DETAIL);
+			projDetail = sifterJSONObject.getJSONArray(PROJ_DETAIL);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			onException(e.toString());
@@ -335,7 +333,7 @@ public class SifterReader extends ListActivity {
 		}		
 		// intent for MilestonesActivity
     	Intent intent = new Intent(this, cls);
-		intent.putExtra(PROJ_DETAIL, milestones.toString());
+		intent.putExtra(PROJ_DETAIL, projDetail.toString());
 		startActivity(intent);
 	}
 	
@@ -391,7 +389,7 @@ public class SifterReader extends ListActivity {
     		} // if URL misformatted return to LoginActivity
     		JSONObject sifterJSONObject = new JSONObject();
     		try {
-    			sifterJSONObject = getSifterJSONObject(sifterConnection);
+    			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
     		} catch (Exception e) {
     			e.printStackTrace();
     			onException(e.toString());
@@ -413,29 +411,29 @@ public class SifterReader extends ListActivity {
     	}
     }
 	
-	private JSONObject getSifterJSONObject(URLConnection sifterConnection) throws JSONException,NotFoundException,IOException {
-		JSONObject sifterJSONObject = new JSONObject();
-		
-		InputStream sifterInputStream = mSifterHelper.getSifterInputStream(sifterConnection);
-		if (sifterInputStream == null) { // null means MalformedURLException or IOException
-			return mSifterHelper.onConnectionError(); // throws JSONException, NotFoundException
-		}
-		
-		BufferedReader in = new BufferedReader(new InputStreamReader(sifterInputStream));
-		String inputLine;
-		StringBuilder x = new StringBuilder();
-		try {
-			while ((inputLine = in.readLine()) != null)
-				x.append(inputLine);
-		} catch (IOException e) {
-			in.close();sifterInputStream.close();
-			throw e;
-		} // catch error and close buffered reader
-		in.close();sifterInputStream.close();
-		// sifterInputStream must stay open for buffered reader 
-		sifterJSONObject = new JSONObject(x.toString()); // throws JSONException
-		return sifterJSONObject;
-	}
+//	private JSONObject getSifterJSONObject(URLConnection sifterConnection) throws JSONException,NotFoundException,IOException {
+//		JSONObject sifterJSONObject = new JSONObject();
+//		
+//		InputStream sifterInputStream = mSifterHelper.getSifterInputStream(sifterConnection);
+//		if (sifterInputStream == null) { // null means MalformedURLException or IOException
+//			return mSifterHelper.onConnectionError(); // throws JSONException, NotFoundException
+//		}
+//		
+//		BufferedReader in = new BufferedReader(new InputStreamReader(sifterInputStream));
+//		String inputLine;
+//		StringBuilder x = new StringBuilder();
+//		try {
+//			while ((inputLine = in.readLine()) != null)
+//				x.append(inputLine);
+//		} catch (IOException e) {
+//			in.close();sifterInputStream.close();
+//			throw e;
+//		} // catch error and close buffered reader
+//		in.close();sifterInputStream.close();
+//		// sifterInputStream must stay open for buffered reader 
+//		sifterJSONObject = new JSONObject(x.toString()); // throws JSONException
+//		return sifterJSONObject;
+//	}
 	
 	private boolean getSifterError(JSONObject sifterJSONObject) {
 		try {
