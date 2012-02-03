@@ -327,7 +327,7 @@ public class SifterReader extends ListActivity {
 		// get milestones
 		JSONArray milestones = new JSONArray();
 		try {
-			milestones = loadProjectDetails(sifterJSONObject, PROJ_DETAIL);
+			milestones = sifterJSONObject.getJSONArray(PROJ_DETAIL);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			onException(e.toString());
@@ -475,11 +475,11 @@ public class SifterReader extends ListActivity {
 		mAllProjects = allProjects;
 	}
 
-	private JSONArray loadProjectDetails(JSONObject projectDetails, String projectDetail) throws JSONException {
-		// array of projectDetails
-		JSONArray projectDetailArray = projectDetails.getJSONArray(projectDetail);
-		return projectDetailArray;
-	}
+//	private JSONArray loadProjectDetails(JSONObject projectDetails, String projectDetail) throws JSONException {
+//		// array of projectDetails
+//		JSONArray projectDetailArray = projectDetails.getJSONArray(projectDetail);
+//		return projectDetailArray;
+//	}
 	
 	private JSONObject loadIssues(URLConnection sifterConnection) {
 		// send header requests
