@@ -169,13 +169,26 @@ public class IssuesActivity extends ListActivity {
 //		}
 		Intent intent = new Intent(this, IssuesActivity.class);
 		intent.putExtra(SifterReader.ISSUES, sifterJSONObject.toString());
+		intent.putExtra(SifterReader.ISSUES_URL, mIssuesURL);
 		startActivity(intent);
 		return;
 	}
 	
 	/** Intent for Project Details Activities. */
 	private void loadIssuesPage(EditText pageNumber) {
-		int pageOffset = Integer.valueOf(pageNumber.getText().toString());
+		int pageOffset;
+		try {
+		pageOffset = Integer.valueOf(pageNumber.getText().toString());
+		} catch (NumberFormatException e1) {
+			try {
+			pageNumber.setText(String.valueOf(mIssues.getInt(PAGE)));
+			} catch (JSONException e2) {
+				e2.printStackTrace();
+				return;
+			}
+			e1.printStackTrace();
+			return;
+		}
 		String projDetailURL = mIssuesURL + "?" + PER_PAGE + "=" + 25;
 		projDetailURL = projDetailURL + "&" + GOTO_PAGE + "=" + pageOffset;
 		// get url connection
@@ -197,6 +210,7 @@ public class IssuesActivity extends ListActivity {
 //		}
 		Intent intent = new Intent(this, IssuesActivity.class);
 		intent.putExtra(SifterReader.ISSUES, sifterJSONObject.toString());
+		intent.putExtra(SifterReader.ISSUES_URL, mIssuesURL);
 		startActivity(intent);
 		return;
 	}
