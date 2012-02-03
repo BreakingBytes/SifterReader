@@ -74,10 +74,6 @@ public class SifterHelper {
 		return connectionError;
 	}
 	
-	public void resetKey(String accessKey) {
-		mAccessKey = accessKey; // TODO SifterHelper should get keys from key_file
-	}
-	
 	public void getKey(){
 		File keyFile = mContext.getFileStreamPath(SifterReader.KEY_FILE);
 //		if (!keyFile.exists()) {
