@@ -1,6 +1,9 @@
 package com.SifterReader.android;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,6 +25,11 @@ public class SifterHelper {
 	public SifterHelper(Context context, String accessKey) {
 		mContext = context;
 		mAccessKey = accessKey;
+	}
+	
+	public SifterHelper(Context context) {
+		mContext = context;
+		getKey();
 	}
 	
 	public URLConnection getSifterConnection(String sifterURL) {
@@ -68,6 +76,42 @@ public class SifterHelper {
 	
 	public void resetKey(String accessKey) {
 		mAccessKey = accessKey; // TODO SifterHelper should get keys from key_file
+	}
+	
+	public void getKey(){
+		File keyFile = mContext.getFileStreamPath(SifterReader.KEY_FILE);
+//		if (!keyFile.exists()) {
+//			if (onMissingToken())
+//				loginKeys();
+//			return;
+//		}
+		
+//		boolean fileReadError = false;
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(keyFile));
+			String inputLine;
+			StringBuilder x = new StringBuilder();
+			while ((inputLine = in.readLine()) != null) {
+				x.append(inputLine);
+			}
+			in.close();
+			JSONObject loginKeys = new JSONObject(x.toString());
+			mAccessKey = loginKeys.getString(SifterReader.ACCESS_KEY);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+//			fileReadError = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+//			fileReadError = true;
+		} catch (JSONException e) {
+			e.printStackTrace();
+//			fileReadError = true;
+		}
+//		if (fileReadError || mDomain.isEmpty() || mAccessKey.isEmpty()) {
+//			if (onMissingToken())
+//				loginKeys();
+//			return;
+//		}
 	}
 	
 	public JSONObject getSifterJSONObject(URLConnection sifterConnection) throws JSONException,NotFoundException,IOException {

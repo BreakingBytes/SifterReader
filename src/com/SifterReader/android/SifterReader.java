@@ -323,7 +323,8 @@ public class SifterReader extends ListActivity {
 		}
 		if (PROJ_DETAIL.equals(ISSUES)) {
 			Intent intent = new Intent(this, cls);
-			intent.putExtra(PROJ_DETAIL, sifterJSONObject.toString());
+			intent.putExtra(ISSUES, sifterJSONObject.toString());
+			intent.putExtra(ISSUES_URL, projDetailURL);
 			startActivity(intent);
 			return;
 		}

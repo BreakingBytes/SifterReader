@@ -1,5 +1,6 @@
 package com.SifterReader.android;
 
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +11,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
@@ -26,9 +30,13 @@ public class IssuesActivity extends ListActivity {
 	public static final String TOTAL_PAGES = "total_pages";
 	public static final String NEXT_PAGE_URL = "next_page_url";
 	public static final String PREVIOUS_PAGE_URL = "previous_page_url";
+	public static final String GOTO_PAGE = "page";
+	public static final String PER_PAGE = "per_page";
 	
 	// Members
-	private JSONObject mIssues;
+	private SifterHelper mSifterHelper;
+	private String mIssuesURL;
+	private JSONObject mIssues = new JSONObject();
 	private JSONObject[] mAllIssues;
 
 	@Override
@@ -37,14 +45,20 @@ public class IssuesActivity extends ListActivity {
 		setContentView(R.layout.issues_list);
 		registerForContextMenu(getListView());
 		
+		mSifterHelper = new SifterHelper(this);
+		
 		TextView pageTotal = (TextView)findViewById(R.id.page_total);
 		EditText pageNumber = (EditText)findViewById(R.id.page_number);
-//		Button prevPageButton = (Button)findViewById(R.id.previous_page);
-//		Button nextPageButton = (Button)findViewById(R.id.next_page);
+		Button gotoPageButton = (Button)findViewById(R.id.goto_page);
+		Button prevPageButton = (Button)findViewById(R.id.previous_page);
+		Button nextPageButton = (Button)findViewById(R.id.next_page);
 		
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			try {
+				String issuesURL = extras.getString(SifterReader.ISSUES_URL);
+				if (issuesURL != null)
+					mIssuesURL = issuesURL;
 				JSONObject issues = new JSONObject(extras.getString(SifterReader.ISSUES));
 				if (issues != null) {
 					mIssues = issues; 
@@ -52,30 +66,27 @@ public class IssuesActivity extends ListActivity {
 					pageNumber.setText(String.valueOf(mIssues.getInt(PAGE)));
 					pageTotal.setText(" / " + String.valueOf(mIssues.getInt(TOTAL_PAGES)));
 
-//					prevPageButton.setOnClickListener(new View.OnClickListener() {
-//
-//						// anonymous inner class
-//						public void onClick(View view) {
-//							String issueURL = null;
-//					    	// get issues url from project
-//					    	try {
-//					    		issueURL = mIssues.getString(PREVIOUS_PAGE_URL);
-//					    	} catch (JSONException e) {
-//					    		e.printStackTrace();
-//					    	}
-//					    	// get url connection
-//					    	URLConnection sifterConnection = SifterReader.getSifterConnection(issueURL);
-//							if (sifterConnection == null)
-//								return;
-//							// get issues
-//							JSONObject issues = loadIssues(sifterConnection);
-//							// intent for PeopleActivity
-//					    	Intent intent = new Intent(this, IssuesActivity.class);
-//							intent.putExtra(ISSUES, issues.toString());
-//							startActivity(intent);
-//						}
-//					});
+					prevPageButton.setOnClickListener(new View.OnClickListener() {
+						// anonymous inner class
+						public void onClick(View view) {
+							loadIssuesPage(PREVIOUS_PAGE_URL);
+						}
+					});
 					
+					nextPageButton.setOnClickListener(new View.OnClickListener() {
+						// anonymous inner class
+						public void onClick(View view) {
+							loadIssuesPage(NEXT_PAGE_URL);
+						}
+					});
+					
+					gotoPageButton.setOnClickListener(new View.OnClickListener() {
+						// anonymous inner class
+						public void onClick(View view) {
+							EditText pageNumber = (EditText)findViewById(R.id.page_number);
+							loadIssuesPage(pageNumber);
+						}
+					});
 					
 					fillData();
 				}
@@ -124,5 +135,69 @@ public class IssuesActivity extends ListActivity {
                 new String[] {NUMBER, STATUS, PRIORITY, SUBJECT},
                 new int[] {R.id.issue_number, R.id.issue_status, R.id.issue_priority, R.id.issue_subject});
         setListAdapter(adapter);
+	}
+
+	/** Intent for Project Details Activities. */
+	private void loadIssuesPage(String PAGE_URL) {
+		String projDetailURL = null;
+		// get project detail url from project
+		try {
+			projDetailURL = mIssues.getString(PAGE_URL);
+		} catch (JSONException e) {
+			e.printStackTrace();
+//			onException(e.toString());
+			return;
+		}
+		if (projDetailURL == null)
+			return;
+		// get url connection
+		URLConnection sifterConnection = mSifterHelper.getSifterConnection(projDetailURL);
+		if (sifterConnection == null)
+			return;
+		// get JSON object
+		JSONObject sifterJSONObject = new JSONObject();
+		try {
+			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
+		} catch (Exception e) {
+			e.printStackTrace();
+//			onException(e.toString());
+			return;
+		}
+//		if (getSifterError(sifterJSONObject)) {
+//			loginKeys();
+//			return;
+//		}
+		Intent intent = new Intent(this, IssuesActivity.class);
+		intent.putExtra(SifterReader.ISSUES, sifterJSONObject.toString());
+		startActivity(intent);
+		return;
+	}
+	
+	/** Intent for Project Details Activities. */
+	private void loadIssuesPage(EditText pageNumber) {
+		int pageOffset = Integer.valueOf(pageNumber.getText().toString());
+		String projDetailURL = mIssuesURL + "?" + PER_PAGE + "=" + 25;
+		projDetailURL = projDetailURL + "&" + GOTO_PAGE + "=" + pageOffset;
+		// get url connection
+		URLConnection sifterConnection = mSifterHelper.getSifterConnection(projDetailURL);
+		if (sifterConnection == null)
+			return;
+		// get JSON object
+		JSONObject sifterJSONObject = new JSONObject();
+		try {
+			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
+		} catch (Exception e) {
+			e.printStackTrace();
+//			onException(e.toString());
+			return;
+		}
+//		if (getSifterError(sifterJSONObject)) {
+//			loginKeys();
+//			return;
+//		}
+		Intent intent = new Intent(this, IssuesActivity.class);
+		intent.putExtra(SifterReader.ISSUES, sifterJSONObject.toString());
+		startActivity(intent);
+		return;
 	}
 }
