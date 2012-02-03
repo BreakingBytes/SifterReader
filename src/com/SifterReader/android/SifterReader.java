@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URLConnection;
 
 import org.json.JSONArray;
@@ -287,7 +286,7 @@ public class SifterReader extends ListActivity {
             	getProjDetail(info.id,PEOPLE_URL,PEOPLE,PeopleActivity.class);
                 return true;
             case ISSUES_ID:
-                issues(info.id);
+            	getProjDetail(info.id,ISSUES_URL,ISSUES,IssuesActivity.class);
                 return true;
         }
         return super.onContextItemSelected(item);
@@ -321,7 +320,13 @@ public class SifterReader extends ListActivity {
 		if (getSifterError(sifterJSONObject)) {
 			loginKeys();
 			return;
-		}		
+		}
+		if (PROJ_DETAIL.equals(ISSUES)) {
+			Intent intent = new Intent(this, cls);
+			intent.putExtra(PROJ_DETAIL, sifterJSONObject.toString());
+			startActivity(intent);
+			return;
+		}
 		// get project detail
 		JSONArray projDetail = new JSONArray();
 		try {
@@ -334,28 +339,6 @@ public class SifterReader extends ListActivity {
 		// intent for MilestonesActivity
     	Intent intent = new Intent(this, cls);
 		intent.putExtra(PROJ_DETAIL, projDetail.toString());
-		startActivity(intent);
-	}
-	
-    /** Intent for IssuesActivity. */
-    private void issues(long id) {
-		String issueURL = null;
-    	// get issues url from project
-    	try {
-    		issueURL = mAllProjects[(int)id].getString(ISSUES_URL);
-    		// TODO use safe long typecast to int
-    	} catch (JSONException e) {
-    		e.printStackTrace();
-    	}
-    	// get url connection
-    	URLConnection sifterConnection = mSifterHelper.getSifterConnection(issueURL);
-		if (sifterConnection == null)
-			return;
-		// get issues
-		JSONObject issues = loadIssues(sifterConnection);
-		// intent for PeopleActivity
-    	Intent intent = new Intent(this, IssuesActivity.class);
-		intent.putExtra(ISSUES, issues.toString());
 		startActivity(intent);
 	}
 	
@@ -411,30 +394,6 @@ public class SifterReader extends ListActivity {
     	}
     }
 	
-//	private JSONObject getSifterJSONObject(URLConnection sifterConnection) throws JSONException,NotFoundException,IOException {
-//		JSONObject sifterJSONObject = new JSONObject();
-//		
-//		InputStream sifterInputStream = mSifterHelper.getSifterInputStream(sifterConnection);
-//		if (sifterInputStream == null) { // null means MalformedURLException or IOException
-//			return mSifterHelper.onConnectionError(); // throws JSONException, NotFoundException
-//		}
-//		
-//		BufferedReader in = new BufferedReader(new InputStreamReader(sifterInputStream));
-//		String inputLine;
-//		StringBuilder x = new StringBuilder();
-//		try {
-//			while ((inputLine = in.readLine()) != null)
-//				x.append(inputLine);
-//		} catch (IOException e) {
-//			in.close();sifterInputStream.close();
-//			throw e;
-//		} // catch error and close buffered reader
-//		in.close();sifterInputStream.close();
-//		// sifterInputStream must stay open for buffered reader 
-//		sifterJSONObject = new JSONObject(x.toString()); // throws JSONException
-//		return sifterJSONObject;
-//	}
-	
 	private boolean getSifterError(JSONObject sifterJSONObject) {
 		try {
 			JSONArray sifterJSONObjFieldNames = sifterJSONObject.names();
@@ -471,37 +430,5 @@ public class SifterReader extends ListActivity {
 			allProjects[i] = projectArray.getJSONObject(i);
 		}
 		mAllProjects = allProjects;
-	}
-	
-	private JSONObject loadIssues(URLConnection sifterConnection) {
-		// send header requests
-		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
-		sifterConnection.addRequestProperty(HEADER_REQUEST_ACCEPT, APPLICATION_JSON);
-
-		JSONObject issues = new JSONObject();
-		try {
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					sifterConnection.getInputStream()));
-			String inputLine;
-			StringBuilder x = new StringBuilder();
-
-			while ((inputLine = in.readLine()) != null) {
-				x.append(inputLine);
-			}
-			in.close();
-
-			// initialize "projectDetails" JSONObject from string
-			issues = new JSONObject(x.toString());
-			// TODO check for incorrect header
-			// JSON says did you enter access key
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return issues;
 	}
 }
