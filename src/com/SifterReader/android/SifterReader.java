@@ -474,12 +474,6 @@ public class SifterReader extends ListActivity {
 		}
 		mAllProjects = allProjects;
 	}
-
-//	private JSONArray loadProjectDetails(JSONObject projectDetails, String projectDetail) throws JSONException {
-//		// array of projectDetails
-//		JSONArray projectDetailArray = projectDetails.getJSONArray(projectDetail);
-//		return projectDetailArray;
-//	}
 	
 	private JSONObject loadIssues(URLConnection sifterConnection) {
 		// send header requests
