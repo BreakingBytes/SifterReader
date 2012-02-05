@@ -1,0 +1,20 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:padding="10dp" >
+
+    <EditText
+        android:id="@+id/perpage"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/perpage_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/perpage_ok" />
+
+</LinearLayout>
