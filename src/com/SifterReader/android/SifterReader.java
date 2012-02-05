@@ -49,7 +49,7 @@ public class SifterReader extends ListActivity {
 	public static final int LOGIN_ID = Menu.FIRST; // enter login keys
 	public static final int DELETE_ID = Menu.FIRST+1; // delete login keys
 	public static final int ACTIVITY_LOGIN = 0;
-	public static final int ACTIVITY_DELETE = 1;
+//	public static final int ACTIVITY_DELETE = 1;
 	// Context menu options
 	public static final int MILESTONES_ID = Menu.FIRST + 1;
 	public static final int CATEGORIES_ID = Menu.FIRST + 2;
@@ -62,10 +62,6 @@ public class SifterReader extends ListActivity {
 	public static final String KEY_FILE = "key_file"; // internal-memory filename
 	public static final String DOMAIN = "domain";
 	public static final String ACCESS_KEY = "accessKey";
-	// SifterAPI headers
-	public static final String X_SIFTER_TOKEN = "X-Sifter-Token";
-	public static final String HEADER_REQUEST_ACCEPT = "Accept";
-	public static final String APPLICATION_JSON = "application/json";
 	// SifterAPI URL - use constants in case they change
 	public static final String HTTPS_PREFIX = "https://";
 	public static final String PROJECTS_URL = ".sifterapp.com/api/projects";
@@ -80,7 +76,6 @@ public class SifterReader extends ListActivity {
 	public static final String PEOPLE = "people";
 	public static final String ISSUES_URL = "api_issues_url";
 	public static final String ISSUES = "issues";
-	public static final String OOPS = "oops";
 	
 	// Members
 	private SifterHelper mSifterHelper;
@@ -89,7 +84,7 @@ public class SifterReader extends ListActivity {
 	private String mAccessKey;
 	private JSONObject mLoginError = new JSONObject();
 	/* must initialize mLoginError as empty JSON object,
-	 * or mLoginError.toString() will fail. */
+	 * or mLoginError.put() will fail. */
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -147,7 +142,7 @@ public class SifterReader extends ListActivity {
 			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
 		} catch (Exception e) {
 			e.printStackTrace();
-			onException(e.toString());
+			mSifterHelper.onException(e.toString());
 			return;
 		}
 		if (getSifterError(sifterJSONObject)) {
@@ -159,7 +154,7 @@ public class SifterReader extends ListActivity {
 		loadProjects(sifterJSONObject);
 		} catch (JSONException e) {
 			e.printStackTrace();
-			onException(e.toString());
+			mSifterHelper.onException(e.toString());
 			return;
 		}
 		
@@ -172,21 +167,14 @@ public class SifterReader extends ListActivity {
 			mLoginError.put(LOGIN_DETAIL,getResources().getString(R.string.token_missing_msg));
 		} catch (NotFoundException e) {
 			e.printStackTrace();
-			onException(e.toString());
+			mSifterHelper.onException(e.toString());
 			return false;
 		} catch (JSONException e) {
 			e.printStackTrace();
-			onException(e.toString());
+			mSifterHelper.onException(e.toString());
 			return false;
 		}
 		return true;
-	}
-	
-	/** Intent for OopsActivity to display exceptions. */
-	private void onException(String eString) {
-		Intent intent = new Intent(this, OopsActivity.class);
-		intent.putExtra(OOPS, eString);
-		startActivity(intent);
 	}
 	
 	/** Method to pass project names to list adapter. */
@@ -301,7 +289,7 @@ public class SifterReader extends ListActivity {
     		// TODO use safe long typecast to int
     	} catch (JSONException e) {
     		e.printStackTrace();
-			onException(e.toString());
+			mSifterHelper.onException(e.toString());
 			return;
     	}
     	// get url connection
@@ -314,7 +302,7 @@ public class SifterReader extends ListActivity {
 			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
 		} catch (Exception e) {
 			e.printStackTrace();
-			onException(e.toString());
+			mSifterHelper.onException(e.toString());
 			return;
 		}
 		if (getSifterError(sifterJSONObject)) {
@@ -334,7 +322,7 @@ public class SifterReader extends ListActivity {
 			projDetail = sifterJSONObject.getJSONArray(PROJ_DETAIL);
 		} catch (JSONException e) {
 			e.printStackTrace();
-			onException(e.toString());
+			mSifterHelper.onException(e.toString());
 			return;
 		}		
 		// intent for MilestonesActivity
@@ -376,7 +364,7 @@ public class SifterReader extends ListActivity {
     			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
     		} catch (Exception e) {
     			e.printStackTrace();
-    			onException(e.toString());
+    			mSifterHelper.onException(e.toString());
     			return;
     		}
     		if (getSifterError(sifterJSONObject)) {
@@ -387,7 +375,7 @@ public class SifterReader extends ListActivity {
     		loadProjects(sifterJSONObject);
     		} catch (JSONException e) {
     			e.printStackTrace();
-    			onException(e.toString());
+    			mSifterHelper.onException(e.toString());
     			break;
     		}
     		fillData();

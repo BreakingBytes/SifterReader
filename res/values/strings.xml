@@ -53,6 +53,9 @@
     <string name="goto_page">go</string>
     <string name="previous_page">prev</string>
     <string name="next_page">next</string>
+    <!-- Issues Menu -->
+    <string name="issues_settings">settings</string>
+    <string name="issues_exit">projects</string>
     <!-- Oops Message -->
     <string name="oops_msg">Oops, something unexpected happened.\nHere is the stack trace.</string>
     

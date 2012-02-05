@@ -15,7 +15,7 @@ public class OopsActivity extends Activity {
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			String e = extras.getString(SifterReader.OOPS);
+			String e = extras.getString(SifterHelper.OOPS);
 			if (e != null) {
 				oopsMsg.setText(e);
 			}

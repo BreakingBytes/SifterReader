@@ -16,11 +16,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
 
 public class SifterHelper {
+	
+	// Members
 	private final Context mContext;
 	private String mAccessKey;
+	
+	// SifterAPI headers
+	public static final String X_SIFTER_TOKEN = "X-Sifter-Token";
+	public static final String HEADER_REQUEST_ACCEPT = "Accept";
+	public static final String APPLICATION_JSON = "application/json";
+	public static final String OOPS = "oops";
 
 	public SifterHelper(Context context, String accessKey) {
 		mContext = context;
@@ -49,8 +58,8 @@ public class SifterHelper {
 	
 	public InputStream getSifterInputStream(URLConnection sifterConnection) {
 		// send header requests
-		sifterConnection.setRequestProperty(SifterReader.X_SIFTER_TOKEN, mAccessKey);
-		sifterConnection.addRequestProperty(SifterReader.HEADER_REQUEST_ACCEPT, SifterReader.APPLICATION_JSON);
+		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
+		sifterConnection.addRequestProperty(HEADER_REQUEST_ACCEPT, APPLICATION_JSON);
 
 		InputStream is = null;
 		try {
@@ -134,4 +143,12 @@ public class SifterHelper {
 		return sifterJSONObject;
 	}
 
+
+	/** Intent for OopsActivity to display exceptions. */
+	public void onException(String eString) {
+		Intent intent = new Intent(mContext, OopsActivity.class);
+		intent.putExtra(OOPS, eString);
+		mContext.startActivity(intent);
+	}
+	
 }
