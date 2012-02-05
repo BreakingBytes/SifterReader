@@ -135,7 +135,8 @@ public class IssuesActivity extends ListActivity {
 			showDialog(NUMBER_DIALOG_ID);
 			return true;
 		case EXIT_ID:
-			finish();
+			Intent intent = new Intent(this, SifterReader.class);
+			startActivity(intent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
