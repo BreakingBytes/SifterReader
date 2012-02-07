@@ -57,6 +57,13 @@ public class IssuesActivity extends ListActivity {
 		registerForContextMenu(getListView());
 		
 		mSifterHelper = new SifterHelper(this);
+		try {
+			mSifterHelper.getKey();
+		} catch (Exception e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+			return;
+		}
 		
 		TextView pageTotal = (TextView)findViewById(R.id.page_total);
 		EditText pageNumber = (EditText)findViewById(R.id.page_number);

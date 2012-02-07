@@ -19,11 +19,7 @@ package com.SifterReader.android;
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA. */
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URLConnection;
 
 import org.json.JSONArray;
@@ -94,49 +90,29 @@ public class SifterReader extends ListActivity {
 		setTitle(R.string.projects);
 		registerForContextMenu(getListView());
 		
-		File keyFile = getFileStreamPath(KEY_FILE);
-		if (!keyFile.exists()) {
-			if (onMissingToken())
-				loginKeys();
-			return;
-		}
-		
-		boolean fileReadError = false;
+		mSifterHelper = new SifterHelper(this);
+		boolean haveKeys;
 		try {
-			BufferedReader in = new BufferedReader(new FileReader(keyFile));
-			String inputLine;
-			StringBuilder x = new StringBuilder();
-			while ((inputLine = in.readLine()) != null) {
-				x.append(inputLine);
-			}
-			in.close();
-			JSONObject loginKeys = new JSONObject(x.toString());
-			mDomain = loginKeys.getString(DOMAIN);
-			mAccessKey = loginKeys.getString(ACCESS_KEY);
-		} catch (FileNotFoundException e) {
+			haveKeys = mSifterHelper.getKey();
+		} catch (Exception e) {
 			e.printStackTrace();
-			fileReadError = true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			fileReadError = true;
-		} catch (JSONException e) {
-			e.printStackTrace();
-			fileReadError = true;
-		}
-		if (fileReadError || mDomain.isEmpty() || mAccessKey.isEmpty()) {
-			if (onMissingToken())
-				loginKeys();
+			mSifterHelper.onException(e.toString());
 			return;
 		}
-		mSifterHelper = new SifterHelper(this,mAccessKey);
-		
+		if (haveKeys) {
+			mDomain = mSifterHelper.mDomain;
+			mAccessKey = mSifterHelper.mAccessKey;
+		} else {
+			mLoginError = mSifterHelper.mLoginError;
+			loginKeys();
+			return;
+		}
 		String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
 		URLConnection sifterConnection = mSifterHelper.getSifterConnection(projectsURL);
 		if (sifterConnection == null) {
 			loginKeys();
 			return;
 		}
-		
 		JSONObject sifterJSONObject = new JSONObject();
 		try {
 			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
@@ -149,7 +125,6 @@ public class SifterReader extends ListActivity {
 			loginKeys();
 			return;
 		}
-
 		try {
 		loadProjects(sifterJSONObject);
 		} catch (JSONException e) {
@@ -157,24 +132,7 @@ public class SifterReader extends ListActivity {
 			mSifterHelper.onException(e.toString());
 			return;
 		}
-		
 		fillData();
-	}
-	
-	private boolean onMissingToken(){
-		try {
-			mLoginError.put(LOGIN_ERROR,getResources().getString(R.string.token_missing));
-			mLoginError.put(LOGIN_DETAIL,getResources().getString(R.string.token_missing_msg));
-		} catch (NotFoundException e) {
-			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
-			return false;
-		} catch (JSONException e) {
-			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
-			return false;
-		}
-		return true;
 	}
 	
 	/** Method to pass project names to list adapter. */
@@ -231,7 +189,13 @@ public class SifterReader extends ListActivity {
 			mAllProjects = null;
 			mDomain = null;
 			mAccessKey = null;
-			onMissingToken();
+			try {
+				mLoginError = mSifterHelper.onMissingToken();
+			} catch (Exception e) {
+				e.printStackTrace();
+				mSifterHelper.onException(e.toString());
+				return;
+			}
 			setListAdapter(null);
 			onContentChanged();
 		}
@@ -349,8 +313,14 @@ public class SifterReader extends ListActivity {
     		mAccessKey = extras.getString(ACCESS_KEY);
     		mSifterHelper = new SifterHelper(this,mAccessKey);
     		if (mDomain.isEmpty() || mAccessKey.isEmpty()) {
-    			if (onMissingToken())
+    			try {
+    				mLoginError = mSifterHelper.onMissingToken();
     				loginKeys();
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    				mSifterHelper.onException(e.toString());
+    				return;
+    			}
     			break;
     		} // if keys are empty return to LoginActivity
     		String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
@@ -376,7 +346,7 @@ public class SifterReader extends ListActivity {
     		} catch (JSONException e) {
     			e.printStackTrace();
     			mSifterHelper.onException(e.toString());
-    			break;
+    			return;
     		}
     		fillData();
     		break;

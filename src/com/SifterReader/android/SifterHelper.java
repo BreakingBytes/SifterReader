@@ -23,7 +23,9 @@ public class SifterHelper {
 	
 	// Members
 	private final Context mContext;
-	private String mAccessKey;
+	public String mAccessKey;
+	public String mDomain;
+	public JSONObject mLoginError = new JSONObject();
 	
 	// SifterAPI headers
 	public static final String X_SIFTER_TOKEN = "X-Sifter-Token";
@@ -38,7 +40,6 @@ public class SifterHelper {
 	
 	public SifterHelper(Context context) {
 		mContext = context;
-		getKey();
 	}
 	
 	public URLConnection getSifterConnection(String sifterURL) {
@@ -82,44 +83,45 @@ public class SifterHelper {
 					mContext.getResources().getString(R.string.connection_error_msg));
 		return connectionError;
 	}
-	
-	public void getKey(){
-		File keyFile = mContext.getFileStreamPath(SifterReader.KEY_FILE);
-//		if (!keyFile.exists()) {
-//			if (onMissingToken())
-//				loginKeys();
-//			return;
-//		}
-		
-//		boolean fileReadError = false;
-		try {
-			BufferedReader in = new BufferedReader(new FileReader(keyFile));
-			String inputLine;
-			StringBuilder x = new StringBuilder();
-			while ((inputLine = in.readLine()) != null) {
-				x.append(inputLine);
-			}
-			in.close();
-			JSONObject loginKeys = new JSONObject(x.toString());
-			mAccessKey = loginKeys.getString(SifterReader.ACCESS_KEY);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-//			fileReadError = true;
-		} catch (IOException e) {
-			e.printStackTrace();
-//			fileReadError = true;
-		} catch (JSONException e) {
-			e.printStackTrace();
-//			fileReadError = true;
-		}
-//		if (fileReadError || mDomain.isEmpty() || mAccessKey.isEmpty()) {
-//			if (onMissingToken())
-//				loginKeys();
-//			return;
-//		}
+
+	public JSONObject onMissingToken() throws JSONException, NotFoundException {
+		JSONObject missingToken = new JSONObject();
+		missingToken.put(SifterReader.LOGIN_ERROR, // throws JSONException
+				mContext.getResources().getString(R.string.token_missing)); // throws NotFoundException
+		missingToken.put(SifterReader.LOGIN_DETAIL,
+				mContext.getResources().getString(R.string.token_missing_msg));
+		return missingToken;
 	}
 	
-	public JSONObject getSifterJSONObject(URLConnection sifterConnection) throws JSONException,NotFoundException,IOException {
+	public boolean getKey() throws JSONException, NotFoundException, FileNotFoundException, IOException {
+		File keyFile = mContext.getFileStreamPath(SifterReader.KEY_FILE);
+		if (!keyFile.exists()) {
+			mLoginError = onMissingToken(); // throws JSONException, NotFoundException
+			return false;
+		}
+		BufferedReader in = new BufferedReader(new FileReader(keyFile)); // throws FileNotFoundException
+		String inputLine;
+		StringBuilder x = new StringBuilder();
+		try {
+			while ((inputLine = in.readLine()) != null)
+				x.append(inputLine);
+		} catch (IOException e) {
+			in.close();
+			throw e;
+		} // catch error and close buffered reader
+		in.close();
+		JSONObject loginKeys = new JSONObject(x.toString()); // throws JSONException
+		mDomain = loginKeys.getString(SifterReader.DOMAIN); // throws JSONException
+		mAccessKey = loginKeys.getString(SifterReader.ACCESS_KEY); // throws JSONException
+		if (mDomain.isEmpty() || mAccessKey.isEmpty()) {
+			mLoginError = onMissingToken();
+			return false;
+		}
+		return true;
+	}
+	
+	public JSONObject getSifterJSONObject(URLConnection sifterConnection)
+			throws JSONException, NotFoundException, IOException {
 		JSONObject sifterJSONObject = new JSONObject();
 		
 		InputStream sifterInputStream = getSifterInputStream(sifterConnection);
