@@ -12,12 +12,15 @@ import android.widget.TextView;
 public class CategoryDetail extends Activity {
 	
 	public static final String CATEGORY_ISSUES_URL = "issues_url";
-
+	private SifterHelper mSifterHelper;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.categories);
 
+		mSifterHelper = new SifterHelper(this);
+		
 		// capture our View elements
 		TextView categoryName = (TextView) findViewById(R.id.category_name);
 		TextView issuesURL = (TextView) findViewById(R.id.category_issues_url);
@@ -33,6 +36,7 @@ public class CategoryDetail extends Activity {
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
+				mSifterHelper.onException(e.toString());
 			}
 		}
 	}

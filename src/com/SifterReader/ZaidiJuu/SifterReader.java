@@ -60,7 +60,7 @@ public class SifterReader extends ListActivity {
 	public static final String ACCESS_KEY = "accessKey";
 	// SifterAPI URL - use constants in case they change
 	public static final String HTTPS_PREFIX = "https://";
-	public static final String PROJECTS_URL = ".sifterapp.com/api/projects";
+	public static final String PROJECTS_URL = ".sifterapp.com/api/";
 	// SifterAPI JSON-object keys, resource end-points and intent-bundle keys
 	public static final String PROJECTS = "projects";
 	public static final String PROJECT_NAME = "name";
@@ -107,7 +107,7 @@ public class SifterReader extends ListActivity {
 			loginKeys();
 			return;
 		}
-		String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
+		String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL + PROJECTS;
 		URLConnection sifterConnection = mSifterHelper.getSifterConnection(projectsURL);
 		if (sifterConnection == null) {
 			loginKeys();
@@ -145,6 +145,7 @@ public class SifterReader extends ListActivity {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
 		}
 		setListAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, p));
@@ -323,7 +324,7 @@ public class SifterReader extends ListActivity {
     			}
     			break;
     		} // if keys are empty return to LoginActivity
-    		String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL;
+    		String projectsURL = HTTPS_PREFIX + mDomain + PROJECTS_URL + PROJECTS;
     		URLConnection sifterConnection = mSifterHelper.getSifterConnection(projectsURL);
     		if (sifterConnection == null) {
     			loginKeys();
@@ -372,8 +373,10 @@ public class SifterReader extends ListActivity {
 			return false;
 		} catch (NotFoundException e) {
 			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
 		}
 		return true;
 	}

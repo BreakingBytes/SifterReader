@@ -19,12 +19,15 @@ public class CategoriesActivity extends ListActivity {
 	// Members
 	private JSONArray mCategoryArray;
 	private JSONObject[] mAllCategories;
+	private SifterHelper mSifterHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		registerForContextMenu(getListView());
+		
+		mSifterHelper = new SifterHelper(this);
 		
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
@@ -37,6 +40,7 @@ public class CategoriesActivity extends ListActivity {
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
+				mSifterHelper.onException(e.toString());
 			}
 		}
 	}
@@ -51,8 +55,8 @@ public class CategoriesActivity extends ListActivity {
 				allCategories[i] = mCategoryArray.getJSONObject(i);
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
 		}
 		mAllCategories = allCategories;
 	}
@@ -66,6 +70,7 @@ public class CategoriesActivity extends ListActivity {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
 		}
 		setListAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, c));

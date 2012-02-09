@@ -19,13 +19,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class IssuesActivity extends ListActivity {
 
+	public static final String STATUSES = "statuses";
+	public static final String PRIORITIES = "priorities";
 	public static final String NUMBER = "number";
 	public static final String STATUS = "status";
 	public static final String PRIORITY = "priority";
@@ -49,7 +53,11 @@ public class IssuesActivity extends ListActivity {
 	private int mTotalPages;
 	private int mPage;
 	private int mPerPage;
-
+	private JSONObject mStatuses = new JSONObject();
+	private JSONObject mPriorities = new JSONObject();
+	private CheckBox[] mStatusCB;
+	private CheckBox[] mPriorityCB;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,6 +73,13 @@ public class IssuesActivity extends ListActivity {
 			return;
 		}
 		
+    	JSONObject statuses = getFilters(STATUSES);
+    	if (statuses != null)
+    		mStatuses = statuses;
+    	JSONObject priorities = getFilters(PRIORITIES);
+    	if (priorities != null)
+    		mPriorities = priorities;
+    	
 		TextView pageTotal = (TextView)findViewById(R.id.page_total);
 		EditText pageNumber = (EditText)findViewById(R.id.page_number);
 		Button gotoPageButton = (Button)findViewById(R.id.goto_page);
@@ -111,6 +126,7 @@ public class IssuesActivity extends ListActivity {
 							} catch (NumberFormatException e) {
 								pageNumber.setText(String.valueOf(mPage));
 								e.printStackTrace();
+								mSifterHelper.onException(e.toString());
 								return;
 							}
 							loadIssuesPage(newPage);
@@ -121,6 +137,7 @@ public class IssuesActivity extends ListActivity {
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
+				mSifterHelper.onException(e.toString());
 			}
 		}
 	}
@@ -158,6 +175,8 @@ public class IssuesActivity extends ListActivity {
 	    	perpageDialog.setOnDismissListener(mNumberSetListener);
 	    	perpageDialog.setContentView(R.layout.perpage_dialog);
 	    	perpageDialog.setTitle(R.string.issues_settings);
+	    	LinearLayout statusLL = (LinearLayout) perpageDialog.findViewById(R.id.status);
+	    	LinearLayout priorityLL = (LinearLayout) perpageDialog.findViewById(R.id.priority);
 	    	EditText perpage = (EditText) perpageDialog.findViewById(R.id.perpage);
 	    	perpage.setText(String.valueOf(mPerPage));
 	    	Button okButton = (Button) perpageDialog.findViewById(R.id.perpage_ok);
@@ -167,6 +186,28 @@ public class IssuesActivity extends ListActivity {
 					dismissDialog(NUMBER_DIALOG_ID);
 				}
 			});
+	    	int numStatuses = mStatuses.length();
+	    	int numPriorities = mPriorities.length();
+	    	JSONArray statusNames = mStatuses.names();
+	    	JSONArray priorityNames = mPriorities.names();
+	    	mStatusCB = new CheckBox[numStatuses];
+	    	mPriorityCB = new CheckBox[numPriorities];
+	    	try
+	    	{
+	    		for (int i = 0; 1 < numStatuses; i++) {
+	    			mStatusCB[i] = new CheckBox(this);
+	    			mStatusCB[i].setText(statusNames.getString(i));
+	    			statusLL.addView(mStatusCB[i]);
+	    		}
+	    		for (int i = 0; 1 < numPriorities; i++) {
+	    			mPriorityCB[i] = new CheckBox(this);
+	    			mPriorityCB[i].setText(priorityNames.getString(i));
+	    			priorityLL.addView(mPriorityCB[i]);
+	    		}
+	    		
+	    	} catch (JSONException e) {
+	    		e.printStackTrace();
+	    	}
 	    	return perpageDialog;
 	    default:
 	        dialog = null;
@@ -186,6 +227,7 @@ public class IssuesActivity extends ListActivity {
 				newPerPage = Integer.valueOf(perpage.getText().toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
+				mSifterHelper.onException(e.toString());
 			}
 			newPerPage = (newPerPage > MAX_PER_PAGE) ? MAX_PER_PAGE : newPerPage;
 			mPerPage = (newPerPage < 1) ? 1 : newPerPage;
@@ -206,8 +248,8 @@ public class IssuesActivity extends ListActivity {
 				allIssues[i] = issuesArray.getJSONObject(i);
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
 		}
 		mAllIssues = allIssues;
 	}
@@ -226,6 +268,7 @@ public class IssuesActivity extends ListActivity {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
 		}
         ListAdapter adapter = new SimpleAdapter(this, issuesList,
         		R.layout.issue_row,
@@ -273,14 +316,29 @@ public class IssuesActivity extends ListActivity {
 			mSifterHelper.onException(e.toString());
 			return;
 		}
-//				if (getSifterError(sifterJSONObject)) {
-//					loginKeys();
-//					return;
-//				}
 		Intent intent = new Intent(this, IssuesActivity.class);
 		intent.putExtra(SifterReader.ISSUES, sifterJSONObject.toString());
 		intent.putExtra(SifterReader.ISSUES_URL, mIssuesURL);
 		startActivity(intent);
 		return;
+	}
+	
+	private JSONObject getFilters(String filter) {
+		String filterURL = SifterReader.HTTPS_PREFIX + mSifterHelper.mDomain;
+		filterURL += SifterReader.PROJECTS_URL + filter;
+		// get url connection
+		URLConnection sifterConnection = mSifterHelper.getSifterConnection(filterURL);
+		if (sifterConnection == null)
+			return new JSONObject();
+		// get JSON object
+		JSONObject sifterJSONObject = new JSONObject();
+		try {
+			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
+		} catch (Exception e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+			return new JSONObject();
+		}
+		return sifterJSONObject;
 	}
 }

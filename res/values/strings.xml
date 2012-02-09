@@ -10,8 +10,6 @@
     <string name="categories">Categories</string>
     <string name="people">People</string>
     <string name="issues">Issues</string>
-    <string name="statuses">Statuses</string>
-    <string name="priorities">Priorities</string>
     <!-- Login Keys -->
     <string name="menu_login">Enter Key</string>
     <string name="menu_delete">Delete Key</string>
@@ -54,10 +52,13 @@
     <string name="goto_page">go</string>
     <string name="previous_page">prev</string>
     <string name="next_page">next</string>
-    <!-- Issues Menu -->
+    <!-- Issues Menu & Dialog -->
     <string name="issues_settings">settings</string>
     <string name="issues_exit">projects</string>
-    <string name="perpage_ok">OK</string>
+    <string name="perpage_text">issues per page</string>
+    <!-- Issues Filters -->
+    <string name="statuses">Statuses</string>
+    <string name="priorities">Priorities</string>
     <!-- Oops Message -->
     <string name="oops_msg">Oops, something unexpected happened.\nHere is the stack trace.</string>
     
