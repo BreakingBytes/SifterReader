@@ -1,10 +1,8 @@
-package com.SifteReader.ZaidiJuu;
+package com.SifterReader.ZaidiJuu;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.SifterReader.ZaidiJuu.R;
 
 import android.app.Activity;
 import android.os.Bundle;

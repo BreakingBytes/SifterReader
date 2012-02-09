@@ -1,4 +1,4 @@
-package com.SifteReader.ZaidiJuu;
+package com.SifterReader.ZaidiJuu;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,8 +14,6 @@ import java.net.URLConnection;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.SifterReader.ZaidiJuu.R;
 
 import android.content.Context;
 import android.content.Intent;
