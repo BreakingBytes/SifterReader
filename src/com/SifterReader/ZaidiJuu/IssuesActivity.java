@@ -57,6 +57,13 @@ public class IssuesActivity extends ListActivity {
 	private JSONObject mPriorities = new JSONObject();
 	private CheckBox[] mStatusCB;
 	private CheckBox[] mPriorityCB;
+	private boolean[] mFilterStatus;
+	private boolean[] mFilterPriority;
+	private int mNumStatuses;
+	private int mNumPriorities;
+	private JSONArray mStatusNames;
+	private JSONArray mPriorityNames;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,11 +81,17 @@ public class IssuesActivity extends ListActivity {
 		}
 		
     	JSONObject statuses = getFilters(STATUSES);
-    	if (statuses != null)
+    	if (statuses != null) {
     		mStatuses = statuses;
+    		mNumStatuses = mStatuses.length();
+    		mStatusNames = mStatuses.names();
+    	}
     	JSONObject priorities = getFilters(PRIORITIES);
-    	if (priorities != null)
+    	if (priorities != null) {
     		mPriorities = priorities;
+    		mNumPriorities = mPriorities.length();
+    		mPriorityNames = mPriorities.names();
+    	}
     	
 		TextView pageTotal = (TextView)findViewById(R.id.page_total);
 		EditText pageNumber = (EditText)findViewById(R.id.page_number);
@@ -186,27 +199,23 @@ public class IssuesActivity extends ListActivity {
 					dismissDialog(NUMBER_DIALOG_ID);
 				}
 			});
-	    	int numStatuses = mStatuses.length();
-	    	int numPriorities = mPriorities.length();
-	    	JSONArray statusNames = mStatuses.names();
-	    	JSONArray priorityNames = mPriorities.names();
-	    	mStatusCB = new CheckBox[numStatuses];
-	    	mPriorityCB = new CheckBox[numPriorities];
+	    	mStatusCB = new CheckBox[mNumStatuses];
+	    	mPriorityCB = new CheckBox[mNumPriorities];
 	    	try
 	    	{
-	    		for (int i = 0; 1 < numStatuses; i++) {
+	    		for (int i = 0; i < mNumStatuses; i++) {
 	    			mStatusCB[i] = new CheckBox(this);
-	    			mStatusCB[i].setText(statusNames.getString(i));
+	    			mStatusCB[i].setText(mStatusNames.getString(i));
 	    			statusLL.addView(mStatusCB[i]);
 	    		}
-	    		for (int i = 0; 1 < numPriorities; i++) {
+	    		for (int i = 0; i < mNumPriorities; i++) {
 	    			mPriorityCB[i] = new CheckBox(this);
-	    			mPriorityCB[i].setText(priorityNames.getString(i));
+	    			mPriorityCB[i].setText(mPriorityNames.getString(i));
 	    			priorityLL.addView(mPriorityCB[i]);
 	    		}
-	    		
 	    	} catch (JSONException e) {
 	    		e.printStackTrace();
+	    		mSifterHelper.onException(e.toString());
 	    	}
 	    	return perpageDialog;
 	    default:
@@ -231,6 +240,14 @@ public class IssuesActivity extends ListActivity {
 			}
 			newPerPage = (newPerPage > MAX_PER_PAGE) ? MAX_PER_PAGE : newPerPage;
 			mPerPage = (newPerPage < 1) ? 1 : newPerPage;
+			mFilterStatus = new boolean[mNumStatuses];
+			mFilterPriority = new boolean[mNumPriorities];
+			for (int i = 0; i < mNumStatuses; i++) {
+    			mFilterStatus[i] = mStatusCB[i].isChecked();
+    		}
+    		for (int i = 0; i < mNumPriorities; i++) {
+    			mFilterPriority[i] = mPriorityCB[i].isChecked();
+    		}
 			loadIssuesPage(mPage);
 		}
 	};
@@ -303,6 +320,33 @@ public class IssuesActivity extends ListActivity {
 	}
 	
 	private void changePage(String pageURL) {
+		try
+		{
+			String filterSlug = "&s=";
+			for (int i = 0; i < mNumStatuses; i++) {
+				if (mFilterStatus[i]) {
+					filterSlug += String.valueOf(mStatuses.getInt(mStatusNames.getString(i))) + "-";
+				}
+			}
+			if (filterSlug.length() > 3) {
+				filterSlug = filterSlug.substring(0, filterSlug.length()-1);
+				pageURL += filterSlug;
+			}
+			filterSlug = "&p=";
+			for (int i = 0; i < mNumPriorities; i++) {
+				if (mFilterPriority[i]) {
+					filterSlug += String.valueOf(mPriorities.getInt(mPriorityNames.getString(i))) + "-";
+				}
+			}
+			if (filterSlug.length() > 3) {
+				filterSlug = filterSlug.substring(0, filterSlug.length()-1);
+				pageURL += filterSlug;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+			return;
+		}
 		// get url connection
 		URLConnection sifterConnection = mSifterHelper.getSifterConnection(pageURL);
 		if (sifterConnection == null)
@@ -331,14 +375,15 @@ public class IssuesActivity extends ListActivity {
 		if (sifterConnection == null)
 			return new JSONObject();
 		// get JSON object
-		JSONObject sifterJSONObject = new JSONObject();
+		JSONObject filterJSONObject = new JSONObject();
 		try {
-			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
+			JSONObject sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
+			filterJSONObject = sifterJSONObject.getJSONObject(filter);
 		} catch (Exception e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
 			return new JSONObject();
 		}
-		return sifterJSONObject;
+		return filterJSONObject;
 	}
 }

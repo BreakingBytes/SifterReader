@@ -10,20 +10,22 @@
         android:layout_height="wrap_content"
         android:inputType="number" />
 
-    <Button
-        android:id="@+id/perpage_ok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/perpage"
-        android:text="@android:string/ok" />
-    
     <TextView 
         android:id="@+id/perpage_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/perpage_ok"
+        android:layout_toRightOf="@id/perpage"
+        android:layout_alignBottom="@id/perpage"
         android:text="@string/perpage_text" />
 
+    <Button
+        android:id="@+id/perpage_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/perpage_label"
+        android:layout_alignBottom="@id/perpage"
+        android:text="@android:string/ok" />
+    
     <LinearLayout
         android:id="@+id/status"
         android:layout_width="wrap_content"
