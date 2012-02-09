@@ -57,7 +57,7 @@
             android:label="Issues" >
         </activity>
         <activity
-            android:name=".OopsActivity"
+            android:name="OopsActivity"
             android:label="Errors" >
         </activity>
     </application>
