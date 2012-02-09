@@ -1,8 +1,10 @@
-package com.SifterReader.android;
+package com.SifteReader.ZaidiJuu;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.SifterReader.ZaidiJuu.R;
 
 import android.app.ListActivity;
 import android.content.Intent;

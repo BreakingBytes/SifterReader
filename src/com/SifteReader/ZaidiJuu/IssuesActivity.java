@@ -1,4 +1,4 @@
-package com.SifterReader.android;
+package com.SifteReader.ZaidiJuu;
 
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -9,6 +9,8 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.SifterReader.ZaidiJuu.R;
 
 import android.app.Dialog;
 import android.app.ListActivity;

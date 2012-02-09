@@ -1,4 +1,4 @@
-package com.SifterReader.android;
+package com.SifteReader.ZaidiJuu;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.SifterReader.ZaidiJuu.R;
 
 import android.app.Activity;
 import android.content.Context;

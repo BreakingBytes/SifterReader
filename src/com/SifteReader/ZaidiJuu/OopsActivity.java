@@ -1,4 +1,6 @@
-package com.SifterReader.android;
+package com.SifteReader.ZaidiJuu;
+
+import com.SifterReader.ZaidiJuu.R;
 
 import android.app.Activity;
 import android.os.Bundle;
