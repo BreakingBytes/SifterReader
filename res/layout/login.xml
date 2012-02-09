@@ -1,18 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/sifter_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFF"
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="#000"
+            android:textSize="30sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFF"
+            android:contentDescription="@string/image_sifter"
+            android:src="@drawable/sifter135x170" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/domain_label"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/sifter_title"
         android:text="@string/domain" />
 
     <EditText
         android:id="@+id/domain_entry"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/domain_label"
         android:background="@android:drawable/editbox_background"
@@ -20,14 +54,14 @@
 
     <TextView
         android:id="@+id/access_key_label"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/domain_entry"
         android:text="@string/access_key" />
 
     <EditText
         android:id="@+id/access_key_entry"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/access_key_label"
         android:background="@android:drawable/editbox_background"
@@ -36,11 +70,11 @@
 
     <TextView
         android:id="@+id/login_error_label"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/access_key_entry"
         android:text="@string/login_error" />
-        
+
     <TextView
         android:id="@+id/login_error"
         android:layout_width="wrap_content"
@@ -48,19 +82,19 @@
         android:layout_below="@id/login_error_label"
         android:background="@android:drawable/editbox_background"
         android:textColor="#000" />
-    
+
     <Button
         android:id="@+id/save_key"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/access_key_entry"
-        android:layout_alignRight="@id/access_key_entry"
         android:layout_alignBottom="@id/login_error"
+        android:layout_alignRight="@id/access_key_entry"
+        android:layout_below="@id/access_key_entry"
         android:text="@string/save_key" />
-    
+
     <TextView
         android:id="@+id/login_error_msg"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/login_error" />
 

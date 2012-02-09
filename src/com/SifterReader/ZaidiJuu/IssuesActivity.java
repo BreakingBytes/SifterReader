@@ -157,7 +157,7 @@ public class IssuesActivity extends ListActivity {
 	    	Dialog perpageDialog = new Dialog(this);
 	    	perpageDialog.setOnDismissListener(mNumberSetListener);
 	    	perpageDialog.setContentView(R.layout.perpage_dialog);
-	    	perpageDialog.setTitle("Number of issues per page");
+	    	perpageDialog.setTitle(R.string.issues_settings);
 	    	EditText perpage = (EditText) perpageDialog.findViewById(R.id.perpage);
 	    	perpage.setText(String.valueOf(mPerPage));
 	    	Button okButton = (Button) perpageDialog.findViewById(R.id.perpage_ok);

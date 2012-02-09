@@ -15,6 +15,7 @@
     <!-- Login Keys -->
     <string name="menu_login">Enter Key</string>
     <string name="menu_delete">Delete Key</string>
+    <string name="image_sifter">SifterReader</string>
     <string name="domain">Domain Name:</string>
     <string name="access_key">Access Key:</string>
     <string name="domain_hint">your-company</string>
