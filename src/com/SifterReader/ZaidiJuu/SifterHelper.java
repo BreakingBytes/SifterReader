@@ -3,6 +3,7 @@ package com.SifterReader.ZaidiJuu;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +12,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -153,4 +156,41 @@ public class SifterHelper {
 		mContext.startActivity(intent);
 	}
 	
+	public void saveFilters(boolean[] filterStatus, boolean[] filterPriority) {
+		try {JSONObject filters = new JSONObject();
+			filters.put(IssuesActivity.STATUS, new JSONArray(Arrays.asList(filterStatus)));
+			filters.put(IssuesActivity.PRIORITY, new JSONArray(Arrays.asList(filterPriority)));
+			FileOutputStream fos = mContext.openFileOutput(SifterReader.KEY_FILE, Context.MODE_APPEND);
+			fos.write(filters.toString().getBytes());
+			fos.close();
+		} catch (JSONException e) {
+			e.printStackTrace();
+			onException(e.toString());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			onException(e.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+			onException(e.toString());
+		}
+	}
+	
+	public JSONObject getFilters() throws JSONException, FileNotFoundException, IOException {
+		File keyFile = mContext.getFileStreamPath(SifterReader.KEY_FILE);
+		if (!keyFile.exists())
+			return new JSONObject();
+		BufferedReader in = new BufferedReader(new FileReader(keyFile)); // throws FileNotFoundException
+		String inputLine;
+		StringBuilder x = new StringBuilder();
+		try {
+			while ((inputLine = in.readLine()) != null)
+				x.append(inputLine);
+		} catch (IOException e) {
+			in.close();
+			throw e;
+		} // catch error and close buffered reader
+		in.close();
+		JSONObject filters = new JSONObject(x.toString()); // throws JSONException
+		return filters;
+	}
 }

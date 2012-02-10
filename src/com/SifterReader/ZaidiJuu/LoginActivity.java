@@ -23,6 +23,7 @@ public class LoginActivity extends Activity {
 	private EditText mAccessKey; // sifter access key
 	private TextView mLoginError;
 	private TextView mLoginErrorMsg;
+	private SifterHelper mSifterHelper;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -30,6 +31,8 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 
+		mSifterHelper = new SifterHelper(this);
+		
 		// capture our View elements
 		mDomain = (EditText) findViewById(R.id.domain_entry);
 		mAccessKey = (EditText) findViewById(R.id.access_key_entry);
@@ -56,6 +59,7 @@ public class LoginActivity extends Activity {
 					mLoginErrorMsg.setText(loginStatus.getString(SifterReader.LOGIN_DETAIL));
 				} catch (JSONException e) {
 					e.printStackTrace();
+					mSifterHelper.onException(e.toString());
 				}
 			}
 		}
@@ -71,13 +75,15 @@ public class LoginActivity extends Activity {
 					FileOutputStream fos = openFileOutput(SifterReader.KEY_FILE, Context.MODE_PRIVATE);
 					fos.write(loginKeys.toString().getBytes());
 					fos.close();
-
 				} catch (JSONException e) {
 					e.printStackTrace();
+					mSifterHelper.onException(e.toString());
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
+					mSifterHelper.onException(e.toString());
 				} catch (IOException e) {
 					e.printStackTrace();
+					mSifterHelper.onException(e.toString());
 				}
 
 				Bundle bundle = new Bundle();
@@ -91,6 +97,7 @@ public class LoginActivity extends Activity {
 			}
 		});
 	}
+	// TODO remove bundle and just read/write key file
 	
 	/** called by Android if the Activity is being stopped
 	 *  and may be killed before it is resumed! */

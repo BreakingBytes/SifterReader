@@ -92,6 +92,30 @@ public class IssuesActivity extends ListActivity {
     		mNumPriorities = mPriorities.length();
     		mPriorityNames = mPriorities.names();
     	}
+    	mFilterStatus = new boolean[mNumStatuses];
+		mFilterPriority = new boolean[mNumPriorities];
+		for (int i = 0; i < mNumStatuses; i++) {
+			mFilterStatus[i] = false;
+		}
+		for (int i = 0; i < mNumPriorities; i++) {
+			mFilterPriority[i] = false;
+		}
+    	try {
+			JSONObject filters = mSifterHelper.getFilters();
+			if (filters.length() == 0) {
+				JSONArray status = filters.getJSONArray(STATUS);
+				JSONArray priority = filters.getJSONArray(PRIORITY);
+				for (int i = 0; i < mNumStatuses; i++) {
+					mFilterStatus[i] = status.getBoolean(i);
+				}
+				for (int i = 0; i < mNumPriorities; i++) {
+					mFilterPriority[i] = priority.getBoolean(i);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+		}
     	
 		TextView pageTotal = (TextView)findViewById(R.id.page_total);
 		EditText pageNumber = (EditText)findViewById(R.id.page_number);
@@ -248,6 +272,7 @@ public class IssuesActivity extends ListActivity {
     		for (int i = 0; i < mNumPriorities; i++) {
     			mFilterPriority[i] = mPriorityCB[i].isChecked();
     		}
+    		mSifterHelper.saveFilters(mFilterStatus, mFilterPriority);
 			loadIssuesPage(mPage);
 		}
 	};
