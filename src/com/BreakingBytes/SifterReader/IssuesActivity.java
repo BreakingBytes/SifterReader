@@ -1,4 +1,4 @@
-package com.SifterReader.ZaidiJuu;
+package com.BreakingBytes.SifterReader;
 
 import java.net.URLConnection;
 import java.util.ArrayList;

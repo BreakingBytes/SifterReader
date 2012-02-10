@@ -1,4 +1,4 @@
-package com.SifterReader.ZaidiJuu;
+package com.BreakingBytes.SifterReader;
 
 /*      SifterReader.java
  *      

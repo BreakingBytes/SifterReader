@@ -1,4 +1,4 @@
-package com.SifterReader.ZaidiJuu;
+package com.BreakingBytes.SifterReader;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
