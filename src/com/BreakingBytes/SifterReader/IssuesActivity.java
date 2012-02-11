@@ -109,6 +109,7 @@ public class IssuesActivity extends ListActivity {
 		} catch (Exception e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
+			return;
 		}
     	
 		TextView pageTotal = (TextView)findViewById(R.id.page_total);
@@ -169,7 +170,7 @@ public class IssuesActivity extends ListActivity {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
+			mSifterHelper.onException(e.toString()); // return not needed
 		}
 	}
 
@@ -219,8 +220,7 @@ public class IssuesActivity extends ListActivity {
 			});
 	    	mStatusCB = new CheckBox[mNumStatuses];
 	    	mPriorityCB = new CheckBox[mNumPriorities];
-	    	try
-	    	{
+	    	try {
 	    		for (int i = 0; i < mNumStatuses; i++) {
 	    			mStatusCB[i] = new CheckBox(this);
 	    			mStatusCB[i].setText(mStatusNames.getString(i));
@@ -236,6 +236,7 @@ public class IssuesActivity extends ListActivity {
 	    	} catch (JSONException e) {
 	    		e.printStackTrace();
 	    		mSifterHelper.onException(e.toString());
+	    		return dialog; // return null on exception
 	    	}
 	    	return perpageDialog;
 	    default:
@@ -257,6 +258,7 @@ public class IssuesActivity extends ListActivity {
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 				mSifterHelper.onException(e.toString());
+				return;
 			}
 			newPerPage = (newPerPage > MAX_PER_PAGE) ? MAX_PER_PAGE : newPerPage;
 			mPerPage = (newPerPage < 1) ? 1 : newPerPage;
@@ -276,17 +278,15 @@ public class IssuesActivity extends ListActivity {
 	private void getIssues() {
 		JSONObject[] allIssues = null;
 		try {
-			// array of issues on first page
 			JSONArray issuesArray = mIssues.getJSONArray(SifterReader.ISSUES);
 			int numberIssues = issuesArray.length();
 			allIssues = new JSONObject[numberIssues];
-
-			// issues
 			for (int i = 0; i < numberIssues; i++)
 				allIssues[i] = issuesArray.getJSONObject(i);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
+			return;
 		}
 		mAllIssues = allIssues;
 	}
@@ -306,6 +306,7 @@ public class IssuesActivity extends ListActivity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
+			return;
 		}
         ListAdapter adapter = new SimpleAdapter(this, issuesList,
         		R.layout.issue_row,

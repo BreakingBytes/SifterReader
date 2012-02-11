@@ -41,7 +41,7 @@ public class CategoriesActivity extends ListActivity {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
+			mSifterHelper.onException(e.toString()); // return not needed
 		}		
 	}
 
@@ -54,6 +54,7 @@ public class CategoriesActivity extends ListActivity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
+			return;
 		}
 		mAllCategories = allCategories;
 	}
@@ -67,6 +68,7 @@ public class CategoriesActivity extends ListActivity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
+			return;
 		}
 		setListAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, c));

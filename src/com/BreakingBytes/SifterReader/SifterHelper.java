@@ -178,13 +178,13 @@ public class SifterHelper {
 			fos.close();
 		} catch (JSONException e) {
 			e.printStackTrace();
-			onException(e.toString());
+			onException(e.toString()); // return not needed
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			onException(e.toString());
+			onException(e.toString()); // return not needed
 		} catch (IOException e) {
 			e.printStackTrace();
-			onException(e.toString());
+			onException(e.toString()); // return not needed
 		}
 	}
 	

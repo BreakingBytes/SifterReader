@@ -366,10 +366,10 @@ public class SifterReader extends ListActivity {
 			return false;
 		} catch (NotFoundException e) {
 			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
+			mSifterHelper.onException(e.toString()); // return true below
 		} catch (JSONException e) {
 			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
+			mSifterHelper.onException(e.toString()); // return true below
 		}
 		return true;
 	}

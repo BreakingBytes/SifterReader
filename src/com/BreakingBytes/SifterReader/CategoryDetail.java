@@ -36,7 +36,7 @@ public class CategoryDetail extends Activity {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
+			mSifterHelper.onException(e.toString()); // return not needed
 		}
 	}
 	
