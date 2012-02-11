@@ -80,19 +80,17 @@ public class IssuesActivity extends ListActivity {
 			return;
 		}
 		
-    	JSONObject statuses = getFilters(STATUSES);
-    	if (statuses != null) {
-    		mStatuses = statuses;
-    		mNumStatuses = mStatuses.length();
-    		mStatusNames = mStatuses.names();
-    	}
-    	JSONObject priorities = getFilters(PRIORITIES);
-    	if (priorities != null) {
-    		mPriorities = priorities;
-    		mNumPriorities = mPriorities.length();
-    		mPriorityNames = mPriorities.names();
-    	}
-    	mFilterStatus = new boolean[mNumStatuses];
+		JSONObject statuses = getFilters(STATUSES);
+		JSONObject priorities = getFilters(PRIORITIES);
+		if (statuses == null || priorities == null)
+			return;
+		mStatuses = statuses;
+		mNumStatuses = mStatuses.length();
+		mStatusNames = mStatuses.names();
+		mPriorities = priorities;
+		mNumPriorities = mPriorities.length();
+		mPriorityNames = mPriorities.names();
+		mFilterStatus = new boolean[mNumStatuses];
 		mFilterPriority = new boolean[mNumPriorities];
 		for (int i = 0; i < mNumStatuses; i++)
 			mFilterStatus[i] = true;
@@ -120,58 +118,58 @@ public class IssuesActivity extends ListActivity {
 		Button nextPageButton = (Button)findViewById(R.id.next_page);
 		
 		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			try {
-				String issuesURL = extras.getString(SifterReader.ISSUES_URL);
-				if (issuesURL != null)
-					mIssuesURL = issuesURL;
-				JSONObject issues = new JSONObject(extras.getString(SifterReader.ISSUES));
-				if (issues != null) {
-					mIssues = issues; 
-					getIssues();
-					mPage = mIssues.getInt(PAGE);
-					mTotalPages = mIssues.getInt(TOTAL_PAGES);
-					mPerPage = mIssues.getInt(PER_PAGE);
-					pageNumber.setText(String.valueOf(mPage));
-					pageTotal.setText(" / " + String.valueOf(mTotalPages));
+		if (extras == null)
+			return;
+		try {
+			String issuesURL = extras.getString(SifterReader.ISSUES_URL);
+			if (issuesURL != null)
+				mIssuesURL = issuesURL;
+			JSONObject issues = new JSONObject(extras.getString(SifterReader.ISSUES));
+			if (issues != null) {
+				mIssues = issues; 
+				getIssues();
+				mPage = mIssues.getInt(PAGE);
+				mTotalPages = mIssues.getInt(TOTAL_PAGES);
+				mPerPage = mIssues.getInt(PER_PAGE);
+				pageNumber.setText(String.valueOf(mPage));
+				pageTotal.setText(" / " + String.valueOf(mTotalPages));
 
-					prevPageButton.setOnClickListener(new View.OnClickListener() {
-						// anonymous inner class
-						public void onClick(View view) {
-							loadIssuesPage(PREVIOUS_PAGE_URL);
-						}
-					});
-					
-					nextPageButton.setOnClickListener(new View.OnClickListener() {
-						// anonymous inner class
-						public void onClick(View view) {
-							loadIssuesPage(NEXT_PAGE_URL);
-						}
-					});
-					
-					gotoPageButton.setOnClickListener(new View.OnClickListener() {
-						// anonymous inner class
-						public void onClick(View view) {
-							EditText pageNumber = (EditText)findViewById(R.id.page_number);
-							int newPage = 0;
-							try {
+				prevPageButton.setOnClickListener(new View.OnClickListener() {
+					// anonymous inner class
+					public void onClick(View view) {
+						loadIssuesPage(PREVIOUS_PAGE_URL);
+					}
+				});
+
+				nextPageButton.setOnClickListener(new View.OnClickListener() {
+					// anonymous inner class
+					public void onClick(View view) {
+						loadIssuesPage(NEXT_PAGE_URL);
+					}
+				});
+
+				gotoPageButton.setOnClickListener(new View.OnClickListener() {
+					// anonymous inner class
+					public void onClick(View view) {
+						EditText pageNumber = (EditText)findViewById(R.id.page_number);
+						int newPage = 0;
+						try {
 							newPage = Integer.valueOf(pageNumber.getText().toString());
-							} catch (NumberFormatException e) {
-								pageNumber.setText(String.valueOf(mPage));
-								e.printStackTrace();
-								mSifterHelper.onException(e.toString());
-								return;
-							}
-							loadIssuesPage(newPage);
+						} catch (NumberFormatException e) {
+							pageNumber.setText(String.valueOf(mPage));
+							e.printStackTrace();
+							mSifterHelper.onException(e.toString());
+							return;
 						}
-					});
-					
-					fillData();
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-				mSifterHelper.onException(e.toString());
+						loadIssuesPage(newPage);
+					}
+				});
+
+				fillData();
 			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
 		}
 	}
 
