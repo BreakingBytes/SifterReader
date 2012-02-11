@@ -48,12 +48,9 @@ public class CategoriesActivity extends ListActivity {
 	private void getCategories() {
 		int numberCategories = mCategoryArray.length();
 		JSONObject[] allCategories = new JSONObject[numberCategories];
-
-		// categories
 		try {
-			for (int i = 0; i < numberCategories; i++) {
+			for (int i = 0; i < numberCategories; i++)
 				allCategories[i] = mCategoryArray.getJSONObject(i);
-			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
@@ -65,9 +62,8 @@ public class CategoriesActivity extends ListActivity {
 		int cNum = mAllCategories.length;
 		String[] c = new String[cNum];
 		try {
-			for (int j = 0; j < cNum; j++) {
+			for (int j = 0; j < cNum; j++)
 				c[j] = mAllCategories[j].getString(CATEGORY_NAME);
-			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
@@ -76,7 +72,7 @@ public class CategoriesActivity extends ListActivity {
 				android.R.layout.simple_list_item_1, c));
 	}
 	
-	/** Intent for CategoryDetail activity for clicked project in list. */
+	/** start CategoryDetail activity for clicked project in list. */
 	@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
