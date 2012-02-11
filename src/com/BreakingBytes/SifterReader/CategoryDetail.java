@@ -21,23 +21,22 @@ public class CategoryDetail extends Activity {
 
 		mSifterHelper = new SifterHelper(this);
 		
-		// capture our View elements
 		TextView categoryName = (TextView) findViewById(R.id.category_name);
 		TextView issuesURL = (TextView) findViewById(R.id.category_issues_url);
 
 		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			try {
-				JSONObject category = new JSONObject(extras.getString(CategoriesActivity.CATEGORY));
-				if (category != null && checkFields(category)) {
-					categoryName.setText(category.getString(CategoriesActivity.CATEGORY_NAME));
-					issuesURL.setText(category.getString(CATEGORY_ISSUES_URL));
-					Linkify.addLinks(issuesURL, Linkify.WEB_URLS);
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-				mSifterHelper.onException(e.toString());
+		if (extras == null)
+			return;
+		try {
+			JSONObject category = new JSONObject(extras.getString(CategoriesActivity.CATEGORY));
+			if (category != null && checkFields(category)) {
+				categoryName.setText(category.getString(CategoriesActivity.CATEGORY_NAME));
+				issuesURL.setText(category.getString(CATEGORY_ISSUES_URL));
+				Linkify.addLinks(issuesURL, Linkify.WEB_URLS);
 			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
 		}
 	}
 	
