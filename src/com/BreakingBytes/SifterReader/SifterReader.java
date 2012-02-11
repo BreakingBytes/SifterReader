@@ -140,9 +140,8 @@ public class SifterReader extends ListActivity {
 		int pNum = mAllProjects.length;
 		String[] p = new String[pNum];
 		try {
-			for (int j = 0; j < pNum; j++) {
+			for (int j = 0; j < pNum; j++)
 				p[j] = mAllProjects[j].getString(PROJECT_NAME);
-			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
@@ -248,7 +247,6 @@ public class SifterReader extends ListActivity {
 	/** Intent for Project Details Activities. */
     private void getProjDetail(long id, String PROJ_DETAIL_URL, String PROJ_DETAIL, Class<?> cls) {
     	String projDetailURL = null;
-    	// get project detail url from project
     	try {
     		projDetailURL = mAllProjects[(int)id].getString(PROJ_DETAIL_URL);
     		// TODO use safe long typecast to int
@@ -257,11 +255,9 @@ public class SifterReader extends ListActivity {
 			mSifterHelper.onException(e.toString());
 			return;
     	}
-    	// get url connection
     	URLConnection sifterConnection = mSifterHelper.getSifterConnection(projDetailURL);
 		if (sifterConnection == null)
 			return;
-		// get JSON object
 		JSONObject sifterJSONObject = new JSONObject();
 		try {
 			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
@@ -281,7 +277,6 @@ public class SifterReader extends ListActivity {
 			startActivity(intent);
 			return;
 		}
-		// get project detail
 		JSONArray projDetail = new JSONArray();
 		try {
 			projDetail = sifterJSONObject.getJSONArray(PROJ_DETAIL);
@@ -290,16 +285,14 @@ public class SifterReader extends ListActivity {
 			mSifterHelper.onException(e.toString());
 			return;
 		}		
-		// intent for MilestonesActivity
-    	Intent intent = new Intent(this, cls);
+		Intent intent = new Intent(this, cls);
 		intent.putExtra(PROJ_DETAIL, projDetail.toString());
 		startActivity(intent);
 	}
 	
     /** Determine activity by result code. */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-    		Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     	super.onActivityResult(requestCode, resultCode, intent);
     	if (intent == null)
     		return;
@@ -354,6 +347,9 @@ public class SifterReader extends ListActivity {
     	}
     }
 	
+    /** check if SifterAPI returned error
+     * {"error":"Invalid Account","detail":"Please correct the account subdomain."}
+	 * {"error":"Invalid Token","detail":"Please make sure that you are using the correct token."} */
 	private boolean getSifterError(JSONObject sifterJSONObject) {
 		try {
 			JSONArray sifterJSONObjFieldNames = sifterJSONObject.names();
@@ -361,10 +357,6 @@ public class SifterReader extends ListActivity {
 			if (numKeys==2
 					&& LOGIN_ERROR.equals(sifterJSONObjFieldNames.getString(0))
 					&& LOGIN_DETAIL.equals(sifterJSONObjFieldNames.getString(1))) {
-				// check for incorrect header
-				// SifterAPI says:
-				// {"error":"Invalid Account","detail":"Please correct the account subdomain."}
-				// {"error":"Invalid Token","detail":"Please make sure that you are using the correct token."}
 				mLoginError = sifterJSONObject;
 				return true;
 			}
@@ -381,16 +373,13 @@ public class SifterReader extends ListActivity {
 		return true;
 	}
 	
+	/** load all Sifter projects */
 	private void loadProjects(JSONObject sifterJSONObject) throws JSONException{
-		// array of projects
 		JSONArray projectArray = sifterJSONObject.getJSONArray(PROJECTS);
 		int numberProjects = projectArray.length();
 		JSONObject[] allProjects = new JSONObject[numberProjects];
-
-		// projects
-		for (int i = 0; i < numberProjects; i++) {
+		for (int i = 0; i < numberProjects; i++)
 			allProjects[i] = projectArray.getJSONObject(i);
-		}
 		mAllProjects = allProjects;
 	}
 }
