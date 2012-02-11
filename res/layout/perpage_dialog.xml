@@ -1,45 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <EditText
-        android:id="@+id/perpage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number" />
+    <RelativeLayout
+        android:id="@+id/top_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-    <TextView 
-        android:id="@+id/perpage_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/perpage"
-        android:layout_alignBottom="@id/perpage"
-        android:text="@string/perpage_text" />
+        <EditText
+            android:id="@+id/perpage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+        
+        <View
+            android:id="@+id/top_row_space"
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/perpage"
+            android:layout_alignBottom="@id/perpage" />
+        
+        <TextView
+            android:id="@+id/perpage_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/top_row_space"
+            android:text="@string/perpage_text"
+            android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/perpage_ok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/perpage_label"
-        android:layout_alignBottom="@id/perpage"
-        android:text="@android:string/ok" />
-    
+        <Button
+            android:id="@+id/perpage_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/perpage"
+            android:layout_alignParentRight="true"
+            android:text="@android:string/ok" />
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/perpage" />
-    
+        android:layout_below="@id/top_row"
+        android:orientation="vertical" />
+
     <LinearLayout
         android:id="@+id/priority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/perpage" />
-    
+        android:layout_below="@id/top_row"
+        android:orientation="vertical" />
+
 </RelativeLayout>

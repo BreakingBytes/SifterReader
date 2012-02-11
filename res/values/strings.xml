@@ -5,7 +5,7 @@
     <string name="no_projects">You have no Sifter projects.</string>
     <string name="projects">Projects</string>
     <!-- Context Menu Options -->
-    <string name="menu_header">Select Details:</string>
+    <string name="menu_header">Select Details</string>
     <string name="milestones">Milestones</string>
     <string name="categories">Categories</string>
     <string name="people">People</string>
