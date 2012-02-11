@@ -12,7 +12,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +34,7 @@ public class SifterHelper {
 	public static final String HEADER_REQUEST_ACCEPT = "Accept";
 	public static final String APPLICATION_JSON = "application/json";
 	public static final String OOPS = "oops";
+	public static final String FILTERS_FILE = "filters_file";
 
 	public SifterHelper(Context context, String accessKey) {
 		mContext = context;
@@ -157,10 +157,17 @@ public class SifterHelper {
 	}
 	
 	public void saveFilters(boolean[] filterStatus, boolean[] filterPriority) {
-		try {JSONObject filters = new JSONObject();
-			filters.put(IssuesActivity.STATUS, new JSONArray(Arrays.asList(filterStatus)));
-			filters.put(IssuesActivity.PRIORITY, new JSONArray(Arrays.asList(filterPriority)));
-			FileOutputStream fos = mContext.openFileOutput(SifterReader.KEY_FILE, Context.MODE_APPEND);
+		try {
+			JSONObject filters = new JSONObject();
+			JSONArray statusList = new JSONArray();
+			JSONArray priorityList = new JSONArray();
+			for (int i = 0; i < filterStatus.length; i++)
+				statusList.put(filterStatus[i]);
+			for (int i = 0; i < filterPriority.length; i++)
+				priorityList.put(filterPriority[i]);
+			filters.put(IssuesActivity.STATUS, statusList);
+			filters.put(IssuesActivity.PRIORITY, priorityList);
+			FileOutputStream fos = mContext.openFileOutput(FILTERS_FILE, Context.MODE_PRIVATE);
 			fos.write(filters.toString().getBytes());
 			fos.close();
 		} catch (JSONException e) {
@@ -176,7 +183,7 @@ public class SifterHelper {
 	}
 	
 	public JSONObject getFilters() throws JSONException, FileNotFoundException, IOException {
-		File keyFile = mContext.getFileStreamPath(SifterReader.KEY_FILE);
+		File keyFile = mContext.getFileStreamPath(FILTERS_FILE);
 		if (!keyFile.exists())
 			return new JSONObject();
 		BufferedReader in = new BufferedReader(new FileReader(keyFile)); // throws FileNotFoundException

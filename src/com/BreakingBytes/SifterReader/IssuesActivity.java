@@ -94,23 +94,19 @@ public class IssuesActivity extends ListActivity {
     	}
     	mFilterStatus = new boolean[mNumStatuses];
 		mFilterPriority = new boolean[mNumPriorities];
-		for (int i = 0; i < mNumStatuses; i++) {
-			mFilterStatus[i] = false;
-		}
-		for (int i = 0; i < mNumPriorities; i++) {
-			mFilterPriority[i] = false;
-		}
+		for (int i = 0; i < mNumStatuses; i++)
+			mFilterStatus[i] = true;
+		for (int i = 0; i < mNumPriorities; i++)
+			mFilterPriority[i] = true;
     	try {
 			JSONObject filters = mSifterHelper.getFilters();
-			if (filters.length() == 0) {
+			if (filters.length() != 0) {
 				JSONArray status = filters.getJSONArray(STATUS);
 				JSONArray priority = filters.getJSONArray(PRIORITY);
-				for (int i = 0; i < mNumStatuses; i++) {
+				for (int i = 0; i < mNumStatuses; i++)
 					mFilterStatus[i] = status.getBoolean(i);
-				}
-				for (int i = 0; i < mNumPriorities; i++) {
+				for (int i = 0; i < mNumPriorities; i++)
 					mFilterPriority[i] = priority.getBoolean(i);
-				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -230,11 +226,13 @@ public class IssuesActivity extends ListActivity {
 	    		for (int i = 0; i < mNumStatuses; i++) {
 	    			mStatusCB[i] = new CheckBox(this);
 	    			mStatusCB[i].setText(mStatusNames.getString(i));
+	    			mStatusCB[i].setChecked(mFilterStatus[i]);
 	    			statusLL.addView(mStatusCB[i]);
 	    		}
 	    		for (int i = 0; i < mNumPriorities; i++) {
 	    			mPriorityCB[i] = new CheckBox(this);
 	    			mPriorityCB[i].setText(mPriorityNames.getString(i));
+	    			mPriorityCB[i].setChecked(mFilterPriority[i]);
 	    			priorityLL.addView(mPriorityCB[i]);
 	    		}
 	    	} catch (JSONException e) {
@@ -286,9 +284,8 @@ public class IssuesActivity extends ListActivity {
 			allIssues = new JSONObject[numberIssues];
 
 			// issues
-			for (int i = 0; i < numberIssues; i++) {
+			for (int i = 0; i < numberIssues; i++)
 				allIssues[i] = issuesArray.getJSONObject(i);
-			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
@@ -349,9 +346,8 @@ public class IssuesActivity extends ListActivity {
 		{
 			String filterSlug = "&s=";
 			for (int i = 0; i < mNumStatuses; i++) {
-				if (mFilterStatus[i]) {
+				if (mFilterStatus[i])
 					filterSlug += String.valueOf(mStatuses.getInt(mStatusNames.getString(i))) + "-";
-				}
 			}
 			if (filterSlug.length() > 3) {
 				filterSlug = filterSlug.substring(0, filterSlug.length()-1);
@@ -359,9 +355,8 @@ public class IssuesActivity extends ListActivity {
 			}
 			filterSlug = "&p=";
 			for (int i = 0; i < mNumPriorities; i++) {
-				if (mFilterPriority[i]) {
+				if (mFilterPriority[i])
 					filterSlug += String.valueOf(mPriorities.getInt(mPriorityNames.getString(i))) + "-";
-				}
 			}
 			if (filterSlug.length() > 3) {
 				filterSlug = filterSlug.substring(0, filterSlug.length()-1);
