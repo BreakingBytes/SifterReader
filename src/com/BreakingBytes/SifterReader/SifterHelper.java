@@ -36,15 +36,18 @@ public class SifterHelper {
 	public static final String OOPS = "oops";
 	public static final String FILTERS_FILE = "filters_file";
 
+	/** constructor */
 	public SifterHelper(Context context, String accessKey) {
 		mContext = context;
 		mAccessKey = accessKey;
 	}
 	
+	/** alternate constructor */
 	public SifterHelper(Context context) {
 		mContext = context;
 	}
 	
+	/** get URL connection to SifterAPI */
 	public URLConnection getSifterConnection(String sifterURL) {
 		URLConnection sifterConnection = null;
 		try {
@@ -60,6 +63,7 @@ public class SifterHelper {
 		return sifterConnection;
 	}
 	
+	/** get input stream from SifterAPI, check for error stream */
 	public InputStream getSifterInputStream(URLConnection sifterConnection) {
 		// send header requests
 		sifterConnection.setRequestProperty(X_SIFTER_TOKEN, mAccessKey);
@@ -78,6 +82,7 @@ public class SifterHelper {
 		return is;
 	}
 	
+	/** message for URL connection errors */
 	public JSONObject onConnectionError() throws JSONException, NotFoundException {
 		JSONObject connectionError = new JSONObject();
 			connectionError.put(SifterReader.LOGIN_ERROR, // throws JSONException
@@ -87,6 +92,7 @@ public class SifterHelper {
 		return connectionError;
 	}
 
+	/** message for missing account or access key */
 	public JSONObject onMissingToken() throws JSONException, NotFoundException {
 		JSONObject missingToken = new JSONObject();
 		missingToken.put(SifterReader.LOGIN_ERROR, // throws JSONException
@@ -96,6 +102,7 @@ public class SifterHelper {
 		return missingToken;
 	}
 	
+	/** retrieve login keys from file, false if missing or empty */
 	public boolean getKey() throws JSONException, NotFoundException, FileNotFoundException, IOException {
 		File keyFile = mContext.getFileStreamPath(SifterReader.KEY_FILE);
 		if (!keyFile.exists()) {
@@ -123,15 +130,14 @@ public class SifterHelper {
 		return true;
 	}
 	
+	/** get JSON object from SifterAPI */
 	public JSONObject getSifterJSONObject(URLConnection sifterConnection)
 			throws JSONException, NotFoundException, IOException {
 		JSONObject sifterJSONObject = new JSONObject();
-		
 		InputStream sifterInputStream = getSifterInputStream(sifterConnection);
 		if (sifterInputStream == null) { // null means MalformedURLException or IOException
 			return onConnectionError(); // throws JSONException, NotFoundException
 		}
-		
 		BufferedReader in = new BufferedReader(new InputStreamReader(sifterInputStream));
 		String inputLine;
 		StringBuilder x = new StringBuilder();
@@ -148,14 +154,14 @@ public class SifterHelper {
 		return sifterJSONObject;
 	}
 
-
-	/** Intent for OopsActivity to display exceptions. */
+	/** start OopsActivity to display exceptions. */
 	public void onException(String eString) {
 		Intent intent = new Intent(mContext, OopsActivity.class);
 		intent.putExtra(OOPS, eString);
 		mContext.startActivity(intent);
 	}
 	
+	/** save issues filters to file */
 	public void saveFilters(boolean[] filterStatus, boolean[] filterPriority) {
 		try {
 			JSONObject filters = new JSONObject();
@@ -182,6 +188,7 @@ public class SifterHelper {
 		}
 	}
 	
+	/** retrieve issues filters from file */
 	public JSONObject getFilters() throws JSONException, FileNotFoundException, IOException {
 		File keyFile = mContext.getFileStreamPath(FILTERS_FILE);
 		if (!keyFile.exists())

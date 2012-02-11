@@ -30,19 +30,19 @@ public class CategoriesActivity extends ListActivity {
 		mSifterHelper = new SifterHelper(this);
 		
 		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			try {
-				JSONArray categories = new JSONArray(extras.getString(SifterReader.CATEGORIES));
-				if (categories != null) {
-					mCategoryArray = categories; 
-					getCategories();
-					fillData();
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-				mSifterHelper.onException(e.toString());
+		if (extras == null)
+			return;
+		try {
+			JSONArray categories = new JSONArray(extras.getString(SifterReader.CATEGORIES));
+			if (categories != null) {
+				mCategoryArray = categories; 
+				getCategories();
+				fillData();
 			}
-		}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+		}		
 	}
 
 	private void getCategories() {
