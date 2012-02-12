@@ -61,5 +61,6 @@
     <string name="priorities">Priorities</string>
     <!-- Oops Message -->
     <string name="oops_msg">Oops, something unexpected happened.\nHere is the stack trace.</string>
+    <string name="oops_error_msg">Sorry, but the stack trace could not be read.</string>
     
 </resources>

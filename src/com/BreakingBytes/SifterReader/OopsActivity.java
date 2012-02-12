@@ -14,11 +14,13 @@ public class OopsActivity extends Activity {
 		TextView oopsMsg = (TextView) findViewById(R.id.stack_trace);
 
 		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			String e = extras.getString(SifterHelper.OOPS);
-			if (e != null) {
-				oopsMsg.setText(e);
-			}
+		if (extras == null)
+			return;
+		String e = extras.getString(SifterHelper.OOPS);
+		if (e != null) {
+			oopsMsg.setText(e);
+		} else {
+			oopsMsg.setText(R.string.oops_error_msg);
 		}
 	}
 }

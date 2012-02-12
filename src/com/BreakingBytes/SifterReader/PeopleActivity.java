@@ -16,10 +16,11 @@ public class PeopleActivity extends ListActivity {
 	public static final String FIRST_NAME = "first_name";
 	public static final String LAST_NAME = "last_name";
 	public static final String PEOPLE = "people";
-	
+
 	// Members
 	private JSONArray mPeopleArray;
 	private JSONObject[] mAllPeople;
+	private SifterHelper mSifterHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,37 +28,38 @@ public class PeopleActivity extends ListActivity {
 		setContentView(R.layout.main);
 		registerForContextMenu(getListView());
 		
+		mSifterHelper = new SifterHelper(this);
+
 		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			try {
-				JSONArray people = new JSONArray(extras.getString(SifterReader.PEOPLE));
-				if (people != null) {
-					mPeopleArray = people; 
-					getPeople();
-					fillData();
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+		if (extras == null)
+			return;
+		try {
+			JSONArray people = new JSONArray(extras.getString(SifterReader.PEOPLE));
+			if (people != null) {
+				mPeopleArray = people; 
+				getPeople();
+				fillData();
 			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString()); // return not needed
 		}
 	}
 
 	private void getPeople() {
 		int numberPeople = mPeopleArray.length();
 		JSONObject[] allPeople = new JSONObject[numberPeople];
-
-		// people
 		try {
-			for (int i = 0; i < numberPeople; i++) {
+			for (int i = 0; i < numberPeople; i++)
 				allPeople[i] = mPeopleArray.getJSONObject(i);
-			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+			return;
 		}
 		mAllPeople = allPeople;
 	}
-	
+
 	private void fillData() {
 		int pNum = mAllPeople.length;
 		String[] p = new String[pNum];
@@ -68,18 +70,20 @@ public class PeopleActivity extends ListActivity {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+			return;
 		}
 		setListAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, p));
 	}
 
-	/** Intent for PeopleDetail activity for clicked project in list. */
+	/** start PeopleDetail activity for clicked project in list. */
 	@Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        Intent intent = new Intent(this, PeopleDetail.class);
-        intent.putExtra(PEOPLE, mAllPeople[(int)id].toString());
-        // TODO use safe long typecast to int
-        startActivity(intent);
-    }
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		Intent intent = new Intent(this, PeopleDetail.class);
+		intent.putExtra(PEOPLE, mAllPeople[(int)id].toString());
+		// TODO use safe long typecast to int
+		startActivity(intent);
+	}
 }

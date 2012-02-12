@@ -43,14 +43,17 @@ public class LoginActivity extends Activity {
 		Bundle extras = getIntent().getExtras();
 		if (extras == null)
 			return;
-			String domain = extras.getString(SifterReader.DOMAIN);
-			String accessKey = extras.getString(SifterReader.ACCESS_KEY);
-			String loginError = extras.getString(SifterReader.LOGIN_ERROR);
+		String domain = extras.getString(SifterReader.DOMAIN);
+		String accessKey = extras.getString(SifterReader.ACCESS_KEY);
+		String loginError = extras.getString(SifterReader.LOGIN_ERROR);
 
-			if (domain == null || accessKey == null || loginError == null)
-				return;
+		if (domain != null) {
 			mDomain.setText(domain);
+		}
+		if (accessKey != null) {
 			mAccessKey.setText(accessKey);
+		}
+		if (loginError != null) {
 			try {
 				JSONObject loginStatus = new JSONObject(loginError);
 				mLoginError.setText(loginStatus.getString(SifterReader.LOGIN_ERROR));
@@ -60,6 +63,7 @@ public class LoginActivity extends Activity {
 				mSifterHelper.onException(e.toString());
 				return;
 			}
+		}
 
 		saveButton.setOnClickListener(new View.OnClickListener() {
 

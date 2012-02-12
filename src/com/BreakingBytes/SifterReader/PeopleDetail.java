@@ -14,11 +14,14 @@ public class PeopleDetail extends Activity {
 	public static final String USERNAME = "username";
 	public static final String EMAIL = "email";
 	public static final String PEOPLE_ISSUES_URL = "issues_url";
+	private SifterHelper mSifterHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.people);
+		
+		mSifterHelper = new SifterHelper(this);
 
 		// capture our View elements
 		TextView username = (TextView) findViewById(R.id.username);
@@ -28,21 +31,22 @@ public class PeopleDetail extends Activity {
 		TextView issuesURL = (TextView) findViewById(R.id.people_issues_url);
 
 		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			try {
-				JSONObject people = new JSONObject(extras.getString(PeopleActivity.PEOPLE));
-				if (people != null && checkFields(people)) {
-					username.setText(people.getString(USERNAME));
-					firstName.setText(people.getString(PeopleActivity.FIRST_NAME));
-					lastName.setText(people.getString(PeopleActivity.LAST_NAME));
-					email.setText(people.getString(EMAIL));
-					Linkify.addLinks(email, Linkify.EMAIL_ADDRESSES);
-					issuesURL.setText(people.getString(PEOPLE_ISSUES_URL));
-					Linkify.addLinks(issuesURL, Linkify.WEB_URLS);
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+		if (extras == null)
+			return;
+		try {
+			JSONObject people = new JSONObject(extras.getString(PeopleActivity.PEOPLE));
+			if (people != null && checkFields(people)) {
+				username.setText(people.getString(USERNAME));
+				firstName.setText(people.getString(PeopleActivity.FIRST_NAME));
+				lastName.setText(people.getString(PeopleActivity.LAST_NAME));
+				email.setText(people.getString(EMAIL));
+				Linkify.addLinks(email, Linkify.EMAIL_ADDRESSES);
+				issuesURL.setText(people.getString(PEOPLE_ISSUES_URL));
+				Linkify.addLinks(issuesURL, Linkify.WEB_URLS);
 			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString()); // return not needed
 		}
 	}
 	
