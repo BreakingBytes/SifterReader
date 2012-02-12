@@ -123,8 +123,9 @@ public class IssuesActivity extends ListActivity {
 			return;
 		try {
 			String issuesURL = extras.getString(SifterReader.ISSUES_URL);
-			if (issuesURL != null)
-				mIssuesURL = issuesURL;
+			if (issuesURL == null)
+				return;
+			mIssuesURL = issuesURL;
 			JSONObject issues = new JSONObject(extras.getString(SifterReader.ISSUES));
 			if (issues != null) {
 				mIssues = issues; 
