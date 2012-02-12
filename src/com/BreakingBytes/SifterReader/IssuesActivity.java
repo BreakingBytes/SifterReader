@@ -341,8 +341,7 @@ public class IssuesActivity extends ListActivity {
 	}
 	
 	private void changePage(String pageURL) {
-		try
-		{
+		try {
 			String filterSlug = "&s=";
 			for (int i = 0; i < mNumStatuses; i++) {
 				if (mFilterStatus[i])

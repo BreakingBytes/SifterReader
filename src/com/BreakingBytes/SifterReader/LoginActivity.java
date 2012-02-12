@@ -41,28 +41,25 @@ public class LoginActivity extends Activity {
 		Button saveButton = (Button) findViewById(R.id.save_key);
 
 		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
+		if (extras == null)
+			return;
 			String domain = extras.getString(SifterReader.DOMAIN);
 			String accessKey = extras.getString(SifterReader.ACCESS_KEY);
 			String loginError = extras.getString(SifterReader.LOGIN_ERROR);
 
-			if (domain != null) {
-				mDomain.setText(domain);
+			if (domain == null || accessKey == null || loginError == null)
+				return;
+			mDomain.setText(domain);
+			mAccessKey.setText(accessKey);
+			try {
+				JSONObject loginStatus = new JSONObject(loginError);
+				mLoginError.setText(loginStatus.getString(SifterReader.LOGIN_ERROR));
+				mLoginErrorMsg.setText(loginStatus.getString(SifterReader.LOGIN_DETAIL));
+			} catch (JSONException e) {
+				e.printStackTrace();
+				mSifterHelper.onException(e.toString());
+				return;
 			}
-			if (accessKey != null) {
-				mAccessKey.setText(accessKey);
-			}
-			if (loginError != null) {
-				try {
-					JSONObject loginStatus = new JSONObject(loginError);
-					mLoginError.setText(loginStatus.getString(SifterReader.LOGIN_ERROR));
-					mLoginErrorMsg.setText(loginStatus.getString(SifterReader.LOGIN_DETAIL));
-				} catch (JSONException e) {
-					e.printStackTrace();
-					mSifterHelper.onException(e.toString());
-				}
-			}
-		}
 
 		saveButton.setOnClickListener(new View.OnClickListener() {
 
@@ -78,12 +75,15 @@ public class LoginActivity extends Activity {
 				} catch (JSONException e) {
 					e.printStackTrace();
 					mSifterHelper.onException(e.toString());
+					return;
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 					mSifterHelper.onException(e.toString());
+					return;
 				} catch (IOException e) {
 					e.printStackTrace();
 					mSifterHelper.onException(e.toString());
+					return;
 				}
 
 				Bundle bundle = new Bundle();
@@ -97,7 +97,8 @@ public class LoginActivity extends Activity {
 			}
 		});
 	}
-	// TODO remove bundle and just read/write key file
+	
+	// TODO remove bundle and read/write keys from file, use lifecycle methods below
 	
 	/** called by Android if the Activity is being stopped
 	 *  and may be killed before it is resumed! */

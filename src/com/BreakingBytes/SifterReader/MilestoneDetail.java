@@ -13,11 +13,14 @@ public class MilestoneDetail extends Activity {
 	
 	public static final String MILESTONE_DUE_DATE = "due_date";
 	public static final String MILESTONE_ISSUES_URL = "issues_url";
+	private SifterHelper mSifterHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.milestones);
+
+		mSifterHelper = new SifterHelper(this);
 
 		// capture our View elements
 		TextView milestoneName = (TextView) findViewById(R.id.milestone_name);
@@ -25,18 +28,19 @@ public class MilestoneDetail extends Activity {
 		TextView issuesURL = (TextView) findViewById(R.id.milestone_issues_url);
 
 		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			try {
-				JSONObject milestone = new JSONObject(extras.getString(MilestonesActivity.MILESTONE));
-				if (milestone != null && checkFields(milestone)) {
-					milestoneName.setText(milestone.getString(MilestonesActivity.MILESTONE_NAME));
-					dueDate.setText(milestone.getString(MILESTONE_DUE_DATE));
-					issuesURL.setText(milestone.getString(MILESTONE_ISSUES_URL));
-					Linkify.addLinks(issuesURL, Linkify.WEB_URLS);
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+		if (extras == null)
+			return;
+		try {
+			JSONObject milestone = new JSONObject(extras.getString(MilestonesActivity.MILESTONE));
+			if (milestone != null && checkFields(milestone)) {
+				milestoneName.setText(milestone.getString(MilestonesActivity.MILESTONE_NAME));
+				dueDate.setText(milestone.getString(MILESTONE_DUE_DATE));
+				issuesURL.setText(milestone.getString(MILESTONE_ISSUES_URL));
+				Linkify.addLinks(issuesURL, Linkify.WEB_URLS);
 			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString()); // return not needed
 		}
 	}
 	
