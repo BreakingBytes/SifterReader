@@ -15,13 +15,16 @@ public class ProjectDetail extends Activity {
 	public static final String PROJECT_URL = "url";
 	public static final String ISSUES_URL = "issues_url";
 	public static final String MILESTONES_URL = "milestones_url";
+	private SifterHelper mSifterHelper;
 
 	/** Called when the activity is first created. */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.project);
-
+		
+		mSifterHelper = new SifterHelper(this);
+		
 		// capture our View elements
 		TextView projectName = (TextView) findViewById(R.id.project_name);
 		TextView company = (TextView) findViewById(R.id.company);
@@ -47,6 +50,7 @@ public class ProjectDetail extends Activity {
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
+				mSifterHelper.onException(e.toString()); // return not needed
 			}
 		}
 	}

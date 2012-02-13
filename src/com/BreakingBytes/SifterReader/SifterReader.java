@@ -174,7 +174,7 @@ public class SifterReader extends ListActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	/** Intent for LoginActivity to get domain and access key. */
+	/** start LoginActivity to get domain and access key. */
 	private void loginKeys() {
 		Intent intent = new Intent(this, LoginActivity.class);
 		intent.putExtra(DOMAIN, mDomain);
@@ -202,7 +202,7 @@ public class SifterReader extends ListActivity {
 		}
 	}
 
-	/** Intent for ProjectDetail activity for clicked project in list. */
+	/** start ProjectDetail activity for clicked project in list. */
 	@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
@@ -245,7 +245,7 @@ public class SifterReader extends ListActivity {
         return super.onContextItemSelected(item);
     }
     
-	/** Intent for Project Details Activities. */
+	/** start project details activities (milestones, categories, people, issues) */
     private void getProjDetail(long id, String PROJ_DETAIL_URL, String PROJ_DETAIL, Class<?> cls) {
     	String projDetailURL = null;
     	try {
@@ -256,7 +256,8 @@ public class SifterReader extends ListActivity {
 			mSifterHelper.onException(e.toString());
 			return;
     	}
-    	if (PROJ_DETAIL.equals(ISSUES)) {
+    	String issuesURL = projDetailURL;
+		if (PROJ_DETAIL.equals(ISSUES)) {
     		int issuesPerPage = IssuesActivity.MAX_PER_PAGE;
     		try {
     			JSONObject filters = mSifterHelper.getFiltersFile();
@@ -288,7 +289,7 @@ public class SifterReader extends ListActivity {
 		if (PROJ_DETAIL.equals(ISSUES)) {
 			Intent intent = new Intent(this, cls);
 			intent.putExtra(ISSUES, sifterJSONObject.toString());
-			intent.putExtra(ISSUES_URL, projDetailURL);
+			intent.putExtra(ISSUES_URL, issuesURL);
 			startActivity(intent);
 			return;
 		}

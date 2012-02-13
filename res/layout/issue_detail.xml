@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/issue_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/issue_number" />
+
+        <TextView
+            android:id="@+id/issue_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true" />
+
+        <TextView
+            android:id="@+id/issue_category_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_label"
+            android:text="@string/category_name" />
+
+        <TextView
+            android:id="@+id/issue_category_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/issue_number" />
+
+        <TextView
+            android:id="@+id/priority_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_category_label"
+            android:text="@string/issue_priority" />
+
+        <TextView
+            android:id="@+id/issue_priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/issue_category_name" />
+
+        <TextView
+            android:id="@+id/subject_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/priority_label"
+            android:text="@string/issue_subject" />
+
+        <TextView
+            android:id="@+id/issue_subject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/subject_label" />
+
+        <TextView
+            android:id="@+id/description_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_subject"
+            android:text="@string/issue_description" />
+
+        <TextView
+            android:id="@+id/issue_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/description_label" />
+
+        <TextView
+            android:id="@+id/issue_milestone_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_description"
+            android:text="@string/milestone_name" />
+
+        <TextView
+            android:id="@+id/issue_milestone_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/issue_milestone_label" />
+
+        <TextView
+            android:id="@+id/issue_opener_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_milestone_name"
+            android:text="@string/issue_opener_name" />
+
+        <TextView
+            android:id="@+id/issue_opener_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/issue_milestone_name" />
+
+        <TextView
+            android:id="@+id/issue_assignee_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_opener_label"
+            android:text="@string/issue_assignee_name" />
+
+        <TextView
+            android:id="@+id/issue_assignee_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/issue_opener_name" />
+
+        <TextView
+            android:id="@+id/issue_status_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_assignee_label"
+            android:text="@string/issue_status" />
+
+        <TextView
+            android:id="@+id/issue_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/issue_assignee_name" />
+
+        <TextView
+            android:id="@+id/issue_comment_count_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_status_label"
+            android:text="@string/issue_comment_count" />
+
+        <TextView
+            android:id="@+id/issue_comment_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/issue_status" />
+
+        <TextView
+            android:id="@+id/issue_created_at_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_comment_count_label"
+            android:text="@string/issue_created_at" />
+
+        <TextView
+            android:id="@+id/issue_created_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/issue_comment_count" />
+
+        <TextView
+            android:id="@+id/issue_updated_at_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_created_at_label"
+            android:text="@string/issue_updated_at" />
+
+        <TextView
+            android:id="@+id/issue_updated_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/issue_created_at" />
+
+        <TextView
+            android:id="@+id/issue_comments_url_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_updated_at_label"
+            android:text="@string/issue_comments_url" />
+
+        <TextView
+            android:id="@+id/issue_comments_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_comments_url_label"
+            android:ellipsize="middle"
+            android:singleLine="true" />
+    </RelativeLayout>
+
+</ScrollView>

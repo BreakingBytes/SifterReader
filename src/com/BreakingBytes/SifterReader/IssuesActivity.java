@@ -24,6 +24,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class IssuesActivity extends ListActivity {
 
 	public static final String STATUSES = "statuses";
 	public static final String PRIORITIES = "priorities";
+	public static final String ISSUE = "issue";
 	public static final String NUMBER = "number";
 	public static final String STATUS = "status";
 	public static final String PRIORITY = "priority";
@@ -444,4 +446,14 @@ public class IssuesActivity extends ListActivity {
 		}
 		return filterJSONObject;
 	}
+	
+	/** start IssuesDetail activity for clicked issue in list. */
+	@Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        Intent intent = new Intent(this, IssueDetail.class);
+        intent.putExtra(ISSUE, mAllIssues[(int)id].toString());
+        // TODO use safe long typecast to int
+        startActivity(intent);
+    }
 }

@@ -63,11 +63,10 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/issues_search" />
         </activity>
-        <!-- <activity -->
-        <!-- android:name=".IssuesActivity" -->
-        <!-- android:label="Issues" > -->
-        <!-- </activity> -->
-
+        <activity
+            android:name=".IssueDetail"
+            android:label="Issue Detail" >
+        </activity>
         <activity
             android:name=".OopsActivity"
             android:label="Errors" >

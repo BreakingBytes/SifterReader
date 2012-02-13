@@ -41,7 +41,7 @@
     <string name="category_name">Category Name:</string>
     <string name="category_issues_url">Issues Link:</string>
     <!-- People Detail -->
-    <string name="username">username:</string>
+    <string name="username">User-name:</string>
     <string name="first_name">First name:</string>
     <string name="last_name">Last name:</string>
     <string name="email">email:</string>
@@ -62,6 +62,18 @@
     <string name="priorities">Priorities</string>
 	<!-- Issues search -->
     <string name="issues_search_hint">Search issues</string>
+    <!-- Issue Detail -->
+    <string name="issue_number">Issue Number:</string>
+    <string name="issue_priority">Priority:</string>
+    <string name="issue_subject">Subject:</string>
+    <string name="issue_description">Description:</string>
+    <string name="issue_opener_name">Opener Name:</string>
+    <string name="issue_assignee_name">Assignee Name:</string>
+    <string name="issue_status">Status:</string>
+    <string name="issue_comment_count">Comment Count:</string>
+    <string name="issue_created_at">Created At:</string>
+    <string name="issue_updated_at">Updated At:</string>
+    <string name="issue_comments_url">Comments Link:</string>
     <!-- Oops Message -->
     <string name="oops_msg">Oops, something unexpected happened.\nHere is the stack trace.</string>
     <string name="oops_error_msg">Sorry, but the stack trace was null.</string>
