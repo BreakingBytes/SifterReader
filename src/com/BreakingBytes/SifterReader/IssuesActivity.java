@@ -12,7 +12,6 @@ import org.json.JSONObject;
 
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -122,15 +121,15 @@ public class IssuesActivity extends ListActivity {
 		
 		// Get the intent, verify the action and get the query
 	    Intent intent = getIntent();
+	    Bundle extras = null;
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-	      String query = intent.getStringExtra(SearchManager.QUERY);
-	      doMySearch(query);
-	      return;
+	    	String query = intent.getStringExtra(SearchManager.QUERY);
+	    	extras = doMySearch(query);
+	    } else {
+	    	extras = intent.getExtras();
 	    }
-		
-		Bundle extras = intent.getExtras();
-		if (extras == null)
-			return;
+	    if (extras == null)
+	    	return;
 		try {
 			String issuesURL = extras.getString(SifterReader.ISSUES_URL);
 			if (issuesURL == null)
@@ -185,13 +184,15 @@ public class IssuesActivity extends ListActivity {
 		}
 	}
 	
-	private void doMySearch(String query) {
+	private Bundle doMySearch(String query) {
 		Bundle appData = getIntent().getBundleExtra(SearchManager.APP_DATA);
 		if (appData != null) {
 		    mIssuesURL = appData.getString(SifterReader.ISSUES_URL);
 		}
 		String pageURL = mIssuesURL + "?q=" + query;
-		changePage(pageURL);
+		JSONObject sifterJSONObject = changePage(pageURL);
+		appData.putString(SifterReader.ISSUES, sifterJSONObject.toString());
+		return appData;
 	}
 	
 	@Override
@@ -343,7 +344,7 @@ public class IssuesActivity extends ListActivity {
         setListAdapter(adapter);
 	}
 
-	/** pervious or next page */
+	/** previous or next page */
 	private void loadIssuesPage(String PAGE_URL) {
 		String pageURL = null;
 		// get project detail url from project
@@ -357,7 +358,7 @@ public class IssuesActivity extends ListActivity {
 		if (pageURL == null)
 			// TODO add toast here: this is first/ page!
 			return;
-		changePage(pageURL);
+		startIssueActivity(changePage(pageURL));
 	}
 	
 	/** goto specific page */
@@ -366,10 +367,10 @@ public class IssuesActivity extends ListActivity {
 		mPage = (newPage < 1) ? 1 : newPage;
 		String pageURL = mIssuesURL + "?" + PER_PAGE + "=" + mPerPage;
 		pageURL += "&" + GOTO_PAGE + "=" + mPage;
-		changePage(pageURL);
+		startIssueActivity(changePage(pageURL));
 	}
 	
-	private void changePage(String pageURL) {
+	private JSONObject changePage(String pageURL) {
 		try {
 			String filterSlug = "&s=";
 			for (int i = 0; i < mNumStatuses; i++) {
@@ -392,22 +393,25 @@ public class IssuesActivity extends ListActivity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
-			return;
+			return new JSONObject();
 		}
 		// get url connection
 		URLConnection sifterConnection = mSifterHelper.getSifterConnection(pageURL);
 		if (sifterConnection == null)
-			return;
+			return new JSONObject();
 		// get JSON object
 		JSONObject sifterJSONObject = new JSONObject();
 		try {
-			ProgressDialog.show(this, "", "Loading...", true);
 			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
 		} catch (Exception e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
-			return;
+			return new JSONObject();
 		}
+		return sifterJSONObject;
+	}
+	
+	private void startIssueActivity(JSONObject sifterJSONObject) {
 		Intent intent = new Intent(this, IssuesActivity.class);
 		intent.putExtra(SifterReader.ISSUES, sifterJSONObject.toString());
 		intent.putExtra(SifterReader.ISSUES_URL, mIssuesURL);
