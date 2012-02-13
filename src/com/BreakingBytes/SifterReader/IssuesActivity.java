@@ -82,6 +82,7 @@ public class IssuesActivity extends ListActivity {
 			return;
 		}
 		
+		// TODO move this to SifterHelper, and only call once!
 		JSONObject statuses = getSifterFilters(STATUSES);
 		JSONObject priorities = getSifterFilters(PRIORITIES);
 		if (statuses == null || priorities == null)
@@ -99,7 +100,7 @@ public class IssuesActivity extends ListActivity {
 		for (int i = 0; i < mNumPriorities; i++)
 			mFilterPriority[i] = true;
     	try {
-			JSONObject filters = mSifterHelper.getSifterFile();
+			JSONObject filters = mSifterHelper.getFiltersFile();
 			if (filters.length() != 0) {
 				JSONArray status = filters.getJSONArray(STATUS);
 				JSONArray priority = filters.getJSONArray(PRIORITY);
@@ -304,7 +305,7 @@ public class IssuesActivity extends ListActivity {
     		for (int i = 0; i < mNumPriorities; i++) {
     			mFilterPriority[i] = mPriorityCB[i].isChecked();
     		}
-    		mSifterHelper.saveFilters(mFilterStatus, mFilterPriority);
+    		mSifterHelper.saveFilters(mFilterStatus, mFilterPriority, mPerPage);
 			loadIssuesPage(mPage);
 		}
 	};

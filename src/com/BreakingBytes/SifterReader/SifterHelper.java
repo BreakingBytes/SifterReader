@@ -162,7 +162,7 @@ public class SifterHelper {
 	}
 	
 	/** save issues filters to file */
-	public void saveFilters(boolean[] filterStatus, boolean[] filterPriority) {
+	public void saveFilters(boolean[] filterStatus, boolean[] filterPriority, int issuesPerPage) {
 		try {
 			JSONObject filters = new JSONObject();
 			JSONArray statusList = new JSONArray();
@@ -173,6 +173,7 @@ public class SifterHelper {
 				priorityList.put(filterPriority[i]);
 			filters.put(IssuesActivity.STATUS, statusList);
 			filters.put(IssuesActivity.PRIORITY, priorityList);
+			filters.put(IssuesActivity.PER_PAGE, issuesPerPage);
 			FileOutputStream fos = mContext.openFileOutput(FILTERS_FILE, Context.MODE_PRIVATE);
 			fos.write(filters.toString().getBytes());
 			fos.close();
@@ -189,7 +190,7 @@ public class SifterHelper {
 	}
 	
 	/** retrieve issues filters from file */
-	public JSONObject getSifterFile() throws JSONException, FileNotFoundException, IOException {
+	public JSONObject getFiltersFile() throws JSONException, FileNotFoundException, IOException {
 		File keyFile = mContext.getFileStreamPath(FILTERS_FILE);
 		if (!keyFile.exists())
 			return new JSONObject();

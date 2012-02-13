@@ -256,6 +256,20 @@ public class SifterReader extends ListActivity {
 			mSifterHelper.onException(e.toString());
 			return;
     	}
+    	if (PROJ_DETAIL.equals(ISSUES)) {
+    		int issuesPerPage = IssuesActivity.MAX_PER_PAGE;
+    		try {
+    			JSONObject filters = mSifterHelper.getFiltersFile();
+    			if (filters.length() != 0) {
+    				issuesPerPage = filters.getInt(IssuesActivity.PER_PAGE);
+    			}
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    			mSifterHelper.onException(e.toString());
+    			return;
+    		}
+    		projDetailURL += "?" + IssuesActivity.PER_PAGE + "=" + issuesPerPage;
+    	}
     	URLConnection sifterConnection = mSifterHelper.getSifterConnection(projDetailURL);
 		if (sifterConnection == null)
 			return;
