@@ -43,7 +43,8 @@ public class IssuesActivity extends ListActivity {
 	public static final String PER_PAGE = "per_page";
 	public static final int MAX_PER_PAGE = 25;
 	public static final int SETTINGS_ID = Menu.FIRST;
-	public static final int EXIT_ID = Menu.FIRST + 1;
+	public static final int SEARCH_ID = Menu.FIRST + 1;
+	public static final int EXIT_ID = Menu.FIRST + 2;
 	static final int NUMBER_DIALOG_ID = 0;
 	
 	// Members
@@ -208,6 +209,7 @@ public class IssuesActivity extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
 		menu.add(0, SETTINGS_ID, 0, R.string.issues_settings);
+		menu.add(0, SEARCH_ID, 0, R.string.issues_menu_query);
 		menu.add(0, EXIT_ID, 0, R.string.issues_exit);
 		return result;
 	}
@@ -219,6 +221,9 @@ public class IssuesActivity extends ListActivity {
 		case SETTINGS_ID:
 			showDialog(NUMBER_DIALOG_ID);
 			return true;
+		case SEARCH_ID:
+			boolean result = onSearchRequested();
+			return result;
 		case EXIT_ID:
 			Intent intent = new Intent(this, SifterReader.class);
 			startActivity(intent);
