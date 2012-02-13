@@ -3,60 +3,69 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/page"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/page"
-        android:textSize="25sp" />
+    <RelativeLayout
+        android:id="@+id/issues_list_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-    <EditText
-        android:id="@+id/page_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/page"
-        android:background="@android:drawable/editbox_background"
-        android:inputType="number" />
+        <TextView
+            android:id="@+id/page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/page"
+            android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/page_total"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/page_number"
-        android:textSize="25sp" />
+        <EditText
+            android:id="@+id/page_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/page"
+            android:background="@android:drawable/editbox_background"
+            android:inputType="number" />
 
-    <Button
-        android:id="@+id/goto_page"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/page_total"
-        android:text="@string/goto_page" />
+        <TextView
+            android:id="@+id/page_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/page_number"
+            android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/next_page"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="@string/next_page" />
-    
-    <Button
-        android:id="@+id/previous_page"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/next_page"
-        android:text="@string/previous_page" />
+        <Button
+            android:id="@+id/goto_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/page_total"
+            android:text="@string/goto_page" />
+
+        <Button
+            android:id="@+id/next_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/next_page" />
+
+        <Button
+            android:id="@+id/previous_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/next_page"
+            android:text="@string/previous_page" />
+    </RelativeLayout>
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/next_page" />
+        android:layout_below="@id/issues_list_header" />
 
     <TextView
         android:id="@android:id/empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/next_page"
+        android:layout_below="@id/issues_list_header"
         android:text="@string/no_issues" />
 
 </RelativeLayout>

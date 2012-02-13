@@ -82,8 +82,8 @@ public class IssuesActivity extends ListActivity {
 			return;
 		}
 		
-		JSONObject statuses = getFilters(STATUSES);
-		JSONObject priorities = getFilters(PRIORITIES);
+		JSONObject statuses = getSifterFilters(STATUSES);
+		JSONObject priorities = getSifterFilters(PRIORITIES);
 		if (statuses == null || priorities == null)
 			return;
 		mStatuses = statuses;
@@ -99,7 +99,7 @@ public class IssuesActivity extends ListActivity {
 		for (int i = 0; i < mNumPriorities; i++)
 			mFilterPriority[i] = true;
     	try {
-			JSONObject filters = mSifterHelper.getFilters();
+			JSONObject filters = mSifterHelper.getSifterFile();
 			if (filters.length() != 0) {
 				JSONArray status = filters.getJSONArray(STATUS);
 				JSONArray priority = filters.getJSONArray(PRIORITY);
@@ -208,9 +208,9 @@ public class IssuesActivity extends ListActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
-		menu.add(0, SETTINGS_ID, 0, R.string.issues_settings);
+		menu.add(0, SETTINGS_ID, 0, R.string.issues_menu_settings);
 		menu.add(0, SEARCH_ID, 0, R.string.issues_menu_query);
-		menu.add(0, EXIT_ID, 0, R.string.issues_exit);
+		menu.add(0, EXIT_ID, 0, R.string.issues_menu_exit);
 		return result;
 	}
 	
@@ -240,7 +240,7 @@ public class IssuesActivity extends ListActivity {
 	    	Dialog perpageDialog = new Dialog(this);
 	    	perpageDialog.setOnDismissListener(mNumberSetListener);
 	    	perpageDialog.setContentView(R.layout.perpage_dialog);
-	    	perpageDialog.setTitle(R.string.issues_settings);
+	    	perpageDialog.setTitle(R.string.issues_menu_settings);
 	    	LinearLayout statusLL = (LinearLayout) perpageDialog.findViewById(R.id.status);
 	    	LinearLayout priorityLL = (LinearLayout) perpageDialog.findViewById(R.id.priority);
 	    	EditText perpage = (EditText) perpageDialog.findViewById(R.id.perpage);
@@ -424,7 +424,7 @@ public class IssuesActivity extends ListActivity {
 		return;
 	}
 	
-	private JSONObject getFilters(String filter) {
+	private JSONObject getSifterFilters(String filter) {
 		String filterURL = SifterReader.HTTPS_PREFIX + mSifterHelper.mDomain;
 		filterURL += SifterReader.PROJECTS_URL + filter;
 		// get url connection

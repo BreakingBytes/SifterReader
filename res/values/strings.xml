@@ -53,9 +53,9 @@
     <string name="previous_page">prev</string>
     <string name="next_page">next</string>
     <!-- Issues Menu & Dialog -->
-    <string name="issues_settings">Settings</string>
-    <string name="issues_exit">Projects</string>
+    <string name="issues_menu_settings">Settings</string>
     <string name="issues_menu_query">Query</string>
+    <string name="issues_menu_exit">Projects</string>
     <string name="perpage_text">Issues per page</string>
     <!-- Issues Filters -->
     <string name="statuses">Statuses</string>

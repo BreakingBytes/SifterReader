@@ -189,7 +189,7 @@ public class SifterHelper {
 	}
 	
 	/** retrieve issues filters from file */
-	public JSONObject getFilters() throws JSONException, FileNotFoundException, IOException {
+	public JSONObject getSifterFile() throws JSONException, FileNotFoundException, IOException {
 		File keyFile = mContext.getFileStreamPath(FILTERS_FILE);
 		if (!keyFile.exists())
 			return new JSONObject();
