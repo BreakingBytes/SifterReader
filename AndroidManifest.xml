@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.BreakingBytes.SifterReader"
     android:versionCode="1"
-    android:versionName="1.3" >
+    android:versionName="1.4" >
 
     <uses-sdk android:minSdkVersion="10" />
 
@@ -21,43 +21,55 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="LoginActivity"
+            android:name=".LoginActivity"
             android:label="Login" >
         </activity>
         <activity
-            android:name="ProjectDetail"
+            android:name=".ProjectDetail"
             android:label="Project Details" >
         </activity>
         <activity
-            android:name="MilestonesActivity"
+            android:name=".MilestonesActivity"
             android:label="Milestones" >
         </activity>
         <activity
-            android:name="MilestoneDetail"
+            android:name=".MilestoneDetail"
             android:label="Milestone Details" >
         </activity>
         <activity
-            android:name="CategoriesActivity"
+            android:name=".CategoriesActivity"
             android:label="Categories" >
         </activity>
         <activity
-            android:name="CategoryDetail"
+            android:name=".CategoryDetail"
             android:label="Category Details" >
         </activity>
         <activity
-            android:name="PeopleActivity"
+            android:name=".PeopleActivity"
             android:label="People" >
         </activity>
         <activity
-            android:name="PeopleDetail"
+            android:name=".PeopleDetail"
             android:label="User Details" >
         </activity>
         <activity
-            android:name="IssuesActivity"
+            android:name=".IssuesActivity"
             android:label="Issues" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/issues_search" />
         </activity>
+        <!-- <activity -->
+        <!-- android:name=".IssuesActivity" -->
+        <!-- android:label="Issues" > -->
+        <!-- </activity> -->
+
         <activity
-            android:name="OopsActivity"
+            android:name=".OopsActivity"
             android:label="Errors" >
         </activity>
     </application>

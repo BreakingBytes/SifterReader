@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">SifterReader</string>
-    <string name="no_projects">You have no Sifter projects.</string>
+    <string name="no_projects">No Sifter projects.</string>
     <string name="projects">Projects</string>
     <!-- Context Menu Options -->
     <string name="menu_header">Select Details</string>
@@ -47,7 +47,7 @@
     <string name="email">email:</string>
     <string name="people_issues_url">Issues Link:</string>
     <!-- Issues Detail -->
-    <string name="no_issues">You have no Sifter issues.</string>
+    <string name="no_issues">No Sifter issues.</string>
     <string name="page">Page:</string>
     <string name="goto_page">go</string>
     <string name="previous_page">prev</string>
@@ -59,6 +59,8 @@
     <!-- Issues Filters -->
     <string name="statuses">Statuses</string>
     <string name="priorities">Priorities</string>
+	<!-- Issues search -->
+    <string name="issues_search_hint">Search issues</string>
     <!-- Oops Message -->
     <string name="oops_msg">Oops, something unexpected happened.\nHere is the stack trace.</string>
     <string name="oops_error_msg">Sorry, but the stack trace was null.</string>
