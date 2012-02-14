@@ -345,7 +345,6 @@ public class IssuesActivity extends ListActivity {
 	
 	/** goto specific page */
 	private void loadIssuesPage(int newPage) {
-		
 		if (newPage > mTotalPages) {
 			Toast.makeText(this,
 					getResources().getString(R.string.last_page_toast),
@@ -358,8 +357,6 @@ public class IssuesActivity extends ListActivity {
 			newPage = 1;
 		}
 		mPage = newPage;
-//		newPage = (newPage > mTotalPages) ? mTotalPages : newPage;
-//		mPage = (newPage < 1) ? 1 : newPage;
 		String pageURL = mIssuesURL + "?" + PER_PAGE + "=" + mPerPage;
 		pageURL += "&" + GOTO_PAGE + "=" + mPage;
 		startIssueActivity(changePage(pageURL));
