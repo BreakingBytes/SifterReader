@@ -3,10 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     
-    <TextView android:id="@+id/milestone_label"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/milestone_label"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/milestone_name" />
+        android:background="#bebebe"
+        android:text="@string/milestone_name"
+        android:textColor="#4a4a4a" />
 
     <TextView
         android:id="@+id/milestone_name"
@@ -16,26 +19,36 @@
         android:singleLine="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/milestone_label" />
+    
+    <View
+        android:id="@+id/milestone_separtor"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/milestone_name"
+        android:background="#bebebe" />
 
     <TextView android:id="@+id/milestone_due_date_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/milestone_name"
+        android:layout_below="@id/milestone_separtor"
         android:text="@string/milestone_due_date" />
     
     <TextView
         android:id="@+id/milestone_due_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/milestone_name"
+        android:layout_below="@id/milestone_separtor"
         android:layout_alignParentRight="true"
         android:layout_alignBottom="@id/milestone_due_date_label" />
 
-    <TextView android:id="@+id/milestone_issues_url_label"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/milestone_issues_url_label"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/milestone_due_date_label"
-        android:text="@string/milestone_issues_url" />
+        android:background="#bebebe"
+        android:text="@string/milestone_issues_url"
+        android:textColor="#4a4a4a" />
 
     <TextView
         android:id="@+id/milestone_issues_url"

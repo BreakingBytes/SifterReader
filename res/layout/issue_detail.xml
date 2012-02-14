@@ -49,10 +49,12 @@
 
         <TextView
             android:id="@+id/subject_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/priority_label"
-            android:text="@string/issue_subject" />
+            android:text="@string/issue_subject"
+            android:background="#bebebe"
+            android:textColor="#4a4a4a" />
 
         <TextView
             android:id="@+id/issue_subject"
@@ -63,10 +65,12 @@
 
         <TextView
             android:id="@+id/description_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/issue_subject"
-            android:text="@string/issue_description" />
+            android:text="@string/issue_description"
+            android:background="#bebebe"
+            android:textColor="#4a4a4a" />
 
         <TextView
             android:id="@+id/issue_description"
@@ -77,10 +81,12 @@
 
         <TextView
             android:id="@+id/issue_milestone_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/issue_description"
-            android:text="@string/milestone_name" />
+            android:text="@string/milestone_name"
+            android:background="#bebebe"
+            android:textColor="#4a4a4a" />
 
         <TextView
             android:id="@+id/issue_milestone_name"
@@ -89,19 +95,26 @@
             android:layout_alignParentRight="true"
             android:layout_below="@id/issue_milestone_label" />
 
+        <View
+            android:id="@+id/issue_separtor"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/issue_milestone_name"
+            android:background="#bebebe" />
+
         <TextView
             android:id="@+id/issue_opener_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/issue_milestone_name"
+            android:layout_below="@id/issue_separtor"
             android:text="@string/issue_opener_name" />
-
+        
         <TextView
             android:id="@+id/issue_opener_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/issue_milestone_name" />
+            android:layout_below="@id/issue_separtor" />
 
         <TextView
             android:id="@+id/issue_assignee_label"
@@ -175,10 +188,12 @@
 
         <TextView
             android:id="@+id/issue_comments_url_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/issue_updated_at_label"
-            android:text="@string/issue_comments_url" />
+            android:text="@string/issue_comments_url"
+            android:background="#bebebe"
+            android:textColor="#4a4a4a" />
 
         <TextView
             android:id="@+id/issue_comments_url"

@@ -30,7 +30,7 @@
     <string name="project_name">Project Name:</string>
     <string name="company">Company:</string>
     <string name="project_archived">Archived:</string>
-    <string name="project_url">Project LinkLink:</string>
+    <string name="project_url">Project Link:</string>
     <string name="issues_url">Issues Link:</string>
     <string name="milestones_url">Milestones Link:</string>
     <!-- Milestone Detail -->

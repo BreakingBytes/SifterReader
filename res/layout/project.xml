@@ -43,11 +43,14 @@
         android:layout_alignParentRight="true"
         android:layout_alignBottom="@id/archived_label" />
 
-    <TextView android:id="@+id/url_label"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/url_label"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/archived_label"
-        android:text="@string/project_url" />
+        android:background="#bebebe"
+        android:text="@string/project_url"
+        android:textColor="#4a4a4a" />
 
     <TextView
         android:id="@+id/project_url"
@@ -57,11 +60,14 @@
         android:singleLine="true"
         android:layout_below="@id/url_label" />
 
-    <TextView android:id="@+id/issues_url_label"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/issues_url_label"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/project_url"
-        android:text="@string/issues_url" />
+        android:background="#bebebe"
+        android:text="@string/issues_url"
+        android:textColor="#4a4a4a" />
 
     <TextView
         android:id="@+id/issues_url"
@@ -71,11 +77,14 @@
         android:singleLine="true"
         android:layout_below="@id/issues_url_label" />
 
-    <TextView android:id="@+id/milestones_url_label"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/milestones_url_label"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/issues_url"
-        android:text="@string/milestones_url" />
+        android:background="#bebebe"
+        android:text="@string/milestones_url"
+        android:textColor="#4a4a4a" />
 
     <TextView
         android:id="@+id/milestones_url"
