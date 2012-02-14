@@ -35,6 +35,7 @@ public class SifterHelper {
 	public static final String APPLICATION_JSON = "application/json";
 	public static final String OOPS = "oops";
 	public static final String FILTERS_FILE = "filters_file";
+	public static final String SIFTER_FILTERS_FILE = "Sifter_filters_file";
 
 	/** constructor */
 	public SifterHelper(Context context, String accessKey) {
@@ -192,6 +193,47 @@ public class SifterHelper {
 	/** retrieve issues filters from file */
 	public JSONObject getFiltersFile() throws JSONException, FileNotFoundException, IOException {
 		File keyFile = mContext.getFileStreamPath(FILTERS_FILE);
+		if (!keyFile.exists())
+			return new JSONObject();
+		BufferedReader in = new BufferedReader(new FileReader(keyFile)); // throws FileNotFoundException
+		String inputLine;
+		StringBuilder x = new StringBuilder();
+		try {
+			while ((inputLine = in.readLine()) != null)
+				x.append(inputLine);
+		} catch (IOException e) {
+			in.close();
+			throw e;
+		} // catch error and close buffered reader
+		in.close();
+		JSONObject filters = new JSONObject(x.toString()); // throws JSONException
+		return filters;
+	}
+	
+	/** save issues filters to file */
+	public void saveSifterFilters(JSONObject statuses, JSONObject priorities) {
+		try {
+			JSONObject sifterFilters = new JSONObject();
+			sifterFilters.put(IssuesActivity.STATUSES, statuses);
+			sifterFilters.put(IssuesActivity.PRIORITIES, priorities);
+			FileOutputStream fos = mContext.openFileOutput(SIFTER_FILTERS_FILE, Context.MODE_PRIVATE);
+			fos.write(sifterFilters.toString().getBytes());
+			fos.close();
+		} catch (JSONException e) {
+			e.printStackTrace();
+			onException(e.toString()); // return not needed
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			onException(e.toString()); // return not needed
+		} catch (IOException e) {
+			e.printStackTrace();
+			onException(e.toString()); // return not needed
+		}
+	}
+	
+	/** retrieve issues filters from file */
+	public JSONObject getSifterFilters() throws JSONException, FileNotFoundException, IOException {
+		File keyFile = mContext.getFileStreamPath(SIFTER_FILTERS_FILE);
 		if (!keyFile.exists())
 			return new JSONObject();
 		BufferedReader in = new BufferedReader(new FileReader(keyFile)); // throws FileNotFoundException

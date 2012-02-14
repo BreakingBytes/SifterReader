@@ -132,6 +132,12 @@ public class SifterReader extends ListActivity {
 			mSifterHelper.onException(e.toString());
 			return;
 		}
+		JSONObject statuses = getSifterFilters(IssuesActivity.STATUSES);
+		JSONObject priorities = getSifterFilters(IssuesActivity.PRIORITIES);
+		if (statuses == null || priorities == null)
+			return;
+		mSifterHelper.saveSifterFilters(statuses, priorities);
+		
 		fillData();
 	}
 	
@@ -258,18 +264,7 @@ public class SifterReader extends ListActivity {
     	}
     	String issuesURL = projDetailURL;
 		if (PROJ_DETAIL.equals(ISSUES)) {
-    		int issuesPerPage = IssuesActivity.MAX_PER_PAGE;
-    		try {
-    			JSONObject filters = mSifterHelper.getFiltersFile();
-    			if (filters.length() != 0) {
-    				issuesPerPage = filters.getInt(IssuesActivity.PER_PAGE);
-    			}
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    			mSifterHelper.onException(e.toString());
-    			return;
-    		}
-    		projDetailURL += "?" + IssuesActivity.PER_PAGE + "=" + issuesPerPage;
+			projDetailURL += getFilterSlug();
     	}
     	URLConnection sifterConnection = mSifterHelper.getSifterConnection(projDetailURL);
 		if (sifterConnection == null)
@@ -304,6 +299,79 @@ public class SifterReader extends ListActivity {
 		Intent intent = new Intent(this, cls);
 		intent.putExtra(PROJ_DETAIL, projDetail.toString());
 		startActivity(intent);
+	}
+    
+    private String getFilterSlug() {
+    	String projDetailURL = new String();
+		int issuesPerPage = IssuesActivity.MAX_PER_PAGE;
+		JSONArray status = new JSONArray();
+		JSONArray priority = new JSONArray();
+		int numStatuses;
+		int numPriorities;
+		boolean[] filterStatus;
+		boolean[] filterPriority;
+		try {
+			JSONObject filters = mSifterHelper.getFiltersFile();
+			if (filters.length() == 0)
+				return new String();
+			issuesPerPage = filters.getInt(IssuesActivity.PER_PAGE);
+			status = filters.getJSONArray(IssuesActivity.STATUS);
+			priority = filters.getJSONArray(IssuesActivity.PRIORITY);
+			numStatuses = status.length();
+			numPriorities = priority.length();
+			filterStatus = new boolean[numStatuses];
+			filterPriority = new boolean[numPriorities];
+			for (int i = 0; i < numStatuses; i++)
+				filterStatus[i] = status.getBoolean(i);
+			for (int i = 0; i < numPriorities; i++)
+				filterPriority[i] = priority.getBoolean(i);
+		} catch (Exception e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+			return new String();
+		}
+		projDetailURL = "?" + IssuesActivity.PER_PAGE + "=" + issuesPerPage;
+		projDetailURL += "&" + IssuesActivity.GOTO_PAGE + "=1";
+		JSONObject statuses = new JSONObject();
+		JSONObject priorities = new JSONObject();
+		JSONArray statusNames = new JSONArray();
+		JSONArray priorityNames = new JSONArray();
+		try {
+			JSONObject sifterJSONObject = mSifterHelper.getSifterFilters();
+			statuses = sifterJSONObject.getJSONObject(IssuesActivity.STATUSES);
+			priorities = sifterJSONObject.getJSONObject(IssuesActivity.PRIORITIES);
+			statusNames = statuses.names();
+			priorityNames = priorities.names();
+		} catch (Exception e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+			return new String();
+		}
+		try {
+			String filterSlug = "&s=";
+			for (int i = 0; i < numStatuses; i++) {
+				if (filterStatus[i])
+					filterSlug += String.valueOf(statuses.getInt(statusNames.getString(i))) + "-";
+			}
+			if (filterSlug.length() > 3) {
+				filterSlug = filterSlug.substring(0, filterSlug.length()-1);
+				projDetailURL += filterSlug;
+			}
+			filterSlug = "&p=";
+			for (int i = 0; i < numPriorities; i++) {
+				if (filterPriority[i])
+					filterSlug += String.valueOf(priorities.getInt(priorityNames.getString(i))) + "-";
+			}
+			if (filterSlug.length() > 3) {
+				filterSlug = filterSlug.substring(0, filterSlug.length()-1);
+				projDetailURL += filterSlug;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+			return new String();
+		}
+		return projDetailURL;
 	}
 	
     /** Determine activity by result code. */
@@ -397,5 +465,24 @@ public class SifterReader extends ListActivity {
 		for (int i = 0; i < numberProjects; i++)
 			allProjects[i] = projectArray.getJSONObject(i);
 		mAllProjects = allProjects;
+	}
+	
+	/** Load Sifter Statuses and Priorities */
+	private JSONObject getSifterFilters(String filter) {
+		String filterURL = HTTPS_PREFIX + mSifterHelper.mDomain;
+		filterURL += PROJECTS_URL + filter;
+		URLConnection sifterConnection = mSifterHelper.getSifterConnection(filterURL);
+		if (sifterConnection == null)
+			return new JSONObject();
+		JSONObject filterJSONObject = new JSONObject();
+		try {
+			JSONObject sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
+			filterJSONObject = sifterJSONObject.getJSONObject(filter);
+		} catch (Exception e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+			return new JSONObject();
+		}
+		return filterJSONObject;
 	}
 }

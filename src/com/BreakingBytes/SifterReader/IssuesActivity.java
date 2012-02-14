@@ -84,38 +84,8 @@ public class IssuesActivity extends ListActivity {
 			return;
 		}
 		
-		// TODO move this to SifterHelper, and only call once!
-		JSONObject statuses = getSifterFilters(STATUSES);
-		JSONObject priorities = getSifterFilters(PRIORITIES);
-		if (statuses == null || priorities == null)
+		if (!getSifterFilters())
 			return;
-		mStatuses = statuses;
-		mNumStatuses = mStatuses.length();
-		mStatusNames = mStatuses.names();
-		mPriorities = priorities;
-		mNumPriorities = mPriorities.length();
-		mPriorityNames = mPriorities.names();
-		mFilterStatus = new boolean[mNumStatuses];
-		mFilterPriority = new boolean[mNumPriorities];
-		for (int i = 0; i < mNumStatuses; i++)
-			mFilterStatus[i] = true;
-		for (int i = 0; i < mNumPriorities; i++)
-			mFilterPriority[i] = true;
-    	try {
-			JSONObject filters = mSifterHelper.getFiltersFile();
-			if (filters.length() != 0) {
-				JSONArray status = filters.getJSONArray(STATUS);
-				JSONArray priority = filters.getJSONArray(PRIORITY);
-				for (int i = 0; i < mNumStatuses; i++)
-					mFilterStatus[i] = status.getBoolean(i);
-				for (int i = 0; i < mNumPriorities; i++)
-					mFilterPriority[i] = priority.getBoolean(i);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
-			return;
-		}
     	
 		TextView pageTotal = (TextView)findViewById(R.id.page_total);
 		EditText pageNumber = (EditText)findViewById(R.id.page_number);
@@ -375,8 +345,21 @@ public class IssuesActivity extends ListActivity {
 	
 	/** goto specific page */
 	private void loadIssuesPage(int newPage) {
-		newPage = (newPage > mTotalPages) ? mTotalPages : newPage;
-		mPage = (newPage < 1) ? 1 : newPage;
+		
+		if (newPage > mTotalPages) {
+			Toast.makeText(this,
+					getResources().getString(R.string.last_page_toast),
+					Toast.LENGTH_SHORT).show();
+			newPage = mTotalPages;
+		} else if (newPage < 1) {
+			Toast.makeText(this,
+					getResources().getString(R.string.first_page_toast),
+					Toast.LENGTH_SHORT).show();
+			newPage = 1;
+		}
+		mPage = newPage;
+//		newPage = (newPage > mTotalPages) ? mTotalPages : newPage;
+//		mPage = (newPage < 1) ? 1 : newPage;
 		String pageURL = mIssuesURL + "?" + PER_PAGE + "=" + mPerPage;
 		pageURL += "&" + GOTO_PAGE + "=" + mPage;
 		startIssueActivity(changePage(pageURL));
@@ -430,24 +413,48 @@ public class IssuesActivity extends ListActivity {
 		startActivity(intent);
 	}
 	
-	private JSONObject getSifterFilters(String filter) {
-		String filterURL = SifterReader.HTTPS_PREFIX + mSifterHelper.mDomain;
-		filterURL += SifterReader.PROJECTS_URL + filter;
-		// get url connection
-		URLConnection sifterConnection = mSifterHelper.getSifterConnection(filterURL);
-		if (sifterConnection == null)
-			return new JSONObject();
-		// get JSON object
-		JSONObject filterJSONObject = new JSONObject();
+	private boolean getSifterFilters() {
+		JSONObject statuses = new JSONObject();
+		JSONObject priorities = new JSONObject();
 		try {
-			JSONObject sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
-			filterJSONObject = sifterJSONObject.getJSONObject(filter);
+			JSONObject sifterJSONObject = mSifterHelper.getSifterFilters();
+			statuses = sifterJSONObject.getJSONObject(STATUSES);
+			priorities = sifterJSONObject.getJSONObject(PRIORITIES);
 		} catch (Exception e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
-			return new JSONObject();
+			return false;
 		}
-		return filterJSONObject;
+		if (statuses == null || priorities == null)
+			return false;
+		mStatuses = statuses;
+		mNumStatuses = mStatuses.length();
+		mStatusNames = mStatuses.names();
+		mPriorities = priorities;
+		mNumPriorities = mPriorities.length();
+		mPriorityNames = mPriorities.names();
+		mFilterStatus = new boolean[mNumStatuses];
+		mFilterPriority = new boolean[mNumPriorities];
+		for (int i = 0; i < mNumStatuses; i++)
+			mFilterStatus[i] = true;
+		for (int i = 0; i < mNumPriorities; i++)
+			mFilterPriority[i] = true;
+    	try {
+			JSONObject filters = mSifterHelper.getFiltersFile();
+			if (filters.length() != 0) {
+				JSONArray status = filters.getJSONArray(STATUS);
+				JSONArray priority = filters.getJSONArray(PRIORITY);
+				for (int i = 0; i < mNumStatuses; i++)
+					mFilterStatus[i] = status.getBoolean(i);
+				for (int i = 0; i < mNumPriorities; i++)
+					mFilterPriority[i] = priority.getBoolean(i);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			mSifterHelper.onException(e.toString());
+			return false;
+		}
+		return true;
 	}
 	
 	/** start IssuesDetail activity for clicked issue in list. */
