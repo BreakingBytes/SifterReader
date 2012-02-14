@@ -27,6 +27,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class IssuesActivity extends ListActivity {
 
@@ -67,7 +68,6 @@ public class IssuesActivity extends ListActivity {
 	private int mNumPriorities;
 	private JSONArray mStatusNames;
 	private JSONArray mPriorityNames;
-	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -363,9 +363,13 @@ public class IssuesActivity extends ListActivity {
 			mSifterHelper.onException(e.toString());
 			return;
 		}
-		if (pageURL == null)
-			// TODO add toast here: this is first/ page!
+		if (pageURL.equals("null") || pageURL == null) {
+			String text = (PAGE_URL.equals(NEXT_PAGE_URL)) ?
+					getResources().getString(R.string.last_page_toast) :
+						getResources().getString(R.string.first_page_toast);
+			Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 			return;
+		}
 		startIssueActivity(changePage(pageURL));
 	}
 	
@@ -424,7 +428,6 @@ public class IssuesActivity extends ListActivity {
 		intent.putExtra(SifterReader.ISSUES, sifterJSONObject.toString());
 		intent.putExtra(SifterReader.ISSUES_URL, mIssuesURL);
 		startActivity(intent);
-		return;
 	}
 	
 	private JSONObject getSifterFilters(String filter) {
@@ -456,4 +459,28 @@ public class IssuesActivity extends ListActivity {
         // TODO use safe long typecast to int
         startActivity(intent);
     }
+	
+	/** called by Android if the Activity is being stopped
+	 *  and may be killed before it is resumed! */
+	@Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+//        saveState();
+//        outState.putSerializable(NotesDbAdapter.KEY_ROWID, mRowId);
+    }
+	
+	@Override
+    protected void onPause() {
+        super.onPause();
+//        saveState();
+    }
+	
+	@Override
+    protected void onResume() {
+        super.onResume();
+//        populateFields();
+    }
+	
+//	private void saveState() {
+//	}
 }
