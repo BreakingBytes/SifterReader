@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -115,7 +116,23 @@ public class SifterReader extends ListActivity {
 		}
 		JSONObject sifterJSONObject = new JSONObject();
 		try {
-			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
+			
+			private class DownloadFilesTask extends AsyncTask<sifterConnection, Void, JSONObject> {
+			     protected JSONObject doInBackground(URLConnection sifterConnection) {
+			    	 sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection)
+			         return sifterJSONObject;
+			     }
+
+			     protected void onProgressUpdate(Integer... progress) {
+			         setProgressPercent(progress[0]);
+			     }
+
+			     protected void onPostExecute(Long result) {
+			         showDialog("Downloaded " + result + " bytes");
+			     }
+			 }
+			
+			;
 		} catch (Exception e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
