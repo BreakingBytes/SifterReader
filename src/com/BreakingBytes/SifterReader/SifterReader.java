@@ -20,6 +20,7 @@ package com.BreakingBytes.SifterReader;
  *      MA 02110-1301, USA. */
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URLConnection;
 
 import org.json.JSONArray;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
 import android.os.AsyncTask;
@@ -80,6 +82,8 @@ public class SifterReader extends ListActivity {
 	private String mDomain;
 	private String mAccessKey;
 	private JSONObject mLoginError = new JSONObject();
+	ProgressDialog mDialog;
+	private JSONObject mSifterJSONObject = new JSONObject();
 	/* must initialize mLoginError as empty JSON object,
 	 * or mLoginError.put() will fail. */
 	
@@ -117,22 +121,10 @@ public class SifterReader extends ListActivity {
 		JSONObject sifterJSONObject = new JSONObject();
 		try {
 			
-			private class DownloadFilesTask extends AsyncTask<sifterConnection, Void, JSONObject> {
-			     protected JSONObject doInBackground(URLConnection sifterConnection) {
-			    	 sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection)
-			         return sifterJSONObject;
-			     }
-
-			     protected void onProgressUpdate(Integer... progress) {
-			         setProgressPercent(progress[0]);
-			     }
-
-			     protected void onPostExecute(Long result) {
-			         showDialog("Downloaded " + result + " bytes");
-			     }
-			 }
-			
-			;
+//			ProgressDialog dialog = ProgressDialog.show(MyActivity.this, "", 
+//                    "Loading. Please wait...", true);
+			new DownloadSifterTask().execute(sifterConnection);
+			sifterJSONObject = mSifterJSONObject;
 		} catch (Exception e) {
 			e.printStackTrace();
 			mSifterHelper.onException(e.toString());
@@ -156,6 +148,37 @@ public class SifterReader extends ListActivity {
 		mSifterHelper.saveSifterFilters(statuses, priorities);
 		
 		fillData();
+	}
+	
+	private class DownloadSifterTask extends AsyncTask<URLConnection, Void, JSONObject> {
+		@Override
+		protected JSONObject doInBackground(URLConnection... connections) {
+			URLConnection sifterConnection = connections[0];
+			JSONObject sifterJSONObject = null;
+			try {
+				sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
+			} catch (NotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return sifterJSONObject;
+		}
+		@Override
+		protected void onPreExecute() {
+			mDialog = ProgressDialog.show(this, "", "Loading ...",true);
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject sifterJSONObject) {
+//			mDialog.dismiss();
+			mSifterJSONObject = sifterJSONObject;
+		}
 	}
 	
 	/** Method to pass project names to list adapter. */
