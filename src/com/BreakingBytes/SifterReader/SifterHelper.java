@@ -124,7 +124,7 @@ public class SifterHelper {
 		JSONObject loginKeys = new JSONObject(x.toString()); // throws JSONException
 		mDomain = loginKeys.getString(SifterReader.DOMAIN); // throws JSONException
 		mAccessKey = loginKeys.getString(SifterReader.ACCESS_KEY); // throws JSONException
-		if (mDomain.isEmpty() || mAccessKey.isEmpty()) {
+		if (mDomain.length()==0 || mAccessKey.length()==0) {
 			mLoginError = onMissingToken();
 			return false;
 		}

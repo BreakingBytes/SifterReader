@@ -20,7 +20,6 @@ package com.BreakingBytes.SifterReader;
  *      MA 02110-1301, USA. */
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URLConnection;
 
 import org.json.JSONArray;
@@ -82,10 +81,9 @@ public class SifterReader extends ListActivity {
 	private String mDomain;
 	private String mAccessKey;
 	private JSONObject mLoginError = new JSONObject();
-	ProgressDialog mDialog;
-	private JSONObject mSifterJSONObject = new JSONObject();
 	/* must initialize mLoginError as empty JSON object,
 	 * or mLoginError.put() will fail. */
+	private ProgressDialog mDialog;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -118,36 +116,8 @@ public class SifterReader extends ListActivity {
 			loginKeys();
 			return;
 		}
-		JSONObject sifterJSONObject = new JSONObject();
-		try {
-			
-//			ProgressDialog dialog = ProgressDialog.show(MyActivity.this, "", 
-//                    "Loading. Please wait...", true);
-			new DownloadSifterTask().execute(sifterConnection);
-			sifterJSONObject = mSifterJSONObject;
-		} catch (Exception e) {
-			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
-			return;
-		}
-		if (getSifterError(sifterJSONObject)) {
-			loginKeys();
-			return;
-		}
-		try {
-		loadProjects(sifterJSONObject);
-		} catch (JSONException e) {
-			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
-			return;
-		}
-		JSONObject statuses = getSifterFilters(IssuesActivity.STATUSES);
-		JSONObject priorities = getSifterFilters(IssuesActivity.PRIORITIES);
-		if (statuses == null || priorities == null)
-			return;
-		mSifterHelper.saveSifterFilters(statuses, priorities);
-		
-		fillData();
+		mDialog = ProgressDialog.show(this, "", "Loading ...",true);
+		new DownloadSifterTask().execute(sifterConnection);
 	}
 	
 	private class DownloadSifterTask extends AsyncTask<URLConnection, Void, JSONObject> {
@@ -157,27 +127,33 @@ public class SifterReader extends ListActivity {
 			JSONObject sifterJSONObject = null;
 			try {
 				sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
-			} catch (NotFoundException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				mSifterHelper.onException(e.toString());
+				return new JSONObject();
 			}
 			return sifterJSONObject;
 		}
 		@Override
-		protected void onPreExecute() {
-			mDialog = ProgressDialog.show(this, "", "Loading ...",true);
-		}
-		
-		@Override
 		protected void onPostExecute(JSONObject sifterJSONObject) {
-//			mDialog.dismiss();
-			mSifterJSONObject = sifterJSONObject;
+			mDialog.dismiss();
+			if (getSifterError(sifterJSONObject)) {
+				loginKeys();
+				return;
+			}
+			try {
+			loadProjects(sifterJSONObject);
+			} catch (JSONException e) {
+				e.printStackTrace();
+				mSifterHelper.onException(e.toString());
+				return;
+			}
+			JSONObject statuses = getSifterFilters(IssuesActivity.STATUSES);
+			JSONObject priorities = getSifterFilters(IssuesActivity.PRIORITIES);
+			if (statuses == null || priorities == null)
+				return;
+			mSifterHelper.saveSifterFilters(statuses, priorities);
+			fillData();
 		}
 	}
 	
@@ -430,7 +406,7 @@ public class SifterReader extends ListActivity {
     		mDomain = extras.getString(DOMAIN);
     		mAccessKey = extras.getString(ACCESS_KEY);
     		mSifterHelper = new SifterHelper(this,mAccessKey);
-    		if (mDomain.isEmpty() || mAccessKey.isEmpty()) {
+    		if (mDomain.length()==0 || mAccessKey.length()==0) {
     			try {
     				mLoginError = mSifterHelper.onMissingToken();
     				loginKeys();
