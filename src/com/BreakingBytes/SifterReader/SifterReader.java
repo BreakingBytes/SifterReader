@@ -286,37 +286,67 @@ public class SifterReader extends ListActivity {
     	URLConnection sifterConnection = mSifterHelper.getSifterConnection(projDetailURL);
 		if (sifterConnection == null)
 			return;
-		JSONObject sifterJSONObject = new JSONObject();
-		try {
-			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
-		} catch (Exception e) {
-			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
-			return;
-		}
-		if (getSifterError(sifterJSONObject)) {
-			loginKeys();
-			return;
-		}
-		if (PROJ_DETAIL.equals(ISSUES)) {
-			Intent intent = new Intent(this, cls);
-			intent.putExtra(ISSUES, sifterJSONObject.toString());
-			intent.putExtra(ISSUES_URL, issuesURL);
-			startActivity(intent);
-			return;
-		}
-		JSONArray projDetail = new JSONArray();
-		try {
-			projDetail = sifterJSONObject.getJSONArray(PROJ_DETAIL);
-		} catch (JSONException e) {
-			e.printStackTrace();
-			mSifterHelper.onException(e.toString());
-			return;
-		}		
-		Intent intent = new Intent(this, cls);
-		intent.putExtra(PROJ_DETAIL, projDetail.toString());
-		startActivity(intent);
+//		JSONObject sifterJSONObject = new JSONObject();
+//		try {
+//			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			mSifterHelper.onException(e.toString());
+//			return;
+//		}
+		mDialog = ProgressDialog.show(this, "", "Loading ...",true);
+		new DownloadSifterDetailTask().execute(sifterConnection, issuesURL, PROJ_DETAIL, cls);
 	}
+    
+    private class DownloadSifterDetailTask extends AsyncTask<Object, Void, JSONObject> {
+    	String issuesURL;
+    	String PROJ_DETAIL;
+    	Class<?> cls;
+		@Override
+		protected JSONObject doInBackground(Object... objects) {
+			URLConnection sifterConnection = (URLConnection) objects[0];
+			issuesURL = (String) objects[1];
+			PROJ_DETAIL = (String) objects[2];
+			cls = (Class<?>) objects[3];
+			JSONObject sifterJSONObject = null;
+			try {
+				sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
+			} catch (Exception e) {
+				e.printStackTrace();
+				mSifterHelper.onException(e.toString());
+			}
+			return sifterJSONObject;
+		}
+		@Override
+		protected void onPostExecute(JSONObject sifterJSONObject) {
+			mDialog.dismiss();
+			if (sifterJSONObject == null)
+				return;
+			if (getSifterError(sifterJSONObject)) {
+				loginKeys();
+				return;
+			}
+			if (PROJ_DETAIL.equals(ISSUES)) {
+				Intent intent = new Intent(getBaseContext(), cls);
+				intent.putExtra(ISSUES, sifterJSONObject.toString());
+				intent.putExtra(ISSUES_URL, issuesURL);
+				startActivity(intent);
+				return;
+			}
+			JSONArray projDetail = new JSONArray();
+			try {
+				projDetail = sifterJSONObject.getJSONArray(PROJ_DETAIL);
+			} catch (JSONException e) {
+				e.printStackTrace();
+				mSifterHelper.onException(e.toString());
+				return;
+			}		
+			Intent intent = new Intent(getBaseContext(), cls);
+			intent.putExtra(PROJ_DETAIL, projDetail.toString());
+			startActivity(intent);
+		}
+	}
+	
     
     private String getFilterSlug() {
     	String projDetailURL = new String();
