@@ -130,13 +130,14 @@ public class SifterReader extends ListActivity {
 			} catch (Exception e) {
 				e.printStackTrace();
 				mSifterHelper.onException(e.toString());
-				return new JSONObject();
 			}
 			return sifterJSONObject;
 		}
 		@Override
 		protected void onPostExecute(JSONObject sifterJSONObject) {
 			mDialog.dismiss();
+			if (sifterJSONObject == null)
+				return;
 			if (getSifterError(sifterJSONObject)) {
 				loginKeys();
 				return;
