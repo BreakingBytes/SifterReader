@@ -286,14 +286,6 @@ public class SifterReader extends ListActivity {
     	URLConnection sifterConnection = mSifterHelper.getSifterConnection(projDetailURL);
 		if (sifterConnection == null)
 			return;
-//		JSONObject sifterJSONObject = new JSONObject();
-//		try {
-//			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			mSifterHelper.onException(e.toString());
-//			return;
-//		}
 		mDialog = ProgressDialog.show(this, "", "Loading ...",true);
 		new DownloadSifterDetailTask().execute(sifterConnection, issuesURL, PROJ_DETAIL, cls);
 	}
