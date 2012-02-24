@@ -12,9 +12,11 @@ import org.json.JSONObject;
 
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,6 +70,7 @@ public class IssuesActivity extends ListActivity {
 	private int mNumPriorities;
 	private JSONArray mStatusNames;
 	private JSONArray mPriorityNames;
+	private ProgressDialog mDialog;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -340,7 +343,8 @@ public class IssuesActivity extends ListActivity {
 			Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 			return;
 		}
-		startIssueActivity(changePage(pageURL));
+		mDialog = ProgressDialog.show(this, "", "Loading ...",true);
+		new DownloadIssuesTask().execute(pageURL);
 	}
 	
 	/** goto specific page */
@@ -359,9 +363,23 @@ public class IssuesActivity extends ListActivity {
 		mPage = newPage;
 		String pageURL = mIssuesURL + "?" + PER_PAGE + "=" + mPerPage;
 		pageURL += "&" + GOTO_PAGE + "=" + mPage;
-		startIssueActivity(changePage(pageURL));
+		mDialog = ProgressDialog.show(this, "", "Loading ...",true);
+		new DownloadIssuesTask().execute(pageURL);
 	}
-	
+
+	private class DownloadIssuesTask extends AsyncTask<String, Void, JSONObject> {
+		@Override 
+		protected JSONObject doInBackground(String... strings) {
+			String pageURL = strings[0];
+			return changePage(pageURL);
+		}
+		@Override
+		protected void onPostExecute(JSONObject sifterJSONObject) {
+			mDialog.dismiss();
+			startIssueActivity(sifterJSONObject);
+		}
+	}
+
 	private JSONObject changePage(String pageURL) {
 		try {
 			String filterSlug = "&s=";
