@@ -446,31 +446,8 @@ public class SifterReader extends ListActivity {
     			loginKeys();
     			break;
     		} // if URL misformatted return to LoginActivity
-    		JSONObject sifterJSONObject = new JSONObject();
-    		try {
-    			sifterJSONObject = mSifterHelper.getSifterJSONObject(sifterConnection);
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    			mSifterHelper.onException(e.toString());
-    			return;
-    		}
-    		if (getSifterError(sifterJSONObject)) {
-    			loginKeys();
-    			break;
-    		} // if SifterAPI reports error return LoginActivity
-    		try {
-    		loadProjects(sifterJSONObject);
-    		} catch (JSONException e) {
-    			e.printStackTrace();
-    			mSifterHelper.onException(e.toString());
-    			return;
-    		}
-    		JSONObject statuses = getSifterFilters(IssuesActivity.STATUSES);
-			JSONObject priorities = getSifterFilters(IssuesActivity.PRIORITIES);
-			if (statuses == null || priorities == null)
-				return;
-			mSifterHelper.saveSifterFilters(statuses, priorities);
-    		fillData();
+    		mDialog = ProgressDialog.show(this, "", "Loading ...",true);
+    		new DownloadSifterTask().execute(sifterConnection);
     		break;
     	}
     }
@@ -513,7 +490,7 @@ public class SifterReader extends ListActivity {
 	
 	/** Load Sifter Statuses and Priorities */
 	private JSONObject getSifterFilters(String filter) {
-		String filterURL = HTTPS_PREFIX + mSifterHelper.mDomain;
+		String filterURL = HTTPS_PREFIX + mDomain;
 		filterURL += PROJECTS_URL + filter;
 		URLConnection sifterConnection = mSifterHelper.getSifterConnection(filterURL);
 		if (sifterConnection == null)
