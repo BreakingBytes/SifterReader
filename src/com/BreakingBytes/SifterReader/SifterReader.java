@@ -465,6 +465,11 @@ public class SifterReader extends ListActivity {
     			mSifterHelper.onException(e.toString());
     			return;
     		}
+    		JSONObject statuses = getSifterFilters(IssuesActivity.STATUSES);
+			JSONObject priorities = getSifterFilters(IssuesActivity.PRIORITIES);
+			if (statuses == null || priorities == null)
+				return;
+			mSifterHelper.saveSifterFilters(statuses, priorities);
     		fillData();
     		break;
     	}
